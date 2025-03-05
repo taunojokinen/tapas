@@ -9,10 +9,11 @@ import logo from '../../pictures/logo.png'
 
 const Header: React.FC = () => {
     return (
-      <header>
-        <h1>Tapas</h1>
-        <h3>Johtamisavustin</h3>
-        <img src={logo} alt="Logo" />
+        <header className='header'>
+            <img src={logo} alt="Logo" className='header-logo'/>
+            <div className='header-text'>
+                <h1>Tapas Johtamisavustin</h1>
+            </div>     
       </header>
     );
   };

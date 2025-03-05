@@ -1,0 +1,47 @@
+#colorbar {
+    background-color: var(--navibar-color);
+    height: 160px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ }
+ 
+ @media (max-width: 650px) {
+     .navi {
+         flex-direction: column;
+         margin-top: 1em;
+         margin-bottom: 1em;
+     }
+     .navi li {
+         list-style: circle;
+     }
+     #colorbar {
+         height: 100%;
+         text-align: center;
+     }
+ }
+ 
+ #navi_bar {
+     max-width: 1200px;
+     width: 100%;
+ }
+ 
+ .navi {
+     display: flex;
+     width: 160%;
+     justify-content: space-around;
+     border-bottom: 10px solid gray; /* Add this line */
+ }
+ 
+ .navi li {
+    display: inline-block;
+    color: var(--light-colour);
+    font-size: 4em;
+    margin-top: 1em; /* Add this line to add space above the text */
+    margin-bottom: 1em; /* Add this line to add space above the text */
+ }
+ 
+ .navi li a {
+     color: var(--light-colour)
+ }

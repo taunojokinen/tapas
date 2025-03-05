@@ -1,19 +1,24 @@
-#image_container {
-    width: 100vw;
-    height: 50px;
-    background: url("../../pictures/logo.png") no-repeat center center;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-family: "Major Mono Display", monospace;
-    font-weight: 400;
-    font-style: normal;
-    color: #ddd;
-}
-
 .header {
-    width: 100%;
-    height: 100%;
-}
+    display: flex;
+    align-items: center;
+    padding: 0px;
+    margin: 0px;
+    height: 300px;
+    background-color: #333; /* Dark grey background color */
+  }
+  
+  .header-logo {
+    width: 300px;
+    margin-right: 50px;
+  }
+  
+  .header-text {
+    display: flex;
+    flex-direction: column;
+    color: #D13F3A; /* Text color */
+  }
+
+  .header-text h1 {
+    font-size: 10em; /* Adjust the size as needed */
+  }
+  
