@@ -23,10 +23,13 @@ const Navi = () => {
       <div id="colorbar">
         <div id="navi_bar">
           <ul className="navi">
-            <li><Link to="/">Etusivu</Link></li>
-            <li><Link to="/search-finnkino">Näytösajat</Link></li>
-            <li><Link to="/search-tmdb">Muuvihaku</Link></li>
-            <li><Link to="/community">Yhteisö</Link></li>
+            <li><Link to="/">Kirjaudu</Link></li>
+            <li><Link to="/etusivu">Etusivu</Link></li>
+            <li><Link to="/tavoitteet">Tavoitteet</Link></li>
+            <li><Link to="/tilannekuva">Tilannekuva</Link></li>
+            <li><Link to="/search-tmdb">Ideat</Link></li>
+            <li><Link to="/community">Aktiviteeti</Link></li>
+            <li><Link to="/community">Asetukset</Link></li>
 {/*             {!loginData.userName && <li><Link to="/login">Kirjautuminen</Link></li>}
             {loginData.userName && <li><Link to="/myaccount">Oma tili</Link></li>}
             {loginData.userName && <li><Link onClick={handleLogout}>Kirjaudu ulos</Link></li>} */}

@@ -46,7 +46,7 @@
     display: block;
     color: var(--light-colour);
     font-size: 2em;
-    margin: 2em 0; /* Adjust the margin as needed */
+    margin: 1em 0; /* Adjust the margin as needed */
 }
 
 .navi li a {
