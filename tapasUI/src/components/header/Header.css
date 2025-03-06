@@ -1,21 +1,27 @@
 .header {
     display: flex;
+    flex-direction: row;
     align-items: center;
     padding: 0px;
     margin: 0px;
-    height: 300px;
-    background-color: #333; /* Dark grey background color */
+    height: 15em; /* Adjust the height as needed */
+    width: 100%;
+    background-color: var(--navibar-color); /* Dark grey background color */
+    position: fixed; /* Make the header fixed */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Ensure the header is above other elements */
   }
   
   .header-logo {
-    width: 300px;
-    margin-right: 50px;
+    height: 100%;
+    margin-right: 20em;
   }
   
   .header-text {
     display: flex;
     flex-direction: column;
-    color: #D13F3A; /* Text color */
+    color: var(--navitext-color); /* Text color */
   }
 
   .header-text h1 {

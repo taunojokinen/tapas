@@ -23,7 +23,7 @@ const Navi = () => {
       <div id="colorbar">
         <div id="navi_bar">
           <ul className="navi">
-            <li><Link to="/">Home</Link></li>
+            <li><Link to="/">Etusivu</Link></li>
             <li><Link to="/search-finnkino">Näytösajat</Link></li>
             <li><Link to="/search-tmdb">Muuvihaku</Link></li>
             <li><Link to="/community">Yhteisö</Link></li>

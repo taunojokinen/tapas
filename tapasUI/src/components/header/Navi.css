@@ -1,47 +1,59 @@
+
 #colorbar {
     background-color: var(--navibar-color);
-    height: 160px;
-    width: 100%;
+    height: 100%;
+    width: 15em; /* Adjust the width as needed */
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
- }
- 
- @media (max-width: 650px) {
-     .navi {
-         flex-direction: column;
-         margin-top: 1em;
-         margin-bottom: 1em;
-     }
-     .navi li {
-         list-style: circle;
-     }
-     #colorbar {
-         height: 100%;
-         text-align: center;
-     }
- }
- 
- #navi_bar {
-     max-width: 1200px;
-     width: 100%;
- }
- 
- .navi {
-     display: flex;
-     width: 160%;
-     justify-content: space-around;
-     border-bottom: 10px solid gray; /* Add this line */
- }
- 
- .navi li {
-    display: inline-block;
+    position: fixed; /* Change to fixed position */
+    top: 15em; /* Adjust this value to match the height of the header */
+    bottom: 0; /* Align to the bottom of the page */
+    left: 0;
+}
+
+@media (max-width: 650px) {
+    .navi {
+        flex-direction: column;
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+    .navi li {
+        list-style: circle;
+    }
+    #colorbar {
+        height: 100%;
+        text-align: center;
+    }
+}
+
+#navi_bar {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.navi {
+    display: flex;
+    flex-direction: column;
+    width: 15em; /* Adjust the width as needed */
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.navi li {
+    display: block;
     color: var(--light-colour);
-    font-size: 4em;
-    margin-top: 1em; /* Add this line to add space above the text */
-    margin-bottom: 1em; /* Add this line to add space above the text */
- }
- 
- .navi li a {
-     color: var(--light-colour)
- }
+    font-size: 2em;
+    margin: 2em 0; /* Adjust the margin as needed */
+}
+
+.navi li a {
+    color: var(--navitext-color);
+    text-decoration: none;
+}
+
+.navi li a:hover {
+    color: var(--light-colour); /* Change this to the desired hover color */
+}

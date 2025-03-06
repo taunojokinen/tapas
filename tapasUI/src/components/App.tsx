@@ -8,16 +8,18 @@ import Navi from '../components/header/Navi';
 const App: React.FC = () => {
     return (
         <>
-        <div>
-        <Header/>
-        <Navi/>
-
-            {/* Additional components and application logic can be added here */}
-        </div>
-            <Routes>
-                {<Route path="/" element={<Home />} />}
-                {/* Lisää muita reittejä tarvittaessa */}
-            </Routes>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+                <Header/>
+            <div style={{ display: 'flex', flex: 1 }}>
+                <Navi/>
+            <div style={{ marginLeft: '2em', padding: '20em', width: '100%' }}>
+                <Routes>
+                    {<Route path="/" element={<Home />} />}
+                    {/* Lisää muita reittejä tarvittaessa */}
+                </Routes>
+                </div>
+            </div>
+            </div>
         </>
     );
 };
