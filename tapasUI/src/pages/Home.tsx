@@ -37,11 +37,28 @@ const splitTextIntoLines = (text: string, maxLength: number) => {
 };
 
 const Home: React.FC = () => {
+    // Define the dimensions for the main rectangle
     const rectWidth = 1400;
     const rectHeight = 600;
-    const padding = 20;
-    const ptXadjust = 100;
-    const ptYadjust = 80;
+    const rectX = 10;
+    const rectY = 10;
+
+    // Define the parameters for the small rects
+    const smallRectWidth = .3*rectWidth;
+    const smallRectHeight = .3*rectHeight;
+    const smallRectX1 = rectX + 10
+    const smallRectY1 = rectY + 10
+    const smallRectX2 = rectWidth - 20 - smallRectWidth
+    const smallRectY2 = rectHeight - 20 - smallRectHeight
+
+    // Define the parameters for the heder texts
+    const textSize= 24;
+    const textX1 = smallRectX1 + 10;
+    const textY1 = smallRectY1 + 10;
+    const textX2 = smallRectX2 + 10;
+    const textY2 = smallRectY2 + 10;
+
+    // Define the parameters for the text
     const fontFamily = "Calibri";
     const fontSize = 20;
 
@@ -51,13 +68,13 @@ const Home: React.FC = () => {
             return lines.map((line, lineIndex) => (
                 <Text
                     key={`${index}-${lineIndex}`}
-                    x={40}
-                    y={80 + index * 60 + lineIndex * 24} // Adjust the y position for each line
+                    x={textX1}
+                    y={textY1 + 24 + index * 60 + lineIndex * 24} // Adjust the y position for each line
                     text={line}
                     fontSize={fontSize}
                     fontFamily={fontFamily}
                     fill="black"
-                    width={1300} // Set the maximum width for the text
+                    width={smallRectWidth} // Set the maximum width for the text
                     lineHeight={1.5} // Set the line height for spacing
                 />
             ));
@@ -70,13 +87,13 @@ const Home: React.FC = () => {
             return lines.map((line, lineIndex) => (
                 <Text
                     key={`${index}-${lineIndex}`}
-                    x={40}
-                    y={rectHeight - padding - (nykytila.length * 60) + index * 60 + lineIndex * 24} // Adjust the y position for each line
+                    x={textX1}
+                    y={textY2 + 24 + index * 50 + lineIndex * 24} // Adjust the y position for each line
                     text={line}
                     fontSize={fontSize}
                     fontFamily={fontFamily}
                     fill="black"
-                    width={1300} // Set the maximum width for the text
+                    width={smallRectWidth} // Set the maximum width for the text
                     lineHeight={1.5} // Set the line height for spacing
                 />
             ));
@@ -84,33 +101,50 @@ const Home: React.FC = () => {
     };
 
     const renderVisioText = () => {
-        const lines = splitTextIntoLines(visio, 50); // Adjust the maxLength as needed
+        const lines = splitTextIntoLines(visio, 40); // Adjust the maxLength as needed
         return lines.map((tila, index) => {
             return lines.map((line, lineIndex) => (
                 <Text
                     key={`visio-${lineIndex}`}
-                    x={0.5 * rectWidth + ptXadjust}
-                    y={80  + lineIndex * 24} // Adjust the y position for each line
+                    x={textX2}
+                    y={textY1 + 24 + 24*lineIndex } // Adjust the y position for each line
                     text={line}
                     fontSize={fontSize}
                     fontFamily={fontFamily}
                     fill="black"
-                    width={800} // Set the maximum width for the text
+                    width={smallRectWidth} // Set the maximum width for the text
                     lineHeight={1.5} // Set the line height for spacing
                 />
             ));
         });
     };
 
+    const renderPerustehtavaText = () => {
+        const lines = splitTextIntoLines(perustehtava, 50); // Adjust the maxLength as needed
+        return lines.map((tila, index) => {
+            return lines.map((line, lineIndex) => (
+                <Text
+                    key={`perustehtava-${lineIndex}`}
+                    x={textX2}
+                    y={textY2 + 24 + 24*lineIndex } // Adjust the y position for each line
+                    text={line}
+                    fontSize={fontSize}
+                    fontFamily={fontFamily}
+                    fill="black"
+                    width={smallRectWidth} // Set the maximum width for the text
+                    lineHeight={1.5} // Set the line height for spacing
+                />
+            ));
+        });
+    }
+
     return (
         <div>
-            <h1>Tapas Johtamisavustin</h1>
-            <p>Welcome to the Home Page!</p>
             <Stage width={window.innerWidth} height={window.innerHeight}>
                 <Layer>
                     <Rect
-                        x={20}
-                        y={20}
+                        x={rectX}
+                        y={rectY}
                         width={rectWidth}
                         height={rectHeight}
                         cornerRadius={20}
@@ -118,92 +152,82 @@ const Home: React.FC = () => {
                         draggable
                     />
                     <Rect
-                        x={30} // Adjust the x position as needed
-                        y={30} // Adjust the y position as needed
-                        width={.5*rectWidth - 120} // Adjust the width as needed
-                        height={.5*rectHeight - 30} // Adjust the height as needed
+                        x={smallRectX1} // Adjust the x position as needed
+                        y={smallRectY1} // Adjust the y position as needed
+                        width={smallRectWidth} // Adjust the width as needed
+                        height={smallRectHeight} // Adjust the height as needed
                         cornerRadius={20}
                         fill="#ffffff"
                         draggable
                     />
                         <Rect
-                        x={780} // Adjust the x position as needed
-                        y={30} // Adjust the y position as needed
-                        width={.5*rectWidth - 120} // Adjust the width as needed
-                        height={.5*rectHeight - 30} // Adjust the height as needed
+                        x={smallRectX2} // Adjust the x position as needed
+                        y={smallRectY1} // Adjust the y position as needed
+                        width={smallRectWidth} // Adjust the width as needed
+                        height={smallRectHeight} // Adjust the height as needed
                         cornerRadius={20}
                         fill="#ffffff"
                         draggable
                     />
                     <Rect
-                        x={30} // Adjust the x position as needed
-                        y={330} // Adjust the y position as needed
-                        width={.5*rectWidth - 120} // Adjust the width as needed
-                        height={.5*rectHeight - 30} // Adjust the height as needed
+                        x={smallRectX1} // Adjust the x position as needed
+                        y={smallRectY2} // Adjust the y position as needed
+                        width={smallRectWidth} // Adjust the width as needed
+                        height={smallRectHeight} // Adjust the height as needed
                         cornerRadius={20}
                         fill="#ffffff"
                         draggable
                     />
                         <Rect
-                        x={780} // Adjust the x position as needed
-                        y={330} // Adjust the y position as needed
-                        width={.5*rectWidth - 120} // Adjust the width as needed
-                        height={.5*rectHeight - 30} // Adjust the height as needed
+                        x={smallRectX2} // Adjust the x position as needed
+                        y={smallRectY2} // Adjust the y position as needed
+                        width={smallRectWidth} // Adjust the width as needed
+                        height={smallRectHeight} // Adjust the height as needed
                         cornerRadius={20}
                         fill="#ffffff"
                         draggable
                     />
 
                     <Text
-                        x={40}
-                        y={40}
+                        x={textX1}
+                        y={textY1}
                         text="Arvot"
-                        fontSize={24}
+                        fontSize={textSize}
                         fontFamily={fontFamily}
                         fill="black"
                     />
                     {renderArvotText()}
                     <Text
-                        x={800}
-                        y={350}
-                        text="Perustehtävä"
-                        fontSize={24}
-                        fontFamily={fontFamily}
-                        fill="black"
-                    />
-                    <Text
-                        x={0.5 * rectWidth + ptXadjust} // Adjust the x position as needed
-                        y={0.5 * rectHeight + ptYadjust} // Adjust the y position as needed
-                        text={perustehtava}
-                        fontSize={fontSize}
-                        fontFamily={fontFamily}
-                        fill="black"
-                        align="left"
-                        verticalAlign="bottom"
-                        width={0.5 * rectWidth - 2 * padding} // Set the maximum width for the text
-                        lineHeight={1.5} // Set the line height for spacing
-                    />
-                        <Text
-                        x={40}
-                        y={350}
-                        text="Nykytila"
-                        fontSize={24}
-                        fontFamily={fontFamily}
-                        fill="black"
-                    />
-                    {renderNykytilaText()}
-                    <Text
-                        x={800}
-                        y={40}
+                        x={textX2}
+                        y={textY1}
                         text="Päämäärä"
-                        fontSize={24}
+                        fontSize={textSize}
                         fontFamily={fontFamily}
                         fill="black"
                     />
                     {renderVisioText()}
+                    <Text
+                        x={textX2}
+                        y={textY2}
+                        text="Perustehtävä"
+                        fontSize={textSize}
+                        fontFamily={fontFamily}
+                        fill="black"
+                    />
+                    {renderPerustehtavaText()}
+                        <Text
+                        x={textX1}
+                        y={textY2}
+                        text="Nykytila"
+                        fontSize={textSize}
+                        fontFamily={fontFamily}
+                        fill="black"
+                    />
+                    {renderNykytilaText()}
+
                 </Layer>
             </Stage>
-            <img src={paamaara} alt="Päämäärä" style={{ width: '50%', height: 'auto' }} className='header-logo'/>
+
         </div>
     );
 };
