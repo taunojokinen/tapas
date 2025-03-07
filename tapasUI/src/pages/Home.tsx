@@ -35,6 +35,7 @@ const splitTextIntoLines = (text: string, maxLength: number) => {
     lines.push(currentLine.trim());
     return lines;
 };
+import { Link } from "react-router-dom";
 
 const Home: React.FC = () => {
     // Define the dimensions for the main rectangle
@@ -140,6 +141,7 @@ const Home: React.FC = () => {
 
     return (
         <div>
+<<<<<<< HEAD
             <Stage width={window.innerWidth} height={window.innerHeight}>
                 <Layer>
                     <Rect
@@ -228,6 +230,12 @@ const Home: React.FC = () => {
                 </Layer>
             </Stage>
 
+=======
+            <h1>Tapas</h1>
+            <h3>Johtamisavustin</h3>
+            <p>Welcome to the Home Page!</p>
+            <Link to="/dashboard">Go to Dashboard</Link>
+>>>>>>> 91b0ce7465e8f71385eddc7cc4c44d27c8707d8d
         </div>
     );
 };
