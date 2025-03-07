@@ -15,6 +15,7 @@ const nykytila = [
     'kuitenkin',
     'tuotteemme on teknisesti vanhentunut ja kilpailijat ovat kehittäneet vastaavia tuotteita, jotka ovat teknisesti edistyksellisempiä'
 ];
+const visio = 'Olemme Suomen johtava ohjelmistokehityspalveluiden tarjoaja vuoteen 2030 mennessä';
 
 // Function to split text into lines based on a maximum character length
 const splitTextIntoLines = (text: string, maxLength: number) => {
@@ -82,6 +83,25 @@ const Home: React.FC = () => {
         });
     };
 
+    const renderVisioText = () => {
+        const lines = splitTextIntoLines(visio, 50); // Adjust the maxLength as needed
+        return lines.map((tila, index) => {
+            return lines.map((line, lineIndex) => (
+                <Text
+                    key={`visio-${lineIndex}`}
+                    x={0.5 * rectWidth + ptXadjust}
+                    y={80  + lineIndex * 24} // Adjust the y position for each line
+                    text={line}
+                    fontSize={fontSize}
+                    fontFamily={fontFamily}
+                    fill="black"
+                    width={800} // Set the maximum width for the text
+                    lineHeight={1.5} // Set the line height for spacing
+                />
+            ));
+        });
+    };
+
     return (
         <div>
             <h1>Tapas Johtamisavustin</h1>
@@ -97,6 +117,43 @@ const Home: React.FC = () => {
                         fill="#c1e2f7"
                         draggable
                     />
+                    <Rect
+                        x={30} // Adjust the x position as needed
+                        y={30} // Adjust the y position as needed
+                        width={.5*rectWidth - 120} // Adjust the width as needed
+                        height={.5*rectHeight - 30} // Adjust the height as needed
+                        cornerRadius={20}
+                        fill="#ffffff"
+                        draggable
+                    />
+                        <Rect
+                        x={780} // Adjust the x position as needed
+                        y={30} // Adjust the y position as needed
+                        width={.5*rectWidth - 120} // Adjust the width as needed
+                        height={.5*rectHeight - 30} // Adjust the height as needed
+                        cornerRadius={20}
+                        fill="#ffffff"
+                        draggable
+                    />
+                    <Rect
+                        x={30} // Adjust the x position as needed
+                        y={330} // Adjust the y position as needed
+                        width={.5*rectWidth - 120} // Adjust the width as needed
+                        height={.5*rectHeight - 30} // Adjust the height as needed
+                        cornerRadius={20}
+                        fill="#ffffff"
+                        draggable
+                    />
+                        <Rect
+                        x={780} // Adjust the x position as needed
+                        y={330} // Adjust the y position as needed
+                        width={.5*rectWidth - 120} // Adjust the width as needed
+                        height={.5*rectHeight - 30} // Adjust the height as needed
+                        cornerRadius={20}
+                        fill="#ffffff"
+                        draggable
+                    />
+
                     <Text
                         x={40}
                         y={40}
@@ -143,6 +200,7 @@ const Home: React.FC = () => {
                         fontFamily={fontFamily}
                         fill="black"
                     />
+                    {renderVisioText()}
                 </Layer>
             </Stage>
             <img src={paamaara} alt="Päämäärä" style={{ width: '50%', height: 'auto' }} className='header-logo'/>
