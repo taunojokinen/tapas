@@ -27,27 +27,33 @@ const App: React.FC = () => {
           .catch(err => console.error("Virhe:", err));
       }, []);
     
-    return (
+      return (
         <>
-        <div>
-             
-            <h1>Welcome to My React App</h1>
-            <img src={logo} alt="Logo" />
-            {/* Additional components and application logic can be added here */}
-        </div>
-            <Routes>
-                {/* Yleisille sivuille käytetään MainLayoutia */}
-                <Route element={<MainLayout />}>
-                    <Route path="/" element={<Home />} />
-                </Route>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+                <Header/>
+            <div style={{ display: 'flex', flex: 1 }}>
+                <Navi/>
+            <div style={{ marginLeft: '2em', padding: '20em', width: '100%' }}>
+                <Routes>
+                    <Route element={<MainLayout />}>
+                    {<Route path="/" element={<Kirjautuminen />} />}
+                    {<Route path="/etusivu" element={<Home />} />}
+                    </Route>
+                    {<Route path="/tavoitteet" element={<Tavoitteet />} />}
+                    {<Route path="/tilannekuva" element={<Tilannekuva />} />}
+                    {<Route path="/ideat" element={<Ideat />} />}
+                    {<Route path="/aktiviteetit" element={<Aktiviteetit />} />}
+                    {<Route path="/asetukset" element={<Asetukset />} />}
 
-                {/* Dashboardille EI käytetä layoutia, jotta se näkyy yksin */}
-                <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
-        
-         
-       </>
+                    {/* Dashboardille EI käytetä layoutia, jotta se näkyy yksin */}
+                    <Route path="/dashboard" element={<Dashboard />} />
+                </Routes>
+                </div>
+            </div>
+            </div>
+        </>
     );
 };
+
 
 export default App;

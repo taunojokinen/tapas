@@ -1,14 +1,12 @@
 import React from 'react';
-import paamaara from '../pictures/paamaara.png';
 import { Stage, Layer, Rect, Text } from 'react-konva';
-import { Link } from "react-router-dom";
 
 // Define a JSON object with four text parameters
 const arvot = [
-    'Innovaatio – Teknologian jatkuva kehittäminen ja uusien ratkaisujen luominen',
+    'Innovaatio – Teknologian jatkuva kehittäminen ja uusien ratkaisujen luominen.',
     'Laatu ja luotettavuus – Korkealaatuisten, turvallisten ja skaalautuvien ohjelmistojen toimittaminen',
-    'Asiakaslähtöisyys – Asiakkaan tarpeiden ymmärtäminen ja niihin vastaaminen',
-    'Vastuullisuus – Ympäristövastuu, eettisyys ja yhteiskuntavastuu'
+    'Asiakaslähtöisyys – Käyttäjien tarpeiden ja palautteen asettaminen kehityksen keskiöön',
+    'Yhteistyö ja rehellisyys – Avoimuuden, tiimityön ja eettisen kehityksen vaaliminen'
 ];
 const perustehtava = 'Tarjoamme asiakkaillemme korkealaatuisia ohjelmistokehityspalveluita, jotka auttavat heitä saavuttamaan liiketoiminnalliset tavoitteensa tehokkaasti ja laadukkaasti.';
 const nykytila = [
@@ -16,7 +14,7 @@ const nykytila = [
     'kuitenkin',
     'tuotteemme on teknisesti vanhentunut ja kilpailijat ovat kehittäneet vastaavia tuotteita, jotka ovat teknisesti edistyksellisempiä'
 ];
-const visio = 'Olemme Suomen johtava ohjelmistokehityspalveluiden tarjoaja vuoteen 2030 mennessä';
+const visio = 'Olemme Suomen johtava ohjelmistokehityspalveluiden tarjoaja vuoten 2030 mennessä';
 
 // Function to split text into lines based on a maximum character length
 const splitTextIntoLines = (text: string, maxLength: number) => {
@@ -26,17 +24,16 @@ const splitTextIntoLines = (text: string, maxLength: number) => {
 
     words.forEach(word => {
         if ((currentLine + word).length > maxLength) {
-            lines.push(currentLine);
+            lines.push(currentLine.trim()); // Trim the current line before pushing
             currentLine = word + ' ';
         } else {
             currentLine += word + ' ';
         }
     });
 
-    lines.push(currentLine.trim());
+    lines.push(currentLine.trim()); // Trim the last line before pushing
     return lines;
 };
-
 
 const Home: React.FC = () => {
     // Define the dimensions for the main rectangle
@@ -47,7 +44,7 @@ const Home: React.FC = () => {
 
     // Define the parameters for the small rects
     const smallRectWidth = .3*rectWidth;
-    const smallRectHeight = .3*rectHeight;
+    const smallRectHeight = .35*rectHeight;
     const smallRectX1 = rectX + 10
     const smallRectY1 = rectY + 10
     const smallRectX2 = rectWidth - 20 - smallRectWidth
@@ -62,48 +59,57 @@ const Home: React.FC = () => {
 
     // Define the parameters for the text
     const fontFamily = "Calibri";
-    const fontSize = 20;
+    const fontSize = 16;
+    const rivinvali = 1.5;
+    const spaceLimit= 2*smallRectWidth/fontSize
+
 
     const renderArvotText = () => {
+        let cumulativeHeight = 24;
         return arvot.map((arvo, index) => {
-            const lines = splitTextIntoLines(arvo, 70); // Adjust the maxLength as needed
-            return lines.map((line, lineIndex) => (
+            const lines = splitTextIntoLines(arvo, spaceLimit); // Adjust the maxLength as needed
+            const textElements = lines.map((line, lineIndex) => (
                 <Text
                     key={`${index}-${lineIndex}`}
                     x={textX1}
-                    y={textY1 + 24 + index * 60 + lineIndex * 24} // Adjust the y position for each line
+                    y={textY1 + cumulativeHeight + lineIndex * 24} // Adjust the y position for each line
                     text={line}
                     fontSize={fontSize}
                     fontFamily={fontFamily}
                     fill="black"
-                    width={smallRectWidth} // Set the maximum width for the text
-                    lineHeight={1.5} // Set the line height for spacing
+                    width={2 * smallRectWidth} // Set the maximum width for the text
+                    lineHeight={rivinvali} // Set the line height for spacing
                 />
             ));
+            cumulativeHeight += lines.length * rivinvali*fontSize; // Update cumulative height
+            return textElements;
         });
     };
 
     const renderNykytilaText = () => {
-        return nykytila.map((tila, index) => {
-            const lines = splitTextIntoLines(tila, 70); // Adjust the maxLength as needed
-            return lines.map((line, lineIndex) => (
+        let cumulativeHeight = 24;
+        return nykytila.map((arvo, index) => {
+            const lines = splitTextIntoLines(arvo, spaceLimit); // Adjust the maxLength as needed
+            const textElements = lines.map((line, lineIndex) => (
                 <Text
                     key={`${index}-${lineIndex}`}
                     x={textX1}
-                    y={textY2 + 24 + index * 50 + lineIndex * 24} // Adjust the y position for each line
+                    y={textY2 + cumulativeHeight + lineIndex * 24} // Adjust the y position for each line
                     text={line}
                     fontSize={fontSize}
                     fontFamily={fontFamily}
                     fill="black"
-                    width={smallRectWidth} // Set the maximum width for the text
-                    lineHeight={1.5} // Set the line height for spacing
+                    width={2 * smallRectWidth} // Set the maximum width for the text
+                    lineHeight={rivinvali} // Set the line height for spacing
                 />
             ));
+            cumulativeHeight += lines.length * rivinvali*fontSize; // Update cumulative height
+            return textElements;
         });
     };
 
     const renderVisioText = () => {
-        const lines = splitTextIntoLines(visio, 40); // Adjust the maxLength as needed
+        const lines = splitTextIntoLines(visio, spaceLimit); // Adjust the maxLength as needed
         return lines.map((tila, index) => {
             return lines.map((line, lineIndex) => (
                 <Text
@@ -115,14 +121,14 @@ const Home: React.FC = () => {
                     fontFamily={fontFamily}
                     fill="black"
                     width={smallRectWidth} // Set the maximum width for the text
-                    lineHeight={1.5} // Set the line height for spacing
+                    lineHeight={rivinvali} // Set the line height for spacing
                 />
             ));
         });
     };
 
     const renderPerustehtavaText = () => {
-        const lines = splitTextIntoLines(perustehtava, 50); // Adjust the maxLength as needed
+        const lines = splitTextIntoLines(perustehtava, spaceLimit); // Adjust the maxLength as needed
         return lines.map((tila, index) => {
             return lines.map((line, lineIndex) => (
                 <Text
@@ -134,7 +140,7 @@ const Home: React.FC = () => {
                     fontFamily={fontFamily}
                     fill="black"
                     width={smallRectWidth} // Set the maximum width for the text
-                    lineHeight={1.5} // Set the line height for spacing
+                    lineHeight={rivinvali} // Set the line height for spacing
                 />
             ));
         });
@@ -230,10 +236,6 @@ const Home: React.FC = () => {
                 </Layer>
             </Stage>
 
-            <h1>Tapas</h1>
-            <h3>Johtamisavustin</h3>
-            <p>Welcome to the Home Page!</p>
-            <Link to="/dashboard">Go to Dashboard</Link>
         </div>
     );
 };
