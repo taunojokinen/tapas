@@ -14,7 +14,6 @@ import axios from 'axios';
 import logo from '../pictures/logo.png';
 
 import UserForm from '../pages/UserForm';
-import Dashboard from '../pages/Dashboard';
 import MainLayout from '../layouts/MainLayout';
 
 
@@ -45,8 +44,6 @@ const App: React.FC = () => {
                     {<Route path="/aktiviteetit" element={<Aktiviteetit />} />}
                     {<Route path="/asetukset" element={<Asetukset />} />}
 
-                    {/* Dashboardille EI käytetä layoutia, jotta se näkyy yksin */}
-                    <Route path="/dashboard" element={<Dashboard />} />
                 </Routes>
                 </div>
             </div>

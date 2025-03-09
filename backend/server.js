@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require("body-parser");
 const authRoutes = require("./routes/auth");  // Tuo kirjautumisreitit
+const User = require("./models/User");
 const userRoutes = require("./routes/users");  // Tuo käyttäjäreitit
 const usersRoutes = require("./routes/users"); // Tuodaan käyttäjäreitit
 
@@ -37,4 +38,25 @@ app.use("/api/auth", authRoutes);  // Kirjautumiseen liittyvät reitit
 app.use("/api/users", userRoutes);  // Käyttäjien hallinta
 
 app.use("/users", usersRoutes); // Käyttäjäreitit käyttöön
+
+app.post("/api/auth/register", (req, res) => {
+  console.log("Vastaanotettu data:", req.body);
+});
+
+app.delete("/api/users/:id", async (req, res) => {
+  //console.log("Poistopyyntö vastaanotettu ID:", req.params.id); // ✅ Tarkista, mikä ID tulee frontendistä
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) {
+      console.log("Käyttäjää ei löydy ID:llä:", req.params.id);
+      return res.status(404).json({ message: "Käyttäjää ei löytynyt" });
+    }
+    res.json({ message: "Käyttäjä poistettu onnistuneesti" });
+  } catch (error) {
+    console.error("Virhe käyttäjän poistossa:", error);
+    res.status(500).json({ message: "Virhe käyttäjän poistossa", error: error.message });
+  }
+});
+
 

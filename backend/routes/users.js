@@ -5,9 +5,9 @@ const router = express.Router();
 
 // Luo uusi käyttäjä (POST)
 router.post("/users", checkRole("admin"), async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, manager } = req.body;
   
-  const newUser = new User({ name, email, password, role });
+  const newUser = new User({ name, email, password, role, manager });
   await newUser.save();
   res.status(201).json(newUser);
 });

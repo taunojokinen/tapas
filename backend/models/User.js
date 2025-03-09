@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
     enum: ['admin', 'manager', 'user'],  // 🔹 Roolit: admin, manager, user
     default: 'user',
   },
+  manager:  { type: String },
 });
 
 const User = mongoose.model("User", UserSchema);

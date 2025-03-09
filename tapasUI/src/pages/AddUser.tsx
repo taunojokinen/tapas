@@ -7,6 +7,7 @@ const AddUser = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
+  const [manager, setManager] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,7 +19,9 @@ const AddUser = () => {
         email,
         password,
         role,
+        manager
       });
+      console.log("Lähetettävä data:", { name, email, password, role, manager });
 
       setMessage(response.data.message);
       // Voit myös tyhjentää lomakkeen kentät onnistuneen lisäyksen jälkeen
@@ -26,6 +29,7 @@ const AddUser = () => {
       setEmail("");
       setPassword("");
       setRole("user");
+      setManager("");
     } catch (error: unknown) {
         // Tyyppimuutos axios-virheeksi
         if (axios.isAxiosError(error)) {
@@ -75,6 +79,15 @@ const AddUser = () => {
             <option value="manager">Manager</option>
             <option value="admin">Admin</option>
           </select>
+        </div>
+        <div>
+          <label>Manager:</label>
+          <input
+            type="text"
+            value={manager}
+            onChange={(e) => setManager(e.target.value)}
+            
+          />
         </div>
         <button type="submit">Add User</button>
       </form>
