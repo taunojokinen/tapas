@@ -6,10 +6,10 @@ const router = express.Router();
 // Rekisteröinti reitti
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, manager } = req.body;
 
     // Tarkista, että kaikki kentät on täytetty
-    if (!name || !email || !password || !role) {
+    if (!name || !email || !password || !role || !manager) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -28,6 +28,7 @@ router.post("/register", async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      manager
     });
 
     await user.save(); // Tallenna käyttäjä tietokantaan
