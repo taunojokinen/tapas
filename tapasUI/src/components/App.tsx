@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Kirjautuminen from '../pages/Kirjautuminen';
 import Home from '../pages/Home';
+import Arvot from '../pages/Arvot';
 import Tavoitteet from '../pages/Tavoitteet';
 import Tilannekuva from '../pages/Tilannekuva';
 import Ideat from '../pages/Ideat';
@@ -16,6 +17,7 @@ import logo from '../pictures/logo.png';
 import UserForm from '../pages/UserForm';
 import Dashboard from '../pages/Dashboard';
 import MainLayout from '../layouts/MainLayout';
+
 
 
 const App: React.FC = () => {
@@ -38,6 +40,7 @@ const App: React.FC = () => {
                     <Route element={<MainLayout />}>
                     {<Route path="/" element={<Kirjautuminen />} />}
                     {<Route path="/etusivu" element={<Home />} />}
+                    {<Route path="/arvot" element={<Arvot />} />}
                     </Route>
                     {<Route path="/tavoitteet" element={<Tavoitteet />} />}
                     {<Route path="/tilannekuva" element={<Tilannekuva />} />}

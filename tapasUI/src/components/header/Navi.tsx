@@ -25,6 +25,7 @@ const Navi = () => {
           <ul className="navi">
             <li><Link to="/">Kirjaudu</Link></li>
             <li><Link to="/etusivu">Etusivu</Link></li>
+            <li><Link to="/arvot">Arvot</Link></li>
             <li><Link to="/tavoitteet">Tavoitteet</Link></li>
             <li><Link to="/tilannekuva">Tilannekuva</Link></li>
             <li><Link to="/ideat">Ideat</Link></li>
