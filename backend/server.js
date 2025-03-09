@@ -59,4 +59,35 @@ app.delete("/api/users/:id", async (req, res) => {
   }
 });
 
+// Luo MongoDB-malli Yrityksen Arvoille
+const ArvoSchema = new mongoose.Schema(
+  {
+    yritys: String,
+    arvot: [{ nimi: String, kuvaus: String, tärkeys: Number }],
+  },
+  { timestamps: true } // Lisää aikaleimat (luonti & päivitys)
+);
+
+const ArvoModel = mongoose.model("Arvo", ArvoSchema);
+
+// POST-reitti Yrityksen Arvojen tallentamiseen
+app.post("/api/arvot", async (req, res) => {
+  try {
+    const uusiArvo = new ArvoModel(req.body);
+    await uusiArvo.save();
+    res.status(201).json({ message: "Yrityksen arvot tallennettu onnistuneesti", data: uusiArvo });
+  } catch (error) {
+    res.status(500).json({ message: "Virhe tallennuksessa", error: error.message });
+  }
+});
+// GET-reitti: Hae kaikki yrityksen arvot
+app.get("/api/arvot", async (req, res) => {
+  try {
+    const arvot = await ArvoModel.find(); // Hakee kaikki dokumentit
+    res.json(arvot);
+  } catch (error) {
+    res.status(500).json({ message: "Virhe tietojen haussa", error: error.message });
+  }
+});
+
 
