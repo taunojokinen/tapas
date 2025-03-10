@@ -58,6 +58,15 @@ app.delete("/api/users/:id", async (req, res) => {
     res.status(500).json({ message: "Virhe käyttäjän poistossa", error: error.message });
   }
 });
+app.delete("/api/arvot/:id", async (req, res) => {
+  try {
+    await ArvoModel.findByIdAndDelete(req.params.id);
+    res.json({ message: "Arvot poistettu onnistuneesti" });
+  } catch (error) {
+    res.status(500).json({ message: "Virhe poistamisessa", error: error.message });
+  }
+});
+
 
 // Luo MongoDB-malli Yrityksen Arvoille
 const ArvoSchema = new mongoose.Schema(
