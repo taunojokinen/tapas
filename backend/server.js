@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth");  // Tuo kirjautumisreitit
 const User = require("./models/User");
 const userRoutes = require("./routes/users");  // Tuo käyttäjäreitit
 const usersRoutes = require("./routes/users"); // Tuodaan käyttäjäreitit
+const prosConsRoutes = require("./routes/prosCons");
 
 const app = express();
 app.use(cors());
@@ -99,4 +100,4 @@ app.get("/api/arvot", async (req, res) => {
   }
 });
 
-
+app.use("/api/proscons", prosConsRoutes);
