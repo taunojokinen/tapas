@@ -34,9 +34,6 @@ const textY1 = smallRectY1 + padding;
 const fontFamily = "Calibri";
 const fontSize = window.innerWidth / 80;
 const rivinvali = .9* fontSize;
-const spaceLimit= 2*smallRectWidth/fontSize
-
-
 
 const Arvot: React.FC = () => {
   const [kaikkiArvot, setKaikkiArvot] = useState<YritysArvot[]>([]); // Kaikki arvot tietokannasta
@@ -140,30 +137,15 @@ const Arvot: React.FC = () => {
                 </Layer>
             </Stage>
 
-   
         {message && <p>{message}</p>}
       </div>
       <div>
-        <h2>Yrityksen Arvot</h2>
         {loading ? (
           <p>Ladataan...</p>
         ) : error ? (
           <p>{error}</p>
         ) : (
-          <ul>
-            {kaikkiArvot.map((yritys: YritysArvot) => (
-              <li key={yritys._id}>
-                {/* <strong>{yritys.yritys}</strong> */}
-                <ul>
-                  {yritys.arvot.map((arvo: Arvo, index: number) => (
-                    <li key={index}>
-                      {arvo.nimi}: {arvo.kuvaus} 
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
+          <p>Data loaded successfully!</p>
         )}
       </div>
     </>
