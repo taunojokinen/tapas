@@ -1,5 +1,6 @@
 import React from 'react';
 import { Stage, Layer, Rect, Text } from 'react-konva';
+import CurrentStateSummary from '../components/currentState/CurrentStateSummary';
 
 // Define a JSON object with four text parameters
 const arvot = [
@@ -147,6 +148,7 @@ const Home: React.FC = () => {
     }
 
     return (
+        <>
         <div>
             <Stage width={window.innerWidth} height={window.innerHeight}>
                 <Layer>
@@ -235,8 +237,12 @@ const Home: React.FC = () => {
 
                 </Layer>
             </Stage>
-
+        
         </div>
+        <div>
+            <CurrentStateSummary />
+        </div>
+        </>
     );
 };
 

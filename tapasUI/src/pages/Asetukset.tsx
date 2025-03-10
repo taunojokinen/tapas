@@ -3,6 +3,7 @@ import React from 'react';
 
 import ArvojenAsetus from './asetukset/ArvojenAsetus';
 import KayttajienAsetus from './asetukset/KayttajienAsetus';
+import CurrentState from '../components/currentState/CurrentState';
 
 const Asetukset: React.FC = () => {
 
@@ -13,6 +14,7 @@ const Asetukset: React.FC = () => {
     </div>
         <KayttajienAsetus />
         <ArvojenAsetus />
+        <CurrentState />
     </>
     )
  
