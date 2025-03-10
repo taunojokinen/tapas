@@ -33,7 +33,7 @@ const textY1 = smallRectY1 + padding;
     // Define the parameters for the text
 const fontFamily = "Calibri";
 const fontSize = window.innerWidth / 80;
-const rivinvali = .9* fontSize;
+const rivinvali = 1.3 * fontSize;
 
 const Arvot: React.FC = () => {
   const [kaikkiArvot, setKaikkiArvot] = useState<YritysArvot[]>([]); // Kaikki arvot tietokannasta
@@ -43,7 +43,9 @@ const Arvot: React.FC = () => {
 
   const renderArvotText = (): React.ReactElement[] => {
     const texts: React.ReactElement[] = [];
-    let yOffset = textY1+2.5*rivinvali;
+    const maxRowLength = smallRectWidth - 2 * padding; // Set the maximum row length based on the width
+    const charsPerLine = Math.floor(maxRowLength / (fontSize * 0.35)); // Estimate characters per line based on font size
+    let yOffset = textY1 + 2.5 * rivinvali;
   
     kaikkiArvot.forEach((yritys: YritysArvot) => {
       yritys.arvot.forEach((arvo: Arvo, index: number) => {
@@ -57,22 +59,26 @@ const Arvot: React.FC = () => {
             fontFamily={fontFamily}
             fill="black"
             fontStyle="bold"
+            
           />
         );
-        yOffset += fontSize + rivinvali;
+        yOffset += rivinvali;
   
         texts.push(
           <Text
             key={`${yritys._id}-${index}-kuvaus`}
             x={textX1}
             y={yOffset}
+            width={smallRectWidth - 2 * padding}
             text={arvo.kuvaus}
             fontSize={fontSize}
             fontFamily={fontFamily}
             fill="black"
           />
         );
-        yOffset += fontSize + rivinvali;
+      // Calculate the number of lines required for arvo.kuvaus
+      const lines = Math.ceil(arvo.kuvaus.length / charsPerLine);
+      yOffset += lines * (rivinvali);
       });
     });
   
