@@ -43,7 +43,7 @@ const Home: React.FC = () => {
     const rectY = 10;
 
     // Define the parameters for the small rects
-    const smallRectWidth = .3*rectWidth;
+    const smallRectWidth = .9*rectWidth;
     const smallRectHeight = .35*rectHeight;
     const smallRectX1 = rectX + 10
     const smallRectY1 = rectY + 10
