@@ -1,5 +1,5 @@
 import React from 'react';
-import tilannekuva from '../pictures/tilannekuva.png';
+import tilannekuva from '../pictures/paamaara.png';
 
 const Tilannekuva: React.FC = () => {
     return (

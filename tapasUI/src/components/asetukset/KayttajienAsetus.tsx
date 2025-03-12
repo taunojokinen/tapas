@@ -1,8 +1,9 @@
-import asetukset from '../pictures/asetukset.png';
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import AddUser from '../AddUser';
+import AddUser from './AddUser';
+import UserList from './UserList';
 
 const jwt_decode = require('jwt-decode');
 
@@ -48,30 +49,25 @@ const KayttajienAsetus: React.FC = () => {
 
     console.log("Users: ", users);
 
-  return (
-    <>
-    <p>{message}</p>
-         {/* <UserForm /> */}
+    return (
+      <div className="container mx-auto p-4">
+        <p className="text-red-500">{message}</p>
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <h1 className="text-2xl font-bold mb-4">User Management</h1>
+          <AddUser />
+        </div>
+        
+        <h3 className="text-xl font-semibold mt-6 mb-4">Käyttäjät tietokannassa:</h3>
+        <ul className="space-y-4">
+          <UserList users={users} handleDelete={handleDelete} />
 
-         <div>
-         <h1>User Management</h1>
-         <AddUser />
-         {/* <RegisterForm /> */}
-
-       </div>
-       <h3>Käyttäjät tietokannassa:</h3>
-      <ul>
-        {users.map((user) => (
-          <li key={user._id}>
-            {user.name} - {user.email} -{user.role} - {user.manager}
-            <button onClick={() => handleDelete(user._id)}>Poista</button>
-          </li>
-        ))}
-      </ul>
-    </>
-    )
+        </ul>
+      </div>
+    );
+  };
+  
  
-};
+
 
 export default KayttajienAsetus;
 

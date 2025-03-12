@@ -104,9 +104,9 @@ const removePro = async (index: number) => {
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto bg-white shadow-md rounded-xl">
+    <div className="p-6 w-full bg-white shadow-md rounded-xl">
       <h2 className="text-2xl font-bold text-center mb-4">Nykytila</h2>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* PROS */}
         <div className="p-4 border rounded-lg shadow-sm bg-green-50">
           <h3 className="text-xl font-semibold mb-2">Pros</h3>
@@ -144,7 +144,7 @@ const removePro = async (index: number) => {
             </button>
           </div>
         </div>
-
+  
         {/* CONS */}
         <div className="p-4 border rounded-lg shadow-sm bg-red-50">
           <h3 className="text-xl font-semibold mb-2">Cons</h3>
@@ -185,6 +185,6 @@ const removePro = async (index: number) => {
       </div>
     </div>
   );
-};
+}
 
 export default CurrentState;

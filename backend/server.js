@@ -101,3 +101,6 @@ app.get("/api/arvot", async (req, res) => {
 });
 
 app.use("/api/proscons", prosConsRoutes);
+
+const strategiatRoutes = require("./routes/strategiat");
+app.use("/api/strategiat", strategiatRoutes);

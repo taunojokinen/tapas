@@ -42,59 +42,77 @@ const AddUser = () => {
   };
 
   return (
-    <div>
-      <h2>Add New User</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
+    <div className="max-w-full mx-auto bg-white shadow-lg rounded-lg p-6 mt-6">
+      <h2 className="text-xl font-bold mb-4">Add New User</h2>
+      <form onSubmit={handleSubmit} className="flex flex-wrap gap-4">
+        {/* Kenttien sijoittelu koko leveydelle */}
+        <div className="w-full md:w-1/5">
+          <label className="block font-medium">Name:</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            className="w-full p-2 border rounded-lg"
           />
         </div>
-        <div>
-          <label>Email:</label>
+  
+        <div className="w-full md:w-1/5">
+          <label className="block font-medium">Email:</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="w-full p-2 border rounded-lg"
           />
         </div>
-        <div>
-          <label>Password:</label>
+  
+        <div className="w-full md:w-1/5">
+          <label className="block font-medium">Password:</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="w-full p-2 border rounded-lg"
           />
         </div>
-        <div>
-          <label>Role:</label>
-          <select value={role} onChange={(e) => setRole(e.target.value)} required>
+  
+        <div className="w-full md:w-1/5">
+          <label className="block font-medium">Role:</label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            required
+            className="w-full p-2 border rounded-lg"
+          >
             <option value="user">User</option>
             <option value="manager">Manager</option>
             <option value="admin">Admin</option>
           </select>
         </div>
-        <div>
-          <label>Manager:</label>
+  
+        <div className="w-full md:w-1/5">
+          <label className="block font-medium">Manager:</label>
           <input
             type="text"
             value={manager}
             onChange={(e) => setManager(e.target.value)}
-            
+            className="w-full p-2 border rounded-lg"
           />
         </div>
-        <button type="submit">Add User</button>
+  
+        <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg">
+          Add User
+        </button>
       </form>
+      {message && <p className="mt-4 text-center text-red-500">{message}</p>}
+  </div>
+);
+  
+  
+}
 
-      {message && <p>{message}</p>} {/* Näyttää ilmoituksen onnistuneesta tai epäonnistuneesta lisäyksestä */}
-    </div>
-  );
-};
 
 export default AddUser;

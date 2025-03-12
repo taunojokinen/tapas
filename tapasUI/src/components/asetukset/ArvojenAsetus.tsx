@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import YritysArvotLista from './YritysArvotLista';
 
 interface Arvo {
   nimi: string;
@@ -14,19 +15,16 @@ interface YritysArvot {
 }
 
 const ArvojenAsetus: React.FC = () => {
-  const [yritys, setYritys] = useState<string>(""); // Yrityksen nimi
-  const [arvot, setArvot] = useState<Arvo[]>([]); // Yrityksen arvot (taulukko)
-  const [kaikkiArvot, setKaikkiArvot] = useState<YritysArvot[]>([]); // Kaikki arvot tietokannasta
+  const [yritys, setYritys] = useState<string>("");
+  const [arvot, setArvot] = useState<Arvo[]>([]);
+  const [kaikkiArvot, setKaikkiArvot] = useState<YritysArvot[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
-  /** 🔄 Haetaan yrityksen arvot tietokannasta */
   const fetchArvot = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/arvot");
-
-      // Varmistetaan, että data on taulukko
       const data = Array.isArray(response.data) ? response.data : [];
       setKaikkiArvot(data);
       setLoading(false);
@@ -37,24 +35,19 @@ const ArvojenAsetus: React.FC = () => {
     }
   };
 
-  /** ⏳ Haetaan arvot **vain kerran** kun komponentti renderöityy */
   useEffect(() => {
     fetchArvot();
   }, []);
 
-  /** 📌 Lomakkeen käsittely */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       const jsonData = { yritys, arvot };
       const response = await axios.post("http://localhost:5000/api/arvot", jsonData);
-
       setMessage(response.data.message);
       setYritys("");
-      setArvot([]); // Nollataan lomake
-
-      await fetchArvot(); // Päivitetään UI uusilla tiedoilla
+      setArvot([]);
+      await fetchArvot();
     } catch (error) {
       setMessage("Virhe datan lähettämisessä.");
       console.error("Virhe:", error);
@@ -70,25 +63,38 @@ const ArvojenAsetus: React.FC = () => {
     }
   };
 
+  const handleDeleteSingleArvo = async (yritysId: string, arvoIndex: number) => {
+    try {
+      const yritys = kaikkiArvot.find(y => y._id === yritysId);
+      if (!yritys) return;
+
+      const updatedArvot = yritys.arvot.filter((_, index) => index !== arvoIndex);
+      await axios.put(`http://localhost:5000/api/arvot/${yritysId}`, { arvot: updatedArvot });
+      fetchArvot();
+    } catch (error) {
+      console.error("Virhe yksittäisen arvon poistamisessa:", error);
+    }
+  };
 
   return (
     <>
-      <div>
-        <h2>Lisää Yrityksen Arvot</h2>
-        <form onSubmit={handleSubmit}>
+      <div className="p-6 bg-white shadow-md rounded-lg">
+        <h2 className="text-xl font-bold mb-4">Lisää Yrityksen Arvot</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label>Yrityksen nimi:</label>
+            <label className="block text-sm font-medium">Yrityksen nimi:</label>
             <input
               type="text"
               value={yritys}
               onChange={(e) => setYritys(e.target.value)}
               required
+              className="w-full p-2 border rounded-lg"
             />
           </div>
           <div>
-            <label>Yrityksen arvot:</label>
+            <label className="block text-sm font-medium">Yrityksen arvot:</label>
             {arvot.map((arvo, index) => (
-              <div key={index}>
+              <div key={index} className="flex space-x-2">
                 <input
                   type="text"
                   placeholder="Nimi"
@@ -99,6 +105,7 @@ const ArvojenAsetus: React.FC = () => {
                     setArvot(newArvot);
                   }}
                   required
+                  className="p-2 border rounded-lg"
                 />
                 <input
                   type="text"
@@ -110,6 +117,7 @@ const ArvojenAsetus: React.FC = () => {
                     setArvot(newArvot);
                   }}
                   required
+                  className="p-2 border rounded-lg"
                 />
                 <input
                   type="number"
@@ -121,59 +129,21 @@ const ArvojenAsetus: React.FC = () => {
                     setArvot(newArvot);
                   }}
                   required
+                  className="p-2 border rounded-lg"
                 />
-                <button
-                  type="button"
-                  onClick={() => {
-                    const newArvot = arvot.filter((_, i) => i !== index);
-                    setArvot(newArvot);
-                  }}
-                >
-                  Poista
-                </button>
+                <button type="button" onClick={() => setArvot(arvot.filter((_, i) => i !== index))} className="bg-red-500 text-white px-2 py-1 rounded">Poista</button>
               </div>
             ))}
-            <button
-              type="button"
-              onClick={() =>
-                setArvot([...arvot, { nimi: "", kuvaus: "", tärkeys: 1 }])
-              }
-            >
-              Lisää arvo
-            </button>
+            <button type="button" onClick={() => setArvot([...arvot, { nimi: "", kuvaus: "", tärkeys: 1 }])} className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Lisää arvo</button>
           </div>
-          <br />
-          <button type="submit">Lähetä</button>
+          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">Lähetä</button>
         </form>
-        {message && <p>{message}</p>}
+        {message && <p className="mt-4 text-red-500">{message}</p>}
       </div>
-      <div>
-        <h2>Yrityksen Arvot</h2>
-        {loading ? (
-          <p>Ladataan...</p>
-        ) : error ? (
-          <p>{error}</p>
-        ) : (
-          <ul>
-            {kaikkiArvot.map((yritys: YritysArvot) => (
-              <li key={yritys._id}>
-                <strong>{yritys.yritys}</strong>
-                <ul>
-                  {yritys.arvot.map((arvo: Arvo, index: number) => (
-                    <li key={index}>
-                      {arvo.nimi}: {arvo.kuvaus} (Tärkeys: {arvo.tärkeys})
-                    </li>
-                  ))}
-                </ul>
-                <button onClick={() => handleDelete(yritys._id)}>Poista arvot</button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <YritysArvotLista kaikkiArvot={kaikkiArvot} handleDelete={handleDelete} handleDeleteSingleArvo={handleDeleteSingleArvo} loading={loading} error={error} />
+
     </>
   );
-
 };
 
 export default ArvojenAsetus;

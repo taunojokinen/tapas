@@ -25,7 +25,7 @@ const Summary: React.FC = () => {
   }, []);
 
   return (
-    <div className="p-6 max-w-xl mx-auto bg-gray-100 shadow-md rounded-xl">
+    <div className="p-6 max-w-8xl mx-auto bg-gray-100 shadow-md rounded-xl">
       <h2 className="text-2xl font-bold text-center mb-4">Nykytila</h2>
       <div className="grid grid-cols-2 gap-4">
         {/* PROS */}
