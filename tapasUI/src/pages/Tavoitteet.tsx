@@ -1,166 +1,216 @@
-import React, { useState, useEffect } from "react";
+import React, {  useEffect, useState } from "react";
+import useFetch from "../hooks/useFetch";
+import SelectionList from "../components/tavoitteet/SelectionList";
+import Table from "../components/tavoitteet/Table";
 import axios from "axios";
-import hoshin from '../pictures/hoshin.png';
 
-interface Strategia {
+interface Selection {
   _id: string;
-  nimi: string;
-  mittari: string;
-  seuranta: string;
-  selected: boolean;
+  name: string;
+  createdAt: string;
+  // Lisää muita kenttiä, jos niitä on
 }
 
 const Tavoitteet: React.FC = () => {
-  const [vaiheet, setVaiheet] = useState([{ id: 1, vaihe1: "", vaihe2: "", vaihe3: "" }]);
-  const [strategiat, setStrategiat] = useState<Strategia[]>([]);
-  const [error, setError] = useState<string>("");
-  const [paamaara, setPaamaara] = useState<string[]>([]);
+  const [selections, setSelections] = useState<Selection[]>([]); // Käytetään Selection-tyyppiä
+  const [selectionName, setSelectionName] = useState<string>("");
+
+  const { data: strategiat, setData: setStrategiat } = useFetch("strategiat");
+  const { data: teams, setData: setTeams } = useFetch("teams");
+  const { data: projects, setData: setProjects } = useFetch("projects");
+
+  const [rows, setRows] = useState([
+    {
+      id: 1,
+      miksi: "Päämäärä",
+      paamaera: "Määrittele päämäärä",
+      mita: "Mitä saavutetaan",
+      tavoite: "Tavoite",
+      miten: "Tehtävä",
+      tehtava: "",
+      mittari: "",
+      seuranta: "",
+      toimenpiteet: "",
+    },
+    {
+      id: 2,
+      miksi: "Mitä",
+      paamaera: "",
+      mita: "Määrittele mitä tehdään",
+      tavoite: "Tavoite",
+      miten: "Tehtävä",
+      tehtava: "",
+      mittari: "",
+      seuranta: "",
+      toimenpiteet: "",
+    },
+    {
+      id: 3,
+      miksi: "Tavoite",
+      paamaera: "",
+      mita: "",
+      tavoite: "Määrittele tavoite",
+      miten: "Tehtävä",
+      tehtava: "",
+      mittari: "",
+      seuranta: "",
+      toimenpiteet: "",
+    },
+  ]);
+
   const addRow = () => {
-    setVaiheet([...vaiheet, { id: vaiheet.length + 1, vaihe1: "", vaihe2: "", vaihe3: "" }]);
+    setRows([
+      ...rows,
+      {
+        id: Date.now(),
+        miksi: "Miten",
+        paamaera: "",
+        mita: "",
+        tavoite: "",
+        miten: "Tehtävä",
+        tehtava: "",
+        mittari: "",
+        seuranta: "",
+        toimenpiteet: "",
+      },
+    ]);
   };
 
-  useEffect(() => {
-    const fetchStrategiat = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/strategiat");
-        console.log("Raw response data:", response.data);
+  const removeRow = (id: number) => {
+    setRows(rows.filter(row => row.id !== id));
+  };
 
-        const data = response.data.map((strategy: any) => ({
-          ...strategy,
-          selected: false,
-        }));
-        setStrategiat(data);
-        console.log("Processed data:", data);
-      } catch (error) {
-        console.error("Error fetching strategies:", error);
-        setError("Error fetching strategies. Please try again later.");
-      }
-    };
+  const handleSaveSelections = async () => {
+    try {
+      const selectedData = {
+        name: selectionName, // Valintakokonaisuuden nimi
+        teams: teams.filter(t => t.selected), // Lähetetään koko objekti
+        projects: projects.filter(p => p.selected), // Lähetetään koko objekti
+        strategies: strategiat.filter(s => s.selected), // Lähetetään koko objekti
+        tasks: rows.map(row => ({
+          tehtava: row.tehtava,
+          mittari: row.mittari,
+          seuranta: row.seuranta,
+          toimenpiteet: row.toimenpiteet
+        }))
+      };
+  
+      await axios.post("http://localhost:5000/api/selections", selectedData);
+      alert("Valinnat tallennettu!");
+    } catch (error) {
+      alert("Tallennus epäonnistui.");
+    }
+  };
+  
+  const toggleSelection = (type: "team" | "project" | "strategy", id: string) => {
+    if (type === "team") {
+      setTeams(teams.map(team => team._id === id ? { ...team, selected: !team.selected } : team));
+    } else if (type === "project") {
+      setProjects(projects.map(project => project._id === id ? { ...project, selected: !project.selected } : project));
+    } else if (type === "strategy") {
+      setStrategiat(strategiat.map(strategy => strategy._id === id ? { ...strategy, selected: !strategy.selected } : strategy));
+    }  
+  };
 
-    fetchStrategiat();
-  }, []);
+  const selectedStrategies = strategiat
+  .filter(strategy => strategy.selected)
+  .map(strategy => ({ nimi: strategy.nimi, mittari: strategy.mittari }));
 
-  const handleCheckboxChange = (id: string) => {
-    setStrategiat((prevStrategiat) =>
-      prevStrategiat.map((strategia) =>
-        strategia._id === id ? { ...strategia, selected: !strategia.selected } : strategia
-      )
-    );
-
-    const selectedStrategia = strategiat.find((strategia) => strategia._id === id);
-    if (selectedStrategia) {
-      if (selectedStrategia.selected) {
-        setPaamaara((prevPaamaara) => prevPaamaara.filter((nimi) => nimi !== selectedStrategia.nimi));
-      } else {
-        setPaamaara((prevPaamaara) => [...prevPaamaara, selectedStrategia.nimi]);
-      }
+  const fetchSelections = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/selections");
+      setSelections(response.data); // Tallenna haetut valintakokonaisuudet
+    } catch (error) {
+      console.error("Virhe haussa:", error);
     }
   };
 
+  // Käytä tätä useEffectissa tai jossain muussa osassa UI:ta
+  useEffect(() => {
+    fetchSelections();
+  }, []);
+  
   return (
     <>
-    <div className="w-full p-6">
-        <h2 className="text-2xl font-bold mb-4">Strategies</h2>
-        {error && <p className="text-red-500">{error}</p>}
-        <ul className="space-y-2">
-          {strategiat.map((strategia) => (
-            <li key={strategia._id} className="flex items-center space-x-2 p-2 border rounded-lg shadow-sm bg-gray-50">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={strategia.selected}
-                  onChange={() => handleCheckboxChange(strategia._id)}
-                  className="form-checkbox h-5 w-5 text-blue-600"
-                />
-                <span className="text-lg">{strategia.nimi}</span>
-              </label>
-            </li>
+
+        <div>
+          <h2>Aikaisemmin tallennetut tavoitteet: </h2>
+          <ul>
+          {selections.length > 0 ? (
+              selections.map((selection) => (
+                <li key={selection._id}>
+                  <h3>{selection.name}</h3>
+                  <p>Luotu: {new Date(selection.createdAt).toLocaleString()}</p>
+                </li>
+              ))
+            ) : (
+              <li>Tavoitteita ei löytynyt</li>
+            )}
+          </ul>
+        </div>
+
+        <div className="p-4 border rounded shadow-md bg-white">
+        <h2 className="text-lg font-semibold mb-2">Strategiat</h2>
+        <div className="space-y-2">
+          {strategiat.map((strategy) => (
+            <label key={strategy._id} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={strategy.selected}
+                onChange={() => toggleSelection("strategy", strategy._id)}
+                className="w-4 h-4"
+              />
+              <span className="text-gray-900">{strategy.nimi}</span> {/* Teksti näkyväksi */}
+            </label>
           ))}
-        </ul>
-      </div>
+        </div>
+        </div>
+
+        <div className="flex gap-4 mt-4">
+          <div className="flex-1 p-4 border rounded shadow-md bg-white">  
+            <SelectionList
+              title="Tiimit"
+              items={teams}
+              toggleSelection={(id) => toggleSelection("team", id)}
+            />
+          </div>
+
+          <div className="flex-1 p-4 border rounded shadow-md bg-white">
+            <SelectionList
+              title="Projektit"
+              items={projects}
+              toggleSelection={(id) => toggleSelection("project", id)}
+            />
+          </div>
+        </div>
+
       <div>
-        <h1>Tapas Johtamisavustin</h1>
-        <p>Welcome to the Tavoite Page!</p>
-        <img src={hoshin} alt="Hoshin-taulu" style={{ width: '50%', height: 'auto' }} className='header-logo' />
-      </div>
-
-      <div className="w-full p-6">
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border border-gray-300 p-2" colSpan={2}>Nykytila</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Jyvää ja Parannettevaa sarakkeet */}
-            <tr>
-              <td className="border border-gray-300 p-2 w-1/2">Hyvää</td>
-              <td className="border border-gray-300 p-2 w-1/2">Parannettevaa</td>
-            </tr>
-
-            {/* Miksi ja Miten sarakkeet */}
-            <tr className="bg-gray-200">
-              <th className="border border-gray-300 p-2 w-1/3">Miksi</th>
-              <th className="border border-gray-300 p-2 w-2/3">Miten</th>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 p-2 w-1/3">
-                {/* Miksi sarakkeen rivit */}
-                <table className="w-full border-collapse">
-                  <tbody>
-                    <tr>
-                      <td className="border border-gray-300 p-2">Päämäärä</td>
-                    </tr>
-                    {paamaara.map((nimi, index) => (
-                      <tr key={index}>
-                        <td className="border border-gray-300 p-2">{nimi}</td>
-                      </tr>
-                    ))}
-                    <tr>
-                      <th className="border border-gray-300 p-2 w-1/3">Mitä</th>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-300 p-2">Tavoite</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-              <td className="border border-gray-300 p-2 w-2/3">
-                {/* Miten sarakkeen kolme saraketta */}
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr>
-                      <th className="border border-gray-300 p-2">Tehtävä</th>
-                      <th className="border border-gray-300 p-2">Mittari (KPI)</th>
-                      <th className="border border-gray-300 p-2">Seuranta</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="border border-gray-300 p-2">Tehtävä 1</td>
-                      <td className="border border-gray-300 p-2">KPI 1</td>
-                      <td className="border border-gray-300 p-2">Seuranta 1</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-300 p-2">Tehtävä 2</td>
-                      <td className="border border-gray-300 p-2">KPI 2</td>
-                      <td className="border border-gray-300 p-2">Seuranta 2</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-300 p-2">Tehtävä 3</td>
-                      <td className="border border-gray-300 p-2">KPI 3</td>
-                      <td className="border border-gray-300 p-2">Seuranta 3</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
+        <Table 
+          rows={rows} 
+          setRows={setRows} 
+          addRow={addRow} 
+          removeRow={removeRow} 
+          selectedStrategies={selectedStrategies} // Anna strategia Tablelle
+        />
       
-    </>
+      </div>
+      <div className="p-4 border rounded shadow-md bg-white">
+      <h2 className="text-lg font-semibold mb-2">Tallennettavan tavoitesivun nimi:</h2>
+      
+      {/* Syötekenttä nimen asettamiseen */}
+      <input
+        type="text"
+        value={selectionName}
+        onChange={(e) => setSelectionName(e.target.value)}
+        placeholder="Syötä nimi"
+        className="w-full p-2 border rounded mb-4"
+      />
+
+      {/* Tallenna valinnat */}
+      <button onClick={handleSaveSelections} className="mt-2 p-2 bg-blue-500 text-white rounded">
+        Tallenna
+      </button>
+    </div>    </>
   );
 };
 

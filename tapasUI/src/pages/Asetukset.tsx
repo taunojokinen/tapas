@@ -5,6 +5,7 @@ import ArvojenAsetus from '../components/asetukset/ArvojenAsetus';
 import KayttajienAsetus from '../components/asetukset/KayttajienAsetus';
 import CurrentState from '../components/currentState/CurrentState';
 import Strategiat from '../components/asetukset/StrategiatAsetus';
+import TeamProjectManager from '../components/organisation/TeamProjectManager';
 
 const Asetukset: React.FC = () => {
 
@@ -17,6 +18,7 @@ const Asetukset: React.FC = () => {
         <KayttajienAsetus />
         <ArvojenAsetus />
         <CurrentState />
+        <TeamProjectManager />
     </>
     )
  

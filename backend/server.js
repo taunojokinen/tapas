@@ -9,6 +9,8 @@ const User = require("./models/User");
 const userRoutes = require("./routes/users");  // Tuo käyttäjäreitit
 const usersRoutes = require("./routes/users"); // Tuodaan käyttäjäreitit
 const prosConsRoutes = require("./routes/prosCons");
+const teamRoutes = require("./routes/teamRoutes");
+const projectRoutes = require("./routes/projectRoutes");
 
 const app = express();
 app.use(cors());
@@ -104,3 +106,9 @@ app.use("/api/proscons", prosConsRoutes);
 
 const strategiatRoutes = require("./routes/strategiat");
 app.use("/api/strategiat", strategiatRoutes);
+
+app.use("/api/teams", teamRoutes);
+app.use("/api/projects", projectRoutes);
+
+const saveSelections = require("./routes/saveSelections");
+app.use("/api/selections", saveSelections);
