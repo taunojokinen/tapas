@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Kirjautuminen from '../pages/Kirjautuminen';
 import Home from '../pages/Home';
 import Arvot from '../pages/Arvot';
+import ChangeValues from "../components/arvot/ChangeValues";
+
 import Tavoitteet from '../pages/Tavoitteet';
 import Tilannekuva from '../pages/Tilannekuva';
 import Ideat from '../pages/Ideat';
@@ -40,6 +42,8 @@ const App: React.FC = () => {
                     {<Route path="/" element={<Kirjautuminen />} />}
                     {<Route path="/etusivu" element={<Home />} />}
                     {<Route path="/arvot" element={<Arvot />} />}
+                    {<Route path="/change_values" element={<ChangeValues />} />}
+                    {<Route path="/userform" element={<UserForm />} />}
                     </Route>
                     {<Route path="/tavoitteet" element={<Tavoitteet />} />}
                     {<Route path="/tilannekuva" element={<Tilannekuva />} />}

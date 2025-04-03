@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 interface Arvo {
@@ -39,11 +40,20 @@ const Arvot: React.FC = () => {
     fetchArvot();
   }, []);
 
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/change_values");
+  };
+
 
   return (
     // <div className="w-screen h-screen bg-blue-100 flex flex-col items-center justify-center">
     <div className="relative bg-blue-300 w-[70vw] h-[70vh] rounded-2xl p-4">
-      <div className="absolute bg-white w-[calc(70vw-2rem)] h-[calc(70vh-2rem)] rounded-2xl p-4">
+<div
+  className="absolute bg-white w-[calc(70vw-2rem)] h-[calc(70vh-2rem)] rounded-2xl p-4 cursor-pointer"
+  onClick={handleNavigate}
+>
         <h1 className="text-2xl font-bold mb-4">ARVOT</h1>
         {kaikkiArvot.map((yritys) =>
           yritys.arvot.map((arvo, index) => (
