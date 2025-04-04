@@ -2,15 +2,15 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Kirjautuminen from '../pages/Kirjautuminen';
 import Home from '../pages/Home';
 import Arvot from '../pages/Arvot';
-import ChangeValues from "../components/arvot/ChangeValues";
+import ChangeValues from "./arvot/ChangeValues";
 
 import Tavoitteet from '../pages/Tavoitteet';
 import Tilannekuva from '../pages/Tilannekuva';
 import Ideat from '../pages/Ideat';
 import Aktiviteetit from '../pages/Aktiviteetit';
 import Asetukset from '../pages/Asetukset';
-import Header from '../components/header/Header';
-import Navi from '../components/header/Navi';
+import Header from './header/Header';
+import Navi from './header/Navi';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -25,7 +25,7 @@ const App: React.FC = () => {
 
     const [message, setMessage] = useState("");
     useEffect(() => {
-        axios.get("http://localhost:5000")
+        axios.get(`${process.env.REACT_APP_API_URL}`)
           .then(res => setMessage(res.data))
           .catch(err => console.error("Virhe:", err));
       }, []);
@@ -39,7 +39,7 @@ const App: React.FC = () => {
             <div style={{ marginLeft: '2em', padding: '20em', width: '100%' }}>
                 <Routes>
                     <Route element={<MainLayout />}>
-                    {<Route path="/" element={<Kirjautuminen />} />}
+                     {<Route path="/" element={<Kirjautuminen />} />}
                     {<Route path="/etusivu" element={<Home />} />}
                     {<Route path="/arvot" element={<Arvot />} />}
                     {<Route path="/change_values" element={<ChangeValues />} />}
@@ -48,7 +48,7 @@ const App: React.FC = () => {
                     {<Route path="/tavoitteet" element={<Tavoitteet />} />}
                     {<Route path="/tilannekuva" element={<Tilannekuva />} />}
                     {<Route path="/ideat" element={<Ideat />} />}
-                    {<Route path="/aktiviteetit" element={<Aktiviteetit />} />}
+                    {<Route path="/aktiviteetit" element={<Aktiviteetit />} />} 
                     {<Route path="/asetukset" element={<Asetukset />} />}
 
                 </Routes>

@@ -13,7 +13,7 @@ const ArvotList = () => {
 
   const fetchArvot = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/arvot");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/arvot`);
 
       console.log("Haettu data:", response.data); // Debuggaa datan tarkistamiseen
 

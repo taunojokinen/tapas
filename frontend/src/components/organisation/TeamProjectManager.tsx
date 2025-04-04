@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 
+
 interface Team {
     _id: string;
     name: string;
@@ -22,20 +23,31 @@ export default function TeamProjectManager() {
     }, []);
 
     const fetchTeams = async () => {
-        const res = await fetch("/api/teams");
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/teams`);
         const data: Team[] = await res.json();
         setTeams(data);
     };
 
-    const fetchProjects = async () => {
-        const res = await fetch("/api/projects");
-        const data: Project[] = await res.json();
-        setProjects(data);
-    };
+    // Hakee projektit backendiltä
+  const fetchProjects = async () => {
+    try {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/projects`);
+      
+      // Tarkistetaan, että pyyntö onnistui (status 200)
+      if (!res.ok) {
+        throw new Error(`Virhe haettaessa projekteja: ${res.statusText}`);
+      }
+
+      const data: Project[] = await res.json();
+      setProjects(data);
+    } catch (error) {
+      console.error("Virhe haettaessa projekteja:", error);
+    }
+  };
 
     const addTeam = async () => {
         if (!newTeam) return;
-        await fetch("/api/teams", {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/teams`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: newTeam })
@@ -46,14 +58,14 @@ export default function TeamProjectManager() {
 
     const deleteTeam = async (id: string) => {
         if (window.confirm("Are you sure you want to delete this team?")) {
-            await fetch(`/api/teams/${id}`, { method: "DELETE" });
+            await fetch(`${process.env.REACT_APP_API_URL}/api/teams/${id}`, { method: "DELETE" });
             fetchTeams();
         }
     };
 
     const addProject = async () => {
         if (!newProject) return;
-        await fetch("/api/projects", {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/projects`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: newProject })
@@ -64,7 +76,7 @@ export default function TeamProjectManager() {
 
     const deleteProject = async (id: string) => {
         if (window.confirm("Are you sure you want to delete this project?")) {
-            await fetch(`/api/projects/${id}`, { method: "DELETE" });
+            await fetch(`${process.env.REACT_APP_API_URL}/api/projects/${id}`, { method: "DELETE" });
             fetchProjects();
         }
     };

@@ -22,7 +22,7 @@ const Arvot: React.FC = () => {
   /** 🔄 Haetaan yrityksen arvot tietokannasta */
   const fetchArvot = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/arvot");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/arvot`);
 
       // Varmistetaan, että data on taulukko
       const data = Array.isArray(response.data) ? response.data : [];

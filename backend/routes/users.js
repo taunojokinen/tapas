@@ -59,12 +59,12 @@ router.delete("/users/:id", checkRole("admin"), async (req, res) => {
   if (!user) return res.status(404).json({ message: "Käyttäjää ei löytynyt" });
   res.json({ message: "Käyttäjä poistettu" });
 });
-
+console.log("******************************************************: ", '${process.env.REACT_APP_URL}');
 // users.js - API-pyyntö suojattuihin reitteihin
 const fetchUsers = async () => {
   const token = localStorage.getItem('token');
 
-  const response = await fetch('http://localhost:5000/api/users', {
+  const response = await fetch('${process.env.REACT_APP_URL}/api/users', {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,  // Lähetä token headerissa

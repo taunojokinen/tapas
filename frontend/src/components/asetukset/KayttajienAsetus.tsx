@@ -27,7 +27,7 @@ const KayttajienAsetus: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
       setUsers(response.data);
     } catch (error) {
       console.error("Virhe käyttäjien haussa:", error);
@@ -39,7 +39,7 @@ const KayttajienAsetus: React.FC = () => {
     if (!window.confirm("Haluatko varmasti poistaa käyttäjän?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/users/${userId}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/users/${userId}`);
       //console.log("DELETE-pyyntö lähetetty!");
       setUsers(users.filter(user => user._id !== userId)); // Poistaa käyttäjän UI:sta ilman uudelleenlatausta
     } catch (error) {

@@ -14,7 +14,7 @@ export default function UserForm() {
 
   // Haetaan käyttäjät tietokannasta
   useEffect(() => {
-    fetch("http://localhost:5000/users")
+    fetch(`${process.env.REACT_APP_API_URL}/users`)
       .then((res) => res.json())
       .then((data: User[]) => setUsers(data))
       .catch((err) => console.error("Virhe haussa:", err));
@@ -25,7 +25,7 @@ export default function UserForm() {
     e.preventDefault();
     const newUser = { name, email };
 
-    const response = await fetch("http://localhost:5000/users", {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newUser),

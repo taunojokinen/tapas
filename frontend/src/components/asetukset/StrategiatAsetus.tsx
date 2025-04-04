@@ -19,7 +19,7 @@ const Strategiat: React.FC = () => {
 
   const fetchStrategiat = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/strategiat");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/strategiat`);
       setStrategiat(response.data); // response.data sisältää objektit {_id, nimi, mittari, seuranta, __v}
       setLoading(false);
     } catch (err) {
@@ -36,7 +36,7 @@ const Strategiat: React.FC = () => {
     if (!uusiStrategia || !mittari || !seuranta) return; // Tarkistetaan, että kaikki kentät on täytetty
     
     try {
-      await axios.post("http://localhost:5000/api/strategiat", {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/strategiat`, {
         nimi: uusiStrategia,
         mittari: mittari,
         seuranta: seuranta,
@@ -53,7 +53,7 @@ const Strategiat: React.FC = () => {
 
   const handleDeleteStrategia = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/strategiat/${id}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/strategiat/${id}`);
       fetchStrategiat();
     } catch (error) {
       setError("Strategian poistaminen epäonnistui.");

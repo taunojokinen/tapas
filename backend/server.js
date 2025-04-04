@@ -8,7 +8,7 @@ const authRoutes = require("./routes/auth");  // Tuo kirjautumisreitit
 const User = require("./models/User");
 const userRoutes = require("./routes/users");  // Tuo käyttäjäreitit
 const usersRoutes = require("./routes/users"); // Tuodaan käyttäjäreitit
-const prosConsRoutes = require("./routes/prosCons");
+const prosConsRoutes = require("./routes/proscons");
 const teamRoutes = require("./routes/teamRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 
@@ -17,7 +17,8 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 5000;
+//const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
 // Yhdistä MongoDB:hen
@@ -84,6 +85,7 @@ const ArvoModel = mongoose.model("Arvo", ArvoSchema);
 
 // POST-reitti Yrityksen Arvojen tallentamiseen
 app.post("/api/arvot", async (req, res) => {
+  console.log("Pyynnön data / Arvot: ", req.body);
   try {
     const uusiArvo = new ArvoModel(req.body);
     await uusiArvo.save();

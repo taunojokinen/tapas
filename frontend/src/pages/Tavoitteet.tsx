@@ -95,7 +95,7 @@ const Tavoitteet: React.FC = () => {
         }))
       };
   
-      await axios.post("http://localhost:5000/api/selections", selectedData);
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/selections`, selectedData);
       alert("Valinnat tallennettu!");
     } catch (error) {
       alert("Tallennus epäonnistui.");
@@ -118,7 +118,7 @@ const Tavoitteet: React.FC = () => {
 
   const fetchSelections = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/selections");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/selections`);
       setSelections(response.data); // Tallenna haetut valintakokonaisuudet
     } catch (error) {
       console.error("Virhe haussa:", error);

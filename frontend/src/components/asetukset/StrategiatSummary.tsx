@@ -17,7 +17,7 @@ const StrategiatSummary: React.FC = () => {
   useEffect(() => {
     const fetchStrategiat = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/strategiat');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/strategiat`);
         if (!response.ok) {
           throw new Error('Verkkovirhe, ei voitu ladata strategioita');
         }

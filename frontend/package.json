@@ -20,7 +20,7 @@
     "react-scripts": "^5.0.1"
   },
   "devDependencies": {
-    "@types/react": "^17.0.0",
+    "@types/react": "^17.0.85",
     "@types/react-dom": "^17.0.26",
     "@types/socket.io-client": "^3.0.0",
     "concurrently": "^9.1.2",

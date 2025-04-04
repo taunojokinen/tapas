@@ -7,7 +7,7 @@ const Summary: React.FC = () => {
   // Hae pros & cons MongoDB:stä
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/proscons");
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/proscons`);
       if (!response.ok) throw new Error("Failed to fetch data");
       const data = await response.json();
       setPros(data.pros || []);

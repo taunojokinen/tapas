@@ -24,6 +24,7 @@ router.post("/", async (req, res) => {
 }); */
 // Lisää uusi strategia
 router.post('/', async (req, res) => {
+  console.log("Strategia: ", req.body);
     try {
       const { nimi, mittari, seuranta } = req.body;
   

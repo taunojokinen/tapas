@@ -24,7 +24,7 @@ const ArvojenAsetus: React.FC = () => {
 
   const fetchArvot = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/arvot");
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/arvot`);
       const data = Array.isArray(response.data) ? response.data : [];
       setKaikkiArvot(data);
       setLoading(false);
@@ -43,7 +43,7 @@ const ArvojenAsetus: React.FC = () => {
     e.preventDefault();
     try {
       const jsonData = { yritys, arvot };
-      const response = await axios.post("http://localhost:5000/api/arvot", jsonData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/arvot`, jsonData);
       setMessage(response.data.message);
       setYritys("");
       setArvot([]);
@@ -56,7 +56,7 @@ const ArvojenAsetus: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/arvot/${id}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/arvot/${id}`);
       fetchArvot();
     } catch (error) {
       console.error("Virhe poistamisessa:", error);
@@ -69,7 +69,7 @@ const ArvojenAsetus: React.FC = () => {
       if (!yritys) return;
 
       const updatedArvot = yritys.arvot.filter((_, index) => index !== arvoIndex);
-      await axios.put(`http://localhost:5000/api/arvot/${yritysId}`, { arvot: updatedArvot });
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/arvot/${yritysId}`, { arvot: updatedArvot });
       fetchArvot();
     } catch (error) {
       console.error("Virhe yksittäisen arvon poistamisessa:", error);

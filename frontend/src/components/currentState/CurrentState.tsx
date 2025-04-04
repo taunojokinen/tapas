@@ -9,7 +9,7 @@ const CurrentState: React.FC = () => {
   // Hae pros ja cons MongoDB:stä
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/proscons");
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/proscons`);
       if (!response.ok) throw new Error("Failed to fetch data");
       const data = await response.json();
       setPros(data.pros || []);
@@ -26,7 +26,7 @@ const CurrentState: React.FC = () => {
   // Lisää pro kantaan
   const addPro = async () => {
     if (newPro.trim()) {
-      await fetch("http://localhost:5000/api/proscons/add-pro", {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/proscons/add-pro`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pro: newPro }),
@@ -39,7 +39,7 @@ const CurrentState: React.FC = () => {
   // Lisää con kantaan
   const addCon = async () => {
     if (newCon.trim()) {
-      await fetch("http://localhost:5000/api/proscons/add-con", {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/proscons/add-con`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ con: newCon }),
@@ -52,7 +52,7 @@ const CurrentState: React.FC = () => {
   // Poista pro
 const removePro = async (index: number) => {
     try {
-      const response = await fetch("http://localhost:5000/api/proscons/delete-pro", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/proscons/delete-pro`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pro: pros[index] }),
@@ -69,7 +69,7 @@ const removePro = async (index: number) => {
   // Poista con
   const removeCon = async (index: number) => {
     try {
-      const response = await fetch("http://localhost:5000/api/proscons/delete-con", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/proscons/delete-con`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ con: cons[index] }),
@@ -85,7 +85,7 @@ const removePro = async (index: number) => {
 
   // Muokkaa pro
   const editPro = async (index: number, newValue: string) => {
-    await fetch("http://localhost:5000/api/proscons/edit-pro", {
+    await fetch(`${process.env.REACT_APP_API_URL}/api/proscons/edit-pro`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ oldPro: pros[index], newPro: newValue }),
@@ -95,7 +95,7 @@ const removePro = async (index: number) => {
 
   // Muokkaa con
   const editCon = async (index: number, newValue: string) => {
-    await fetch("http://localhost:5000/api/proscons/edit-con", {
+    await fetch(`${process.env.REACT_APP_API_URL}/api/proscons/edit-con`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ oldCon: cons[index], newCon: newValue }),
