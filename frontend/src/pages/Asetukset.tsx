@@ -6,6 +6,7 @@ import KayttajienAsetus from '../components/asetukset/KayttajienAsetus';
 import CurrentState from '../components/currentState/CurrentState';
 import Strategiat from '../components/asetukset/StrategiatAsetus';
 import TeamProjectManager from '../components/organisation/TeamProjectManager';
+import CreateUsers from '../components/asetukset/CreateUsers';
 
 const Asetukset: React.FC = () => {
 
@@ -14,6 +15,7 @@ const Asetukset: React.FC = () => {
     <div>
       <h1>Welcome to the Settings!</h1>
     </div>
+        <CreateUsers />
         <Strategiat />
         <KayttajienAsetus />
         <ArvojenAsetus />

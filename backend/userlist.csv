@@ -1,0 +1,11 @@
+﻿username;firtstName;lastName;supervisor;role
+Mirja;Mirja;Pirinen;;admin
+Pasi;Pasi;Jokinen;;director
+Tauno;Tauno;Jokinen;Pasi;supervisor
+Jouni;Jouni;Jokinen;Tauno;employer
+Kaisa;Kaisa;Pirinen;Tauno;employer
+Mika;Mika;Kangas;Tauno;employer
+Petri;Petri;Jokinen;Pasi;supervisor
+Suvi;Suvi;Jokinen;Petri;employer
+Tuija;Tuija;Leinonen;Petri;employer
+Tero;Tero;Leinonen;Petri;employer
