@@ -147,7 +147,7 @@ console.log(arvot); // Log the company name
       "
     >
             <h1 className="text-2xl font-bold mb-4">PÄIVITETÄÄN ARVOT yritykselle {yritys} </h1>
-            <p>{kaikkiArvot[0].arvot[]}</p>
+
 
             {/* Render valueProposal below the heading */}
 <div className="mb-6">
