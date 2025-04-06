@@ -1,6 +1,16 @@
-﻿username;firtstName;lastName;supervisor;role
-Mirja;Mirja;Pirinen;;admin
-Pasi;Pasi;Jokinen;;director
+﻿username;firstName;lastName;supervisor;role
+Mirja;Mirja;Pirinen;No supervisor;admin
+Pasi;Pasi;Jokinen;No supervisor;director
+Tauno;Tauno;Jokinen;Pasi;supervisor
+Jouni;Jouni;Jokinen;Tauno;employer
+Kaisa;Kaisa;Pirinen;Tauno;employer
+Mika;Mika;Kangas;Tauno;employer
+Petri;Petri;Jokinen;Pasi;supervisor
+Suvi;Suvi;Jokinen;Petri;employer
+Tuija;Tuija;Leinonen;Petri;employer
+Tero;Tero;Leinonen;Petri;employer
+Mirja;Mirja;Pirinen;No supervisor;admin
+Pasi;Pasi;Jokinen;No supervisor;director
 Tauno;Tauno;Jokinen;Pasi;supervisor
 Jouni;Jouni;Jokinen;Tauno;employer
 Kaisa;Kaisa;Pirinen;Tauno;employer

@@ -11,6 +11,7 @@ const usersRoutes = require("./routes/users"); // Tuodaan käyttäjäreitit
 const prosConsRoutes = require("./routes/proscons");
 const teamRoutes = require("./routes/teamRoutes");
 const projectRoutes = require("./routes/projectRoutes");
+const userlistRoutes = require("./routes/userlist"); // Tuo käyttäjälistareitit
 
 const app = express();
 app.use(cors());
@@ -114,3 +115,5 @@ app.use("/api/projects", projectRoutes);
 
 const saveSelections = require("./routes/saveSelections");
 app.use("/api/selections", saveSelections);
+
+app.use("/api/userlist", userlistRoutes); // Käyttäjälistareitit käyttöön
