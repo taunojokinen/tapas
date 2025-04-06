@@ -24,6 +24,11 @@ interface Arvo {
     kuvaus: string;
     tärkeys: number;
   }
+
+  interface Arvot {
+    _id: string;
+    arvot: Arvo[];
+  }
   
   interface YritysArvot {
     _id: string;
@@ -34,30 +39,39 @@ interface Arvo {
 
 const ChangeValues: React.FC = () => {
     const [kaikkiArvot, setKaikkiArvot] = useState<YritysArvot[]>([]); // Kaikki arvot tietokannasta
+    const [yritys, setYritys] = useState<string>("Yritys"); // Yrityksen nimi
+    const [arvot, setArvot] = useState<Arvot[]>([]); // Yrityksen arvot
     const [valueProposal, setValueProposal] = useState(initialValueProposal); 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const navigate = useNavigate(); // Initialize useNavigate
   
     /** 🔄 Haetaan yrityksen arvot tietokannasta */
-    const fetchArvot = async () => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/arvot`);
-  
-        // Varmistetaan, että data on taulukko
-        const data = Array.isArray(response.data) ? response.data : [];
-        setKaikkiArvot(data);
-        setLoading(false);
-      } catch (err) {
-        setError("Tietojen hakeminen epäonnistui.");
-        console.error("Virhe:", err);
-        setLoading(false);
-      }
-    };
+    const fetchArvot = React.useCallback(async () => {
+        try {
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/arvot`);
+    
+          // Varmistetaan, että data on taulukko
+          const data = Array.isArray(response.data) ? response.data : [];
+          setKaikkiArvot(data);
+          setYritys(data[0]?.yritys || ""); // Asetetaan yrityksen nimi ensimmäisestä arvosta
+          setArvot(data[0].arvot); // Asetetaan arvot ensimmäisestä arvosta
+          console.log("Arvot:", arvot); // Log arvot
+          setLoading(false);
+        } catch (err) {
+          setError("Tietojen hakeminen epäonnistui.");
+          console.error("Virhe:", err);
+          setLoading(false);
+        }
+      }, [arvot]);
   /** ⏳ Haetaan arvot **vain kerran** kun komponentti renderöityy */
   useEffect(() => {
     fetchArvot();
-  }, []);
+  }, [fetchArvot]);
+
+  useEffect(() => {
+    console.log("Updated arvot:", arvot);
+  }, [arvot]);
 
     /** Navigate back to the Arvot page */
     const handleBack = () => {
@@ -110,6 +124,20 @@ const ChangeValues: React.FC = () => {
     }
   };
 
+  const updateValues = async () => {
+    try {
+      // Send updated values to the backend
+      const jsonData = { arvot };
+      console.log("Päivitetyt arvot:", jsonData); // Log the updated values
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/arvot`, jsonData);
+  
+      alert("Arvot päivitettiin onnistuneesti!");
+    } catch (err) {
+      console.error("Virhe arvotietojen päivittämisessä:", err);
+      alert("Arvojen päivittäminen epäonnistui. Yritä uudelleen.");
+    }
+  };
+console.log(arvot); // Log the company name
   return (
 
         // <div className="w-screen h-screen bg-blue-100 flex flex-col items-center justify-center">
@@ -118,7 +146,8 @@ const ChangeValues: React.FC = () => {
       className="absolute bg-white w-[calc(70vw-2rem)] h-[calc(70vh-2rem)] rounded-2xl p-4
       "
     >
-            <h1 className="text-2xl font-bold mb-4">PÄIVITETÄÄN ARVOT</h1>
+            <h1 className="text-2xl font-bold mb-4">PÄIVITETÄÄN ARVOT yritykselle {yritys} </h1>
+            <p>{kaikkiArvot[0].arvot[]}</p>
 
             {/* Render valueProposal below the heading */}
 <div className="mb-6">
@@ -145,14 +174,19 @@ const ChangeValues: React.FC = () => {
     </div>
   ))}
 </div>
-            {kaikkiArvot.map((yritys) =>
-              yritys.arvot.map((arvo, index) => (
-                <div key={`${yritys._id}-${index}`} className="mb-4">
-                  <p className="text-lg font-bold">Arvo {index +1} - {arvo.nimi}</p>
-                  <p className="text-sm">{arvo.kuvaus}</p>
-                </div>
-              ))
-            )}
+{arvot && arvot.length > 0 ? (
+  arvot.map((arvotItem) =>
+    arvotItem.arvot && arvotItem.arvot.map((arvo, index) => (
+      <div key={index} className="mb-4">
+        <p className="text-lg font-bold">Arvo {index + 1} - {arvo.nimi}</p>
+        <p className="text-sm">{arvo.kuvaus}</p>
+        <p className="text-sm">Heikki Hei!</p>
+      </div>
+    ))
+  )
+) : (
+  <p className="text-gray-500">Ei arvoja näytettäväksi.</p>
+)}
           </div>
         {/* </div> */}
         <div className="mt-4">
@@ -170,9 +204,19 @@ const ChangeValues: React.FC = () => {
         onClick={handleBack}
         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
-        Takaisin
+        Palaa päivittämättä arvoja
       </button>
     </div>
+    {/* Päivitä arvot Button */}
+<div className="absolute bottom-4 left-4">
+  <button
+        onClick={updateValues}
+    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+  >
+    Päivitä arvot
+  </button>
+</div>
+    
   </div>
       );
 };
