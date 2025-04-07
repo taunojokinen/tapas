@@ -1,8 +1,6 @@
 import asetukset from '../pictures/asetukset.png';
 import React from 'react';
-
 import ArvojenAsetus from '../components/asetukset/ArvojenAsetus';
-import KayttajienAsetus from '../components/asetukset/KayttajienAsetus';
 import CurrentState from '../components/currentState/CurrentState';
 import Strategiat from '../components/asetukset/StrategiatAsetus';
 import TeamProjectManager from '../components/organisation/TeamProjectManager';
@@ -17,7 +15,7 @@ const Asetukset: React.FC = () => {
     </div>
         <CreateUsers />
         <Strategiat />
-        <KayttajienAsetus />
+        
         <ArvojenAsetus />
         <CurrentState />
         <TeamProjectManager />

@@ -1,17 +1,20 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../config');
 
-const authMiddleware = (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
-  if (!token) return res.status(401).json({ message: "Ei tunnistettu" });
+const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1]; // Extract token from "Bearer <token>"
 
-  try {
-    // Tarkista token ja dekoodaa se
-    const decoded = jwt.verify(token, "SECRET_KEY");  // Vaihda "SECRET_KEY" omaksi salaiseksi avaimeksi
-    req.user = decoded;  // Lisää käyttäjän tiedot req.user:iin (sisältää myös roolin ja ID:n)
-    next();
-  } catch (error) {
-    res.status(400).json({ message: "Virheellinen token" });
-  }
+    if (!token) {
+        return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded; // Attach user info to the request object
+        next();
+    } catch (error) {
+        return res.status(403).json({ message: 'Invalid or expired token.' });
+    }
 };
 
-module.exports = authMiddleware;
+module.exports = { verifyToken };

@@ -4,10 +4,11 @@
     "socket.io-client": "^4.8.1"
   },
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run client\"",
-    "client": "cd frontend && npm start",
-    "server": "cd backend && node server.js"
-  },
+  "start": "concurrently \"npm run server\" \"npm run client\"",
+  "client": "cd frontend && npm start",
+  "server": "cd backend && nodemon server.js", 
+  "server:dev": "cd backend && nodemon server.js", 
+  "client:dev": "cd frontend && npm start" },
   "devDependencies": {
     "@types/react-dom": "^19.1.1",
     "@types/socket.io-client": "^3.0.0",
