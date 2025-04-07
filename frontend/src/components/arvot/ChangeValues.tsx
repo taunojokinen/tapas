@@ -68,6 +68,20 @@ const ChangeValues: React.FC = () => {
         navigate("/arvot"); // Navigate to the Arvot page
       };
 
+    const fetchInitialValueProposal = async () => {
+      try {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/ai/generate-proposals`, {
+          prompt: "Generate a list of company values with descriptions.",
+        });
+        setValueProposal(response.data.proposals); // Assuming the API returns an array of proposals
+      } catch (error) {
+        console.error("Error fetching AI-generated proposals:", error);
+      }
+    };
+    useEffect(() => {
+      fetchInitialValueProposal();
+    }, []);
+
         /** Remove a proposal from the list */
   const handleRemoveProposal = (proposalName: string) => {
     setValueProposal((prevProposals) =>

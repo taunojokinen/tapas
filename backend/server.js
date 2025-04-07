@@ -13,6 +13,7 @@ const teamRoutes = require("./routes/teamRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const userlistRoutes = require("./routes/userlist"); // Tuo käyttäjälistareitit
 const valuesRoutes = require("./routes/values"); // Tuo arvotietojen reitit
+const aiRoutes = require("./routes/ai"); // Import the AI routes
 
 const app = express();
 app.use(cors());
@@ -119,3 +120,4 @@ app.use("/api/selections", saveSelections);
 
 app.use("/api/userlist", userlistRoutes); // Käyttäjälistareitit käyttöön
 app.use("/api/values", valuesRoutes); // Arvotietojen reitit käyttöön
+app.use("/api/ai", aiRoutes); // AI-reitit käyttöön
