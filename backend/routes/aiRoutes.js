@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const OpenAI = require("openai");
 const dotenv = require("dotenv");
+const { OPENAI_API_KEY } = require('../config');
 
 // Load environment variables
 dotenv.config();
 
 // Initialize OpenAI client
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: OPENAI_API_KEY,
 });
 
 router.post("/ai/generate-proposals", async (req, res) => {

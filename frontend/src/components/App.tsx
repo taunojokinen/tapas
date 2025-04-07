@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Kirjautuminen from '../pages/Kirjautuminen';
+import ChangePassword from '../pages/ChangePassword';
 import Home from '../pages/Home';
 import Arvot from '../pages/Arvot';
 import ChangeValues from "./arvot/ChangeValues";
@@ -16,7 +17,6 @@ import axios from 'axios';
 
 import logo from '../pictures/logo.png';
 
-import UserForm from '../pages/UserForm';
 import MainLayout from '../layouts/MainLayout';
 
 
@@ -40,10 +40,12 @@ const App: React.FC = () => {
                 <Routes>
                     <Route element={<MainLayout />}>
                      {<Route path="/" element={<Kirjautuminen />} />}
+                                         {/* Change Password Page */}
+                    {<Route path="/change-password" element={<ChangePassword />} />}
                     {<Route path="/etusivu" element={<Home />} />}
                     {<Route path="/arvot" element={<Arvot />} />}
                     {<Route path="/change_values" element={<ChangeValues />} />}
-                    {<Route path="/userform" element={<UserForm />} />}
+                    
                     </Route>
                     {<Route path="/tavoitteet" element={<Tavoitteet />} />}
                     {<Route path="/tilannekuva" element={<Tilannekuva />} />}
