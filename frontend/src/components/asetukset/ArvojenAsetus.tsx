@@ -43,6 +43,7 @@ const ArvojenAsetus: React.FC = () => {
     e.preventDefault();
     try {
       const jsonData = { yritys, arvot };
+      //console.log("Lähetettävä data:", jsonData); // Log the data being sent
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/arvot`, jsonData);
       setMessage(response.data.message);
       setYritys("");

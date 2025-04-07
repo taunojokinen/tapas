@@ -1,21 +1,11 @@
-﻿username;firstName;lastName;supervisor;role
-Mirja;Mirja;Pirinen;No supervisor;admin
-Pasi;Pasi;Jokinen;No supervisor;director
-Tauno;Tauno;Jokinen;Pasi;supervisor
-Jouni;Jouni;Jokinen;Tauno;employer
-Kaisa;Kaisa;Pirinen;Tauno;employer
-Mika;Mika;Kangas;Tauno;employer
-Petri;Petri;Jokinen;Pasi;supervisor
-Suvi;Suvi;Jokinen;Petri;employer
-Tuija;Tuija;Leinonen;Petri;employer
-Tero;Tero;Leinonen;Petri;employer
-Mirja;Mirja;Pirinen;No supervisor;admin
-Pasi;Pasi;Jokinen;No supervisor;director
-Tauno;Tauno;Jokinen;Pasi;supervisor
-Jouni;Jouni;Jokinen;Tauno;employer
-Kaisa;Kaisa;Pirinen;Tauno;employer
-Mika;Mika;Kangas;Tauno;employer
-Petri;Petri;Jokinen;Pasi;supervisor
-Suvi;Suvi;Jokinen;Petri;employer
-Tuija;Tuija;Leinonen;Petri;employer
-Tero;Tero;Leinonen;Petri;employer
+﻿username;password;firstName;lastName;supervisor;role
+Mirja;test;Mirja;Pirinen;No supervisor;admin
+Pasi;test;Pasi;Jokinen;No supervisor;director
+Tauno;test;Tauno;Jokinen;Pasi;admin
+Jouni;test;Jouni;Jokinen;Tauno;supervisor
+Kaisa;test;Kaisa;Pirinen;Tauno;employer
+Mika;test;Mika;Kangas;Tauno;employer
+Petri;test;Petri;Jokinen;Pasi;supervisor
+Suvi;test;Suvi;Jokinen;Petri;employer
+Tuija;test;Tuija;Leinonen;Petri;employer
+Tero;test;Tero;Leinonen;Petri;employer

@@ -2,31 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-interface Arvo {
+interface Values {
+  tärkeys: number;
   nimi: string;
   kuvaus: string;
-  tärkeys: number;
+  _id: string;
 }
 
-interface YritysArvot {
-  _id: string;
-  yritys: string;
-  arvot: Arvo[];
-}
 
 const Arvot: React.FC = () => {
-  const [kaikkiArvot, setKaikkiArvot] = useState<YritysArvot[]>([]); // Kaikki arvot tietokannasta
+  const [values, setValues] = useState<Values[]>([]); // Kaikki arvot tietokannasta
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
   /** 🔄 Haetaan yrityksen arvot tietokannasta */
   const fetchArvot = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/arvot`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/values`);
 
       // Varmistetaan, että data on taulukko
       const data = Array.isArray(response.data) ? response.data : [];
-      setKaikkiArvot(data);
+      setValues(data);
       setLoading(false);
     } catch (err) {
       setError("Tietojen hakeminen epäonnistui.");
@@ -55,14 +51,17 @@ const Arvot: React.FC = () => {
   onClick={handleNavigate}
 >
         <h1 className="text-2xl font-bold mb-4">ARVOT</h1>
-        {kaikkiArvot.map((yritys) =>
-          yritys.arvot.map((arvo, index) => (
-            <div key={`${yritys._id}-${index}`} className="mb-4">
-              <p className="text-lg font-bold">{arvo.nimi}</p>
-              <p className="text-sm">{arvo.kuvaus}</p>
-            </div>
-          ))
-        )}
+        {values.length > 0 ? (
+    values.map((value, index) => (
+      <div key={value._id || index} className="mb-4">
+        <p className="text-lg font-bold">{value.nimi}</p>
+        <p className="text-sm">{value.kuvaus}</p>
+        <p className="text-sm text-gray-500">Tärkeys: {value.tärkeys}</p>
+      </div>
+    ))
+  ) : (
+    <p>Ei arvoja näytettäväksi.</p>
+  )}
       </div>
     {/* </div> */}
     <div className="mt-4">
