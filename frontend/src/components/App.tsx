@@ -1,65 +1,71 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Kirjautuminen from '../pages/Kirjautuminen';
-import ChangePassword from '../pages/ChangePassword';
-import Home from '../pages/Home';
-import Arvot from '../pages/Arvot';
+import React, { useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import ChangePassword from "../pages/ChangePassword";
+import Home from "../pages/Home";
+import Arvot from "../pages/Arvot";
 import ChangeValues from "./arvot/ChangeValues";
-
-import Tavoitteet from '../pages/Tavoitteet';
-import Tilannekuva from '../pages/Tilannekuva';
-import Ideat from '../pages/Ideat';
-import Aktiviteetit from '../pages/Aktiviteetit';
-import Asetukset from '../pages/Asetukset';
-import Header from './header/Header';
-import Navi from './header/Navi';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-
-import logo from '../pictures/logo.png';
-
-import MainLayout from '../layouts/MainLayout';
-
-
+import Tavoitteet from "../pages/Tavoitteet";
+import Tilannekuva from "../pages/Tilannekuva";
+import Ideat from "../pages/Ideat";
+import Aktiviteetit from "../pages/Aktiviteetit";
+import Asetukset from "../pages/Asetukset";
+import Header from "./header/Header";
+import Navi from "./header/Navi";
+import NotAuthorized from "../pages/NotAuthorized";
+import ProtectedRoute from "./ProtectedRoute";
+import axios from "axios";
 
 const App: React.FC = () => {
+  const [message, setMessage] = useState("");
 
-    const [message, setMessage] = useState("");
-    useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}`)
-          .then(res => setMessage(res.data))
-          .catch(err => console.error("Virhe:", err));
-      }, []);
-    
-      return (
-        <>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                <Header/>
-            <div style={{ display: 'flex', flex: 1 }}>
-                <Navi/>
-            <div style={{ marginLeft: '2em', padding: '20em', width: '100%' }}>
-                <Routes>
-                    <Route element={<MainLayout />}>
-                     {<Route path="/" element={<Kirjautuminen />} />}
-                                         {/* Change Password Page */}
-                    {<Route path="/change-password" element={<ChangePassword />} />}
-                    {<Route path="/etusivu" element={<Home />} />}
-                    {<Route path="/arvot" element={<Arvot />} />}
-                    {<Route path="/change_values" element={<ChangeValues />} />}
-                    
-                    </Route>
-                    {<Route path="/tavoitteet" element={<Tavoitteet />} />}
-                    {<Route path="/tilannekuva" element={<Tilannekuva />} />}
-                    {<Route path="/ideat" element={<Ideat />} />}
-                    {<Route path="/aktiviteetit" element={<Aktiviteetit />} />} 
-                    {<Route path="/asetukset" element={<Asetukset />} />}
+  useEffect(() => {
+    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
+    axios
+      .get(apiUrl)
+      .then((res) => setMessage(res.data))
+      .catch((err) => console.error("Virhe:", err));
+  }, []);
+  const role = localStorage.getItem("role");
+  console.log("User Role in Asetukset:", role);
+  return (
+    <div className="flex flex-col min-h-screen">
+      {/* Header Section */}
+      <Header />
 
-                </Routes>
-                </div>
-            </div>
-            </div>
-        </>
-    );
+      {/* Main Content Section */}
+      <div className="flex flex-grow">
+        {/* Sidebar Navigation */}
+        <Navi />
+
+        {/* Main Content */}
+        <div className="flex-grow p-8 bg-gray-100 text-gray-800 ml-64 mt-32 flex">
+          <div className="bg-white shadow-md rounded-lg p-6 flex-grow flex flex-col">
+            <Routes>
+              <Route path="/" element={<Home />} />
+
+              <Route path="/change-password" element={<ChangePassword />} />
+              <Route path="/etusivu" element={<Home />} />
+              <Route path="/arvot" element={<Arvot />} />
+              <Route path="/change_values" element={<ChangeValues />} />
+              <Route path="/tavoitteet" element={<Tavoitteet />} />
+              <Route path="/tilannekuva" element={<Tilannekuva />} />
+              <Route path="/ideat" element={<Ideat />} />
+              <Route path="/aktiviteetit" element={<Aktiviteetit />} />
+              <Route
+                path="/asetukset"
+                element={
+                  <ProtectedRoute allowedRoles={["admin", "manager"]}>
+                    <Asetukset />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/not-authorized" element={<NotAuthorized />} />
+            </Routes>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
-
 
 export default App;

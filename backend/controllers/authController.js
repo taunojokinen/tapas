@@ -25,12 +25,16 @@ const login = async(req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    const token = jwt.sign({ id: user._id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
-    // Store the token in the activeTokens map
-    activeTokens.set(token, { username: user.username, loginTime: new Date() });
-
-    return res.status(200).json({ message: 'Login successful', token });  
+   // Add the token to the activeTokens map
+   activeTokens.set(token, {
+    username: user.username,
+    role: user.role,
+    loginTime: new Date(),
+  });
+  console.log("Active Tokens:", activeTokens);
+    return res.status(200).json({ message: 'Login successful', token, role: user.role });  
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
   } 
@@ -92,22 +96,39 @@ const getUserFromUserList = async (username) => {
   }
 };
 
-const logout = (req, res) => {
+const logout = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
 
-  const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized: Missing token" });
+    }
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(400).json({ message: 'Invalid or missing token' });
+    const token = authHeader.split(" ")[1];
+
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET); // Verify the token
+      console.log("Decoded Token:", decoded);
+
+      if (activeTokens.has(token)) {
+        activeTokens.delete(token);
+        return res.status(200).json({ message: "Logout successful" });
+      } else {
+        return res.status(400).json({ message: "Invalid or expired token" });
+      }
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        console.error("Token expired:", error);
+        return res.status(401).json({ message: "Token expired. Please log in again." });
+      } else {
+        console.error("Invalid token:", error);
+        return res.status(401).json({ message: "Invalid token" });
+      }
+    }
+  } catch (error) {
+    console.error("Error during logout:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-
-  const token = authHeader.split(' ')[1]; // Extract the token after "Bearer"
-
-  if (activeTokens.has(token)) {
-      activeTokens.delete(token); // Remove the token from the activeTokens map
-      return res.status(200).json({ message: 'Logout successful' });
-  }
-
-  return res.status(400).json({ message: 'Invalid or missing token' });
 };
 
 const getLoggedInUsers = (req, res) => {
