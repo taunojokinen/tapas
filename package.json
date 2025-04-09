@@ -1,16 +1,21 @@
 {
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "openai": "^4.91.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.5.0",
     "react-scripts": "^5.0.1",
     "socket.io-client": "^4.8.1"
   },
   "scripts": {
-  "start": "concurrently \"npm run server\" \"npm run client\"",
-  "client": "cd frontend && npm start",
-  "server": "cd backend && nodemon server.js", 
-  "server:dev": "cd backend && nodemon server.js", 
-  "client:dev": "cd frontend && npm start" },
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "client": "cd frontend && npm start",
+    "server": "cd backend && nodemon server.js",
+    "server:dev": "cd backend && nodemon server.js",
+    "client:dev": "cd frontend && npm start"
+  },
   "devDependencies": {
     "@types/react-dom": "^19.1.1",
     "@types/socket.io-client": "^3.0.0",
