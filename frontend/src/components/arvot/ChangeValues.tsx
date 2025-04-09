@@ -70,22 +70,25 @@ const ChangeValues: React.FC = () => {
     navigate("/arvot"); // Navigate to the Arvot page
   };
 
-  const fetchInitialValueProposal = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/ai/generate-proposals`,
-        {
-          prompt: "Generate a list of company values with descriptions.",
-        }
-      );
-      setValueProposal(response.data.proposals); // Assuming the API returns an array of proposals
-    } catch (error) {
-      console.error("Error fetching AI-generated proposals:", error);
+/** Fetch 3 value proposals from AI */
+const fetchThreeValueProposals = async () => {
+  try {
+    const response = await axios.post("http://localhost:5000/api/ai/generate-proposals", {
+      "prompt": "Role: financial-manager. Generate a list of six company values with descriptions. Answer in Finnish. Answer as a json with header arvot: and two parameters nimi: and kuvaus:"
+    });
+
+    // Assuming the API returns an array of proposals
+    if (response.data && Array.isArray(response.data.proposals)) {
+      setValueProposal(response.data.proposals);
+      alert("Kolme uutta arvoehdotusta haettu onnistuneesti!");
+    } else {
+      throw new Error("Virheellinen vastaus AI:lta.");
     }
-  };
-  useEffect(() => {
-    fetchInitialValueProposal();
-  }, []);
+  } catch (error) {
+    console.error("Virhe arvoehdotusten hakemisessa AI:lta:", error);
+    alert("Arvoehdotusten hakeminen epäonnistui. Yritä uudelleen.");
+  }
+};
 
   /** Remove a proposal from the list */
   const handleRemoveProposal = (proposalName: string) => {
@@ -270,6 +273,14 @@ const ChangeValues: React.FC = () => {
     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
   >
     Palaa päivittämättä arvoja
+  </button>
+
+    {/* Lisää Arvoehdotuksia Button */}
+    <button
+    onClick={fetchThreeValueProposals}
+    className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+  >
+    Lisää arvoehdotuksia
   </button>
 
   {/* Päivitä arvot Button */}

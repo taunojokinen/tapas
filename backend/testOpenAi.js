@@ -4,7 +4,13 @@ const dotenv = require("dotenv");
 // Load environment variables
 dotenv.config();
 
-const client = new OpenAI();
+console.log("This is OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
+
+
+// Initialize OpenAI client with the API key
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY, // Pass the API key explicitly
+});
 
 (async () => {
   try {
