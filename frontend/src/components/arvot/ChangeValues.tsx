@@ -9,22 +9,21 @@ const rolesForAI = [
   "Quality Manager",
 ]
 
-const initialValueProposal = [
-  { tärkeys: 0,
+const initialValueProposal: Proposal[] = [
+  {
     nimi: "Taloudellinen vastuullisuus",
-    kuvaus:
-      "Pyrimme varmistamaan yrityksen kestävän taloudellisen kasvun ja resurssien tehokkaan käytön, jotta voimme tarjota pitkäaikaista arvoa asiakkaillemme, työntekijöillemme ja sidosryhmillemme.",
-  },
-  { tärkeys: 0,
-    nimi: "Tuloskeskeisyys",
-    kuvaus:
-      "Keskitymme tavoitteiden saavuttamiseen ja liiketoiminnan tulosten parantamiseen, jotta voimme jatkuvasti ylittää odotukset ja pysyä kilpailukykyisinä markkinoilla.",
+    kuvaus: "Pyrimme varmistamaan yrityksen kestävän taloudellisen kasvun ja resurssien tehokkaan käytön, jotta voimme tarjota pitkäaikaista arvoa asiakkaillemme, työntekijöillemme ja sidosryhmillemme.",
+    role: undefined, // Add role as undefined
   },
   {
-    tärkeys: 0,
+    nimi: "Tuloskeskeisyys",
+    kuvaus: "Keskitymme tavoitteiden saavuttamiseen ja liiketoiminnan tulosten parantamiseen, jotta voimme jatkuvasti ylittää odotukset ja pysyä kilpailukykyisinä markkinoilla.",
+    role: undefined,
+  },
+  {
     nimi: "Läpinäkyvyys",
-    kuvaus:
-      "Toimimme avoimesti ja rehellisesti kaikissa taloudellisissa prosesseissamme, jotta voimme rakentaa luottamusta asiakkaidemme, työntekijöidemme ja sijoittajiemme keskuudessa.",
+    kuvaus: "Toimimme avoimesti ja rehellisesti kaikissa taloudellisissa prosesseissamme, jotta voimme rakentaa luottamusta asiakkaidemme, työntekijöidemme ja sijoittajiemme keskuudessa.",
+    role: undefined,
   },
 ];
 
@@ -33,6 +32,13 @@ interface Values {
   nimi: string;
   kuvaus: string;
 }
+
+interface Proposal {
+  nimi: string;
+  kuvaus: string;
+  role?: string; // Optional because initial proposals may not have a role
+}
+
 
 const ChangeValues: React.FC = () => {
   const [values, setValues] = useState<Values[]>([]); // Yrityksen arvot
@@ -90,6 +96,36 @@ const fetchValueProposals = async () => {
   } catch (error) {
     console.error("Virhe arvoehdotusten hakemisessa AI:lta:", error);
     alert("Arvoehdotusten hakeminen epäonnistui. Yritä uudelleen.");
+  }
+};
+
+const valueProposals = async () => {
+  try {
+    setLoading(true); // Start loading
+    const allProposals: Proposal[] = [];
+
+    for (let i = 0; i < rolesForAI.length; i++) {
+      const response = await axios.post("http://localhost:5000/api/ai/generate-proposals", {
+        prompt: `Have a strict role of "${rolesForAI[i]}". Generate a list of three company values with descriptions. Keep strong focus in your role. Answer in Finnish. Answer as a JSON with header arvot: and two parameters nimi: and kuvaus:`
+      });
+
+      if (response.data && Array.isArray(response.data.proposals)) {
+        allProposals.push(...response.data.proposals.map((proposal: Proposal) => ({
+          ...proposal,
+          role: rolesForAI[i], // Add the role to each proposal
+        })));
+      } else {
+        throw new Error(`Virheellinen vastaus AI:lta roolille: ${rolesForAI[i]}`);
+      }
+    }
+
+    setValueProposal(allProposals);
+    alert("Kaikki arvoehdotukset haettu onnistuneesti!");
+  } catch (error) {
+    console.error("Virhe arvoehdotusten hakemisessa AI:lta:", error);
+    alert("Arvoehdotusten hakeminen epäonnistui. Yritä uudelleen.");
+  } finally {
+    setLoading(false); // Stop loading
   }
 };
 
@@ -231,35 +267,51 @@ const fetchValueProposals = async () => {
         </div>
       </div>
 
-      {/* Render valueProposal below the heading */}
-      <div className="mb-6">
-        <h2 className="text-xl font-bold mb-4">
-          {rolesForAI[roleIndex]} ehdottaa uusia arvoja
-        </h2>{valueProposal.map((proposal, index) => (
-    <div key={index} className="mb-4 flex items-center gap-4">
-      {/* Buttons in front of the row */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => handleAcceptProposal(proposal.nimi)}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-        >
-           ✔️
-        </button>
-        <button
-          onClick={() => handleRemoveProposal(proposal.nimi)}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-           🗑️
-        </button>
-      </div>
+      {/* Render valueProposal grouped by role */}
+{/* Render valueProposal grouped by role */}
+<div className="mb-6">
+  {rolesForAI.map((role) => {
+    const proposalsForRole = valueProposal.filter(
+      (proposal) => proposal.role === role
+    );
 
-      {/* Proposal details */}
-      <div>
-        <p className="text-lg font-bold">{proposal.nimi}</p>
-        <p className="text-sm">{proposal.kuvaus}</p>
+    return (
+      <div key={role} className="mb-6">
+        <h2 className="text-xl font-bold mb-4">{role} ehdottaa uusia arvoja</h2>
+        {loading ? (
+          <p className="text-sm text-gray-500">Ladataan arvoehdotuksia...</p>
+        ) : proposalsForRole.length > 0 ? (
+          proposalsForRole.map((proposal, index) => (
+            <div key={index} className="mb-4 flex items-center gap-4">
+              {/* Buttons in front of the row */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleAcceptProposal(proposal.nimi)}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  ✔️
+                </button>
+                <button
+                  onClick={() => handleRemoveProposal(proposal.nimi)}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  🗑️
+                </button>
+              </div>
+
+              {/* Proposal details */}
+              <div>
+                <p className="text-lg font-bold">{proposal.nimi}</p>
+                <p className="text-sm">{proposal.kuvaus}</p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>Ei arvoehdotuksia saatavilla.</p>
+        )}
       </div>
-    </div>
-  ))}
+    );
+  })}
 </div>
 
 {/* Back Button and Update Button Container */}
@@ -274,7 +326,7 @@ const fetchValueProposals = async () => {
 
     {/* Lisää Arvoehdotuksia Button */}
     <button
-    onClick={fetchValueProposals}
+    onClick={valueProposals}
     className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
   >
     Lisää arvoehdotuksia
