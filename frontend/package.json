@@ -5,7 +5,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
     "eject": "react-scripts eject"
   },
   "dependencies": {
@@ -14,20 +15,29 @@
     "jwt-decode": "^4.0.0",
     "konva": "^9.3.18",
     "papaparse": "^5.5.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-icons": "^5.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.10.1",
     "react-konva": "^19.0.3",
     "react-router-dom": "^6.30.0",
     "react-scripts": "^5.0.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^29.5.14",
+    "@types/mocha": "^10.0.10",
     "@types/papaparse": "^5.3.15",
-    "@types/react": "^19.1.0",
-    "@types/react-dom": "^19.1.1",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
     "@types/socket.io-client": "^3.0.0",
+    "babel-jest": "^29.7.0",
     "concurrently": "^9.1.2",
-    "typescript": "^5.8.3"
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.3.1",
+    "typescript": "^4.9.5"
   },
   "eslintConfig": {
     "extends": [

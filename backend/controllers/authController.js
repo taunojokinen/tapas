@@ -107,9 +107,11 @@ const logout = async (req, res) => {
     const token = authHeader.split(" ")[1];
 
     try {
+      // Yritetään verifytä token
       const decoded = jwt.verify(token, JWT_SECRET); // Verify the token
       console.log("Decoded Token:", decoded);
 
+      // Jos token on aktiivinen, poistetaan se
       if (activeTokens.has(token)) {
         activeTokens.delete(token);
         return res.status(200).json({ message: "Logout successful" });
@@ -117,9 +119,10 @@ const logout = async (req, res) => {
         return res.status(400).json({ message: "Invalid or expired token" });
       }
     } catch (error) {
+      // Jos token on vanhentunut, sallitaan logout
       if (error.name === "TokenExpiredError") {
-        console.error("Token expired:", error);
-        return res.status(401).json({ message: "Token expired. Please log in again." });
+        console.warn("Token expired, but allowing logout.");
+        return res.status(200).json({ message: "Logout successful (token expired)" });
       } else {
         console.error("Invalid token:", error);
         return res.status(401).json({ message: "Invalid token" });
@@ -130,6 +133,7 @@ const logout = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 const getLoggedInUsers = (req, res) => {
   const loggedInUsers = Array.from(activeTokens.values()).map((user) => ({
