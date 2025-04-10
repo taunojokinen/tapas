@@ -62,15 +62,6 @@ const Arvot: React.FC = () => {
           <p>Ei arvoja näytettäväksi.</p>
         )}
 
-        <div className="mt-4">
-          {loading ? (
-            <p>Ladataan...</p>
-          ) : error ? (
-            <p className="text-red-500">{error}</p>
-          ) : (
-            <p>Data loaded successfully!</p>
-          )}
-        </div>
       </div>
     </>
   );

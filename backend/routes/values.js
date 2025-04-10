@@ -25,7 +25,9 @@ router.post("/", async (req, res) => {
 
   // Replace all values with new ones
 router.put("/", async (req, res) => {
+  
     const { values } = req.body;
+    console.log("Data being sent to the backend:", values);
   
     if (!Array.isArray(values)) {
       return res.status(400).json({ message: "Invalid data format. Expected an array of values." });

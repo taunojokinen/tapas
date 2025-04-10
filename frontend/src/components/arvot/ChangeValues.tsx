@@ -2,25 +2,26 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-enum rolesForAI {
-  ChiefFinancialOfficer = "Chief Financial Officer",
-  DirectorOfMarketing = "Director of Marketing",
-  PersonnelManager = "Personnel Manager",
-  QualityManager = "Quality Manager",
-}
+const rolesForAI = [
+  "Chief Financial Officer",
+  "Director of Marketing",
+  "Personnel Manager",
+  "Quality Manager",
+]
 
 const initialValueProposal = [
-  {
+  { tärkeys: 0,
     nimi: "Taloudellinen vastuullisuus",
     kuvaus:
       "Pyrimme varmistamaan yrityksen kestävän taloudellisen kasvun ja resurssien tehokkaan käytön, jotta voimme tarjota pitkäaikaista arvoa asiakkaillemme, työntekijöillemme ja sidosryhmillemme.",
   },
-  {
+  { tärkeys: 0,
     nimi: "Tuloskeskeisyys",
     kuvaus:
       "Keskitymme tavoitteiden saavuttamiseen ja liiketoiminnan tulosten parantamiseen, jotta voimme jatkuvasti ylittää odotukset ja pysyä kilpailukykyisinä markkinoilla.",
   },
   {
+    tärkeys: 0,
     nimi: "Läpinäkyvyys",
     kuvaus:
       "Toimimme avoimesti ja rehellisesti kaikissa taloudellisissa prosesseissamme, jotta voimme rakentaa luottamusta asiakkaidemme, työntekijöidemme ja sijoittajiemme keskuudessa.",
@@ -31,12 +32,12 @@ interface Values {
   tärkeys: number;
   nimi: string;
   kuvaus: string;
-  _id: string;
 }
 
 const ChangeValues: React.FC = () => {
   const [values, setValues] = useState<Values[]>([]); // Yrityksen arvot
   const [valueProposal, setValueProposal] = useState(initialValueProposal);
+  const [roleIndex, setRoleIndex] = useState(0); // Index for rolesForAI
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const navigate = useNavigate(); // Initialize useNavigate
@@ -71,10 +72,12 @@ const ChangeValues: React.FC = () => {
   };
 
 /** Fetch 3 value proposals from AI */
-const fetchThreeValueProposals = async () => {
+const fetchValueProposals = async () => {
   try {
     const response = await axios.post("http://localhost:5000/api/ai/generate-proposals", {
-      "prompt": "Role: financial-manager. Generate a list of six company values with descriptions. Answer in Finnish. Answer as a json with header arvot: and two parameters nimi: and kuvaus:"
+      prompt: `Have a strict role of "${rolesForAI[roleIndex]}". Generate a list of three company values 
+      with descriptions. Keep strong focus in your role. Answer in Finnish. Answer as a JSON with header 
+      arvot: and two parameters nimi: and kuvaus:`
     });
 
     // Assuming the API returns an array of proposals
@@ -162,8 +165,7 @@ const fetchThreeValueProposals = async () => {
     const newValue: Values = {
       tärkeys: 0,
       nimi: "Uusi arvo",
-      kuvaus: "Kuvaus uudelle arvolle",
-      _id: Math.random().toString(36).substr(2, 9), // Generate a random ID
+      kuvaus: "Kuvaus uudelle arvolle"
     };
     setValues((prevValues) => [...prevValues, newValue]);
   };
@@ -182,45 +184,40 @@ const fetchThreeValueProposals = async () => {
           <h2 className="text-xl font-bold mb-4">Yrityksen nykyiset arvot</h2>
           {values.length > 0 ? (
             values.map((value, index) => (
-              <div key={value._id || index} className="mb-4 flex items-center gap-4">
-        {/* Buttons in a row */}
-        <div className="flex items-center gap-2">
-          {/* Up Arrow */}
-          <button
-            onClick={() => handleMoveValue(index, "up")}
-            disabled={index === 0} // Disable for the first item
-            className={`px-2 py-1 rounded ${
-              index === 0 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"
-            }`}
-          >
-            ⬆️
-          </button>
-          {/* Down Arrow */}
-          <button
-            onClick={() => handleMoveValue(index, "down")}
-            disabled={index === values.length - 1} // Disable for the last item
-            className={`px-2 py-1 rounded ${
-              index === values.length - 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"
-            }`}
-          >
-            ⬇️
-          </button>
-                  {/* Remove Button */}
-        <button
-          onClick={() => handleRemoveValue(index)}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-           🗑️
-        </button>
-        </div>
-                <p className="text-lg font-bold">{index+1} {value.nimi}</p>
-                <p className="text-sm">{value.kuvaus}</p>
-                <p className="text-sm text-gray-500">
-                </p>
+              <div key={index} className="mb-4 flex items-center gap-4">
+                {/* Buttons in front of the row */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleMoveValue(index, "up")}
+                    disabled={index === 0}
+                    className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    onClick={() => handleMoveValue(index, "down")}
+                    disabled={index === values.length - 1}
+                    className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    ↓
+                  </button>
+                  <button
+                    onClick={() => handleRemoveValue(index)}
+                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    🗑️
+                  </button>
+                </div>
+
+                {/* Value details */}
+                <div>
+                  <p className="text-lg font-bold">{value.nimi}</p>
+                  <p className="text-sm">{value.kuvaus}</p>
+                </div>
               </div>
             ))
           ) : (
-            <p>Ei arvoja näytettäväksi.</p>
+            <p>Ei arvoja saatavilla.</p>
           )}
 
 <div className="mt-4">
@@ -237,7 +234,7 @@ const fetchThreeValueProposals = async () => {
       {/* Render valueProposal below the heading */}
       <div className="mb-6">
         <h2 className="text-xl font-bold mb-4">
-          {rolesForAI.ChiefFinancialOfficer} ehdottaa uusia arvoja
+          {rolesForAI[roleIndex]} ehdottaa uusia arvoja
         </h2>{valueProposal.map((proposal, index) => (
     <div key={index} className="mb-4 flex items-center gap-4">
       {/* Buttons in front of the row */}
@@ -277,7 +274,7 @@ const fetchThreeValueProposals = async () => {
 
     {/* Lisää Arvoehdotuksia Button */}
     <button
-    onClick={fetchThreeValueProposals}
+    onClick={fetchValueProposals}
     className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
   >
     Lisää arvoehdotuksia
