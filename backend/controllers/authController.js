@@ -4,7 +4,8 @@ const User = require('../models/Userlist'); // Assuming you have a User model de
 const { JWT_SECRET, JWT_EXPIRES_IN } = require('../config');
 
 // Define activeTokens as a Map to store active tokens and user info
-const activeTokens = new Map();
+const activeTokens = require("../utils/activeTokens");
+
 
 const login = async(req, res) => {
 
@@ -142,4 +143,4 @@ const getLoggedInUsers = (req, res) => {
   }));
   return res.status(200).json({ loggedInUsers });
 };
-module.exports = { login, logout, getLoggedInUsers, changePassword };
+module.exports = { login, logout, getLoggedInUsers, changePassword, activeTokens };
