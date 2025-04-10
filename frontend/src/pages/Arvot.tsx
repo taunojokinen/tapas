@@ -56,7 +56,6 @@ const Arvot: React.FC = () => {
             <div key={value._id || index} className="mb-4">
               <p className="text-lg font-bold">{value.nimi}</p>
               <p className="text-sm">{value.kuvaus}</p>
-              <p className="text-sm text-gray-500">Tärkeys: {value.tärkeys}</p>
             </div>
           ))
         ) : (

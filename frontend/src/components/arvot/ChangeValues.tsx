@@ -70,22 +70,25 @@ const ChangeValues: React.FC = () => {
     navigate("/arvot"); // Navigate to the Arvot page
   };
 
-  const fetchInitialValueProposal = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/ai/generate-proposals`,
-        {
-          prompt: "Generate a list of company values with descriptions.",
-        }
-      );
-      setValueProposal(response.data.proposals); // Assuming the API returns an array of proposals
-    } catch (error) {
-      console.error("Error fetching AI-generated proposals:", error);
+/** Fetch 3 value proposals from AI */
+const fetchThreeValueProposals = async () => {
+  try {
+    const response = await axios.post("http://localhost:5000/api/ai/generate-proposals", {
+      "prompt": "Role: financial-manager. Generate a list of six company values with descriptions. Answer in Finnish. Answer as a json with header arvot: and two parameters nimi: and kuvaus:"
+    });
+
+    // Assuming the API returns an array of proposals
+    if (response.data && Array.isArray(response.data.proposals)) {
+      setValueProposal(response.data.proposals);
+      alert("Kolme uutta arvoehdotusta haettu onnistuneesti!");
+    } else {
+      throw new Error("Virheellinen vastaus AI:lta.");
     }
-  };
-  useEffect(() => {
-    fetchInitialValueProposal();
-  }, []);
+  } catch (error) {
+    console.error("Virhe arvoehdotusten hakemisessa AI:lta:", error);
+    alert("Arvoehdotusten hakeminen epäonnistui. Yritä uudelleen.");
+  }
+};
 
   /** Remove a proposal from the list */
   const handleRemoveProposal = (proposalName: string) => {
@@ -144,6 +147,32 @@ const ChangeValues: React.FC = () => {
     }
   };
   console.log(values); // Log the company name
+  const handleMoveValue = (index: number, direction: "up" | "down") => {
+    setValues((prevValues) => {
+      const newValues = [...prevValues];
+      const [movedValue] = newValues.splice(index, 1); // Remove the value at the current index
+      const newIndex = direction === "up" ? index - 1 : index + 1; // Calculate the new index
+      newValues.splice(newIndex, 0, movedValue); // Insert the value at the new index
+      return newValues;
+    });
+  };
+  
+  /** Add a new value to the list */
+  const handleAddValue = () => {
+    const newValue: Values = {
+      tärkeys: 0,
+      nimi: "Uusi arvo",
+      kuvaus: "Kuvaus uudelle arvolle",
+      _id: Math.random().toString(36).substr(2, 9), // Generate a random ID
+    };
+    setValues((prevValues) => [...prevValues, newValue]);
+  };
+
+  /** Remove a value from the list */
+  const handleRemoveValue = (index: number) => {
+    setValues((prevValues) => prevValues.filter((_, i) => i !== index));
+  };
+
   return (
     <div className="relative">
       <h1 className="text-2xl font-bold mb-4">PÄIVITETÄÄN ARVOT</h1>
@@ -153,17 +182,55 @@ const ChangeValues: React.FC = () => {
           <h2 className="text-xl font-bold mb-4">Yrityksen nykyiset arvot</h2>
           {values.length > 0 ? (
             values.map((value, index) => (
-              <div key={value._id || index} className="mb-4">
-                <p className="text-lg font-bold">{value.nimi}</p>
+              <div key={value._id || index} className="mb-4 flex items-center gap-4">
+        {/* Buttons in a row */}
+        <div className="flex items-center gap-2">
+          {/* Up Arrow */}
+          <button
+            onClick={() => handleMoveValue(index, "up")}
+            disabled={index === 0} // Disable for the first item
+            className={`px-2 py-1 rounded ${
+              index === 0 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"
+            }`}
+          >
+            ⬆️
+          </button>
+          {/* Down Arrow */}
+          <button
+            onClick={() => handleMoveValue(index, "down")}
+            disabled={index === values.length - 1} // Disable for the last item
+            className={`px-2 py-1 rounded ${
+              index === values.length - 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"
+            }`}
+          >
+            ⬇️
+          </button>
+                  {/* Remove Button */}
+        <button
+          onClick={() => handleRemoveValue(index)}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
+           🗑️
+        </button>
+        </div>
+                <p className="text-lg font-bold">{index+1} {value.nimi}</p>
                 <p className="text-sm">{value.kuvaus}</p>
                 <p className="text-sm text-gray-500">
-                  Tärkeys: {value.tärkeys}
                 </p>
               </div>
             ))
           ) : (
             <p>Ei arvoja näytettäväksi.</p>
           )}
+
+<div className="mt-4">
+    <button
+      onClick={() => handleAddValue()}
+      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+    >
+      Lisää arvo
+    </button>
+  </div>
         </div>
       </div>
 
@@ -171,60 +238,59 @@ const ChangeValues: React.FC = () => {
       <div className="mb-6">
         <h2 className="text-xl font-bold mb-4">
           {rolesForAI.ChiefFinancialOfficer} ehdottaa uusia arvoja
-        </h2>
-        {valueProposal.map((proposal, index) => (
-          <div key={index} className="mb-4">
-            <p className="text-lg font-bold">{proposal.nimi}</p>
-            <p className="text-sm">{proposal.kuvaus}</p>
-
-            {/* Buttons for each proposal */}
-            <div className="flex gap-2 mt-2">
-              <button
-                onClick={() => handleAcceptProposal(proposal.nimi)}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-              >
-                Hyväksy ehdotus
-              </button>
-              <button
-                onClick={() => handleRemoveProposal(proposal.nimi)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Poista ehdotus
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-4">
-        {loading ? (
-          <p>Ladataan...</p>
-        ) : error ? (
-          <p className="text-red-500">{error}</p>
-        ) : (
-          <p>Data loaded successfully!</p>
-        )}
-      </div>
-
-      {/* Back Button */}
-      <div className="absolute bottom-4 right-4">
+        </h2>{valueProposal.map((proposal, index) => (
+    <div key={index} className="mb-4 flex items-center gap-4">
+      {/* Buttons in front of the row */}
+      <div className="flex gap-2">
         <button
-          onClick={handleBack}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Palaa päivittämättä arvoja
-        </button>
-      </div>
-
-      {/* Päivitä arvot Button */}
-      <div className="absolute bottom-4 left-4">
-        <button
-          onClick={updateValues}
+          onClick={() => handleAcceptProposal(proposal.nimi)}
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
-          Päivitä arvot
+           ✔️
+        </button>
+        <button
+          onClick={() => handleRemoveProposal(proposal.nimi)}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
+           🗑️
         </button>
       </div>
+
+      {/* Proposal details */}
+      <div>
+        <p className="text-lg font-bold">{proposal.nimi}</p>
+        <p className="text-sm">{proposal.kuvaus}</p>
+      </div>
+    </div>
+  ))}
+</div>
+
+{/* Back Button and Update Button Container */}
+<div className="flex justify-between mt-8">
+  {/* Back Button */}
+  <button
+    onClick={handleBack}
+    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+  >
+    Palaa päivittämättä arvoja
+  </button>
+
+    {/* Lisää Arvoehdotuksia Button */}
+    <button
+    onClick={fetchThreeValueProposals}
+    className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+  >
+    Lisää arvoehdotuksia
+  </button>
+
+  {/* Päivitä arvot Button */}
+  <button
+    onClick={updateValues}
+    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+  >
+    Päivitä arvot
+  </button>
+</div>
     </div>
   );
 };
