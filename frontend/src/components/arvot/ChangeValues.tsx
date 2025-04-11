@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Values, Proposal } from "../../types/types";
 
 const rolesForAI = [
   "Chief Financial Officer",
@@ -27,17 +28,7 @@ const initialValueProposal: Proposal[] = [
   },
 ];
 
-interface Values {
-  tärkeys: number;
-  nimi: string;
-  kuvaus: string;
-}
 
-interface Proposal {
-  nimi: string;
-  kuvaus: string;
-  role?: string; // Optional because initial proposals may not have a role
-}
 
 
 const ChangeValues: React.FC = () => {
@@ -78,26 +69,7 @@ const ChangeValues: React.FC = () => {
   };
 
 /** Fetch 3 value proposals from AI */
-const fetchValueProposals = async () => {
-  try {
-    const response = await axios.post("http://localhost:5000/api/ai/generate-proposals", {
-      prompt: `Have a strict role of "${rolesForAI[roleIndex]}". Generate a list of three company values 
-      with descriptions. Keep strong focus in your role. Answer in Finnish. Answer as a JSON with header 
-      arvot: and two parameters nimi: and kuvaus:`
-    });
 
-    // Assuming the API returns an array of proposals
-    if (response.data && Array.isArray(response.data.proposals)) {
-      setValueProposal(response.data.proposals);
-      alert("Kolme uutta arvoehdotusta haettu onnistuneesti!");
-    } else {
-      throw new Error("Virheellinen vastaus AI:lta.");
-    }
-  } catch (error) {
-    console.error("Virhe arvoehdotusten hakemisessa AI:lta:", error);
-    alert("Arvoehdotusten hakeminen epäonnistui. Yritä uudelleen.");
-  }
-};
 
 const valueProposals = async () => {
   try {
