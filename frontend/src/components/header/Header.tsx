@@ -1,71 +1,17 @@
+// Header.tsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../pictures/logo.png";
+import useAuth from "../../hooks/useAuth"; // Import the custom hook
 
 const Header: React.FC = () => {
-  const [username, setUsername] = useState("");
+  const { token, username, error, handleLogin, handleLogout } = useAuth();
+  const [loginUsername, setLoginUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("token") || ""); // Initialize token from localStorage
 
-  const handleLogin = async (e: React.FormEvent) => {
-    console.log("Login button clicked");
+  const handleSubmitLogin = (e: React.FormEvent) => {
     e.preventDefault();
-
-    setError(""); // Clear previous errors
-
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        }
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
-      }
-
-      const data = await response.json();
-      console.log("Login Response:", data); // Debug the response
-      localStorage.setItem("token", data.token); // Store the token in localStorage
-      localStorage.setItem("role", data.role); // Store the user's role in localStorage
-      setToken(data.token); // Save the token in state
-      alert("Login successful!");
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
-  const handleLogout = async () => {
-    setError(""); // Clear previous errors
-
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/auth/logout`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`, // Send the token in the Authorization header
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Logout failed");
-      }
-
-      setToken(""); // Clear the token from state
-      localStorage.removeItem("token"); // Remove the token from localStorage
-      alert("Logout successful!");
-    } catch (err: any) {
-      setError(err.message);
-    }
+    handleLogin(loginUsername, password);
   };
 
   return (
@@ -78,14 +24,20 @@ const Header: React.FC = () => {
 
       {/* Conditional Rendering for Login/Logout/Change Password */}
       <div className="flex items-center space-x-4">
+        {token && username && (
+          <span className="text-white">Tervetuloa, {username}!</span>
+        )}
+
         {!token ? (
-          // Login Form
-          <form onSubmit={handleLogin} className="flex items-center space-x-2">
+          <form
+            onSubmit={handleSubmitLogin}
+            className="flex items-center space-x-2"
+          >
             <input
               type="text"
               placeholder="Käyttäjänimi"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={loginUsername}
+              onChange={(e) => setLoginUsername(e.target.value)}
               required
               className="px-4 py-2 text-sm border rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
@@ -105,7 +57,6 @@ const Header: React.FC = () => {
             </button>
           </form>
         ) : (
-          // Logout and Change Password Buttons
           <>
             <button
               onClick={handleLogout}
@@ -123,7 +74,6 @@ const Header: React.FC = () => {
         )}
       </div>
 
-      {/* Error Message */}
       {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
     </header>
   );
