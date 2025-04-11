@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Values, Proposal } from "../../types/types";
+import { fetchValueProposals } from "./AIProposals";
+
 
 const rolesForAI = [
   "Chief Financial Officer",
@@ -70,7 +72,19 @@ const ChangeValues: React.FC = () => {
 
 /** Fetch 3 value proposals from AI */
 
-
+const handleFetchProposals = async () => {
+  try {
+    setLoading(true);
+    const proposals = await fetchValueProposals();
+    setValueProposal(proposals);
+    alert("Kaikki arvoehdotukset haettu onnistuneesti!");
+  } catch (error) {
+    console.error("Virhe arvoehdotusten hakemisessa AI:lta:", error);
+    alert("Arvoehdotusten hakeminen epäonnistui. Yritä uudelleen.");
+  } finally {
+    setLoading(false);
+  }
+};
 const valueProposals = async () => {
   try {
     setLoading(true); // Start loading
@@ -303,7 +317,12 @@ const valueProposals = async () => {
   >
     Lisää arvoehdotuksia
   </button>
-
+  <button
+        onClick={handleFetchProposals}
+        className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+      >
+        Lisää arvoehdotuksia - test
+      </button>
   {/* Päivitä arvot Button */}
   <button
     onClick={updateValues}
