@@ -8,7 +8,7 @@ const { OPENAI_API_KEY } = require('../config');
 dotenv.config();
 
 // Log the API key for debugging
-console.log("This is OPENAI_API_KEY:", OPENAI_API_KEY);
+//console.log("This is OPENAI_API_KEY:", OPENAI_API_KEY);
 
 // Initialize OpenAI client
 const client = new OpenAI({
@@ -35,9 +35,9 @@ router.post("/generate-proposals", async (req, res) => {
       throw new Error("No valid output text received from OpenAI API");
     }
 
-    // Sanitize the response to remove invalid characters
-    outputText = outputText.replace(/[^\x20-\x7E]/g, ""); // Remove non-ASCII characters
-    console.log("Sanitized Output Text:", outputText);
+// Sanitize the response to remove invalid characters but allow Scandinavian characters
+outputText = outputText.replace(/[^\x20-\x7EäöåÄÖÅ]/g, ""); // Allow ä, ö, å, Ä, Ö, Å
+console.log("Sanitized Output Text:", outputText);
 
     // Parse the JSON string into an object
     let parsedData;
@@ -58,5 +58,7 @@ router.post("/generate-proposals", async (req, res) => {
     res.status(500).json({ error: "Failed to generate proposals. Please try again." });
   }
 });
+
+
 
 module.exports = router;

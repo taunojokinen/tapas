@@ -18,6 +18,7 @@ const valuesRoutes = require("./routes/values"); // Tuo arvotietojen reitit
 const aiRoutes = require("./routes/aiRoutes"); // Import the AI routes
 const authRoutes = require("./routes/authRoutes"); // Tuo autentikaatioreitit
 const userRoutes = require("./routes/userRoutes"); // Tuo käyttäjäreitit
+const valueProposalRoutes = require("./routes/valueProposalRoutes"); // Tuo valueProposalRoutes
 
 const app = express();
 app.use(cors());
@@ -93,6 +94,7 @@ app.use("/api/userlist", userlistRoutes); // Käyttäjälistareitit käyttöön
 
 app.use("/api/values", valuesRoutes); // Arvotietojen reitit käyttöön
 app.use("/api/ai", aiRoutes); // AI-reitit käyttöön
+app.use("/api/valueproposals", valueProposalRoutes); // valueProposalRoutes käyttöön
 
 // Login endpoint
 // Routes
