@@ -24,6 +24,9 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 
+// Initialize activeTokens map once when the app starts
+app.locals.activeTokens = new Map();
+
 dotenv.config(); // Lataa ympäristömuuttujat .env-tiedostosta
 
 // Connect to the database
