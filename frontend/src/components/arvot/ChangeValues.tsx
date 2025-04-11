@@ -75,9 +75,11 @@ const ChangeValues: React.FC = () => {
 const handleFetchProposals = async () => {
   try {
     setLoading(true);
-    const proposals = await fetchValueProposals();
-    setValueProposal(proposals);
-    alert("Kaikki arvoehdotukset haettu onnistuneesti!");
+
+    // Iterate over the async generator and update state for each proposal
+    for await (const proposal of fetchValueProposals()) {
+      setValueProposal((prevProposals) => [...prevProposals, proposal]);
+    }
   } catch (error) {
     console.error("Virhe arvoehdotusten hakemisessa AI:lta:", error);
     alert("Arvoehdotusten hakeminen epäonnistui. Yritä uudelleen.");
@@ -154,7 +156,7 @@ const valueProposals = async () => {
         )
       );
 
-      alert(`Arvo ${index + 1} korvattiin onnistuneesti.`);
+      //alert(`Arvo ${index + 1} korvattiin onnistuneesti.`);
     }
   };
 
@@ -229,15 +231,39 @@ const valueProposals = async () => {
                   >
                     🗑️
                   </button>
+                  <h1><strong>{index + 1}</strong></h1>
                 </div>
+                
 
-                {/* Value details */}
-                <div>
-                  <p className="text-lg font-bold">{value.nimi}</p>
-                  <p className="text-sm">{value.kuvaus}</p>
-                </div>
-              </div>
-            ))
+      {/* Editable Value Details */}
+      <div>
+      
+        <input
+          type="text"
+          value={value.nimi}
+          onChange={(e) =>
+            setValues((prevValues) =>
+              prevValues.map((v, i) =>
+                i === index ? { ...v, nimi: e.target.value } : v
+              )
+            )
+          }
+          className="text-lg font-bold border border-gray-300 rounded px-2 py-1"
+        />
+        <textarea
+          value={value.kuvaus}
+          onChange={(e) =>
+            setValues((prevValues) =>
+              prevValues.map((v, i) =>
+                i === index ? { ...v, kuvaus: e.target.value } : v
+              )
+            )
+          }
+          className="text-sm border border-gray-300 rounded px-2 py-1 mt-1 w-full"
+        />
+      </div>
+    </div>
+  ))
           ) : (
             <p>Ei arvoja saatavilla.</p>
           )}
@@ -310,18 +336,12 @@ const valueProposals = async () => {
     Palaa päivittämättä arvoja
   </button>
 
-    {/* Lisää Arvoehdotuksia Button */}
-    <button
-    onClick={valueProposals}
-    className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-  >
-    Lisää arvoehdotuksia
-  </button>
+
   <button
         onClick={handleFetchProposals}
         className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
       >
-        Lisää arvoehdotuksia - test
+        Lisää arvoehdotuksia
       </button>
   {/* Päivitä arvot Button */}
   <button
@@ -330,8 +350,11 @@ const valueProposals = async () => {
   >
     Päivitä arvot
   </button>
+
+
 </div>
     </div>
+    
   );
 };
 
