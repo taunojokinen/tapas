@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Values, Proposal } from "../../types/types";
 import { fetchValueProposals } from "./AIProposals";
+import RenderCurrentValues from "./RenderCurrentValues";
 
 
 const rolesForAI = [
@@ -202,6 +203,7 @@ const valueProposals = async () => {
   return (
     <div className="relative">
       <h1 className="text-2xl font-bold mb-4">PÄIVITETÄÄN ARVOT</h1>
+      <RenderCurrentValues />
 
       <div className="mt-6">
         <div className="mt-6">
