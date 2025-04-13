@@ -46,6 +46,11 @@ const RenderCurrentValues: React.FC = () => {
     });
   };
   
+  /** Remove a value from the list */
+  const handleRemoveValue = (index: number) => {
+    setValues((prevValues) => prevValues.filter((_, i) => i !== index));
+  };
+
   /** Add a new value to the list */
   const handleAddValue = () => {
     const newValue: Values = {
@@ -56,10 +61,26 @@ const RenderCurrentValues: React.FC = () => {
     setValues((prevValues) => [...prevValues, newValue]);
   };
 
-  /** Remove a value from the list */
-  const handleRemoveValue = (index: number) => {
-    setValues((prevValues) => prevValues.filter((_, i) => i !== index));
-  };
+
+
+    /** Navigate back to the Arvot page */
+    const handleBack = () => {
+        navigate("/arvot"); // Navigate to the Arvot page
+      };
+
+        const updateValues = async () => {
+          try {
+            // Send updated values to the backend
+            const jsonData = { values };
+            console.log("Päivitetyt arvot:", jsonData); // Log the updated values
+            await axios.put(`${process.env.REACT_APP_API_URL}/api/values`, jsonData);
+      
+            alert("Arvot päivitettiin onnistuneesti!");
+          } catch (err) {
+            console.error("Virhe arvotietojen päivittämisessä:", err);
+            alert("Arvojen päivittäminen epäonnistui. Yritä uudelleen.");
+          }
+        };
 
   return (
     <div className="relative">
@@ -95,9 +116,6 @@ const RenderCurrentValues: React.FC = () => {
                   </button>
                   <h1><strong>{index + 1}</strong></h1>
                 </div>
-                
-
-      {/* Editable Value Details */}
       <div>
       
         <input
@@ -132,12 +150,26 @@ const RenderCurrentValues: React.FC = () => {
 
           </div>
           <div className="mt-4">
-    <button
-      onClick={() => handleAddValue()}
-      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-    >
-      Lisää arvo
-    </button>
+          <div className="mt-4 flex flex-wrap gap-4 justify-between">
+  <button
+    onClick={() => handleAddValue()}
+    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+  >
+    Lisää arvo
+  </button>
+  <button
+    onClick={handleBack}
+    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+  >
+    Palaa päivittämättä arvoja
+  </button>
+  <button
+    onClick={updateValues}
+    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+  >
+    Päivitä arvot
+  </button>
+</div>
   </div>
         </div>
       </div>

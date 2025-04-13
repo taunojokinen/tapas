@@ -45,10 +45,7 @@ const ChangeValues: React.FC = () => {
   /** 🔄 Haetaan yrityksen arvot tietokannasta */
 
 
-  /** Navigate back to the Arvot page */
-  const handleBack = () => {
-    navigate("/arvot"); // Navigate to the Arvot page
-  };
+
 
 /** Fetch 3 value proposals from AI */
 
@@ -140,20 +137,6 @@ const valueProposals = async () => {
     }
   };
 
-  const updateValues = async () => {
-    try {
-      // Send updated values to the backend
-      const jsonData = { values };
-      console.log("Päivitetyt arvot:", jsonData); // Log the updated values
-      await axios.put(`${process.env.REACT_APP_API_URL}/api/values`, jsonData);
-
-      alert("Arvot päivitettiin onnistuneesti!");
-    } catch (err) {
-      console.error("Virhe arvotietojen päivittämisessä:", err);
-      alert("Arvojen päivittäminen epäonnistui. Yritä uudelleen.");
-    }
-  };
-  console.log(values); // Log the company name
 
 
   return (
@@ -211,13 +194,7 @@ const valueProposals = async () => {
 
 {/* Back Button and Update Button Container */}
 <div className="flex justify-between mt-8">
-  {/* Back Button */}
-  <button
-    onClick={handleBack}
-    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-  >
-    Palaa päivittämättä arvoja
-  </button>
+
 
 
   <button
@@ -227,12 +204,7 @@ const valueProposals = async () => {
         Lisää arvoehdotuksia
       </button>
   {/* Päivitä arvot Button */}
-  <button
-    onClick={updateValues}
-    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-  >
-    Päivitä arvot
-  </button>
+
 
 
 </div>
