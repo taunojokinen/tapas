@@ -34,11 +34,32 @@ const RenderCurrentValues: React.FC = () => {
     fetchArvot();
   }, [fetchArvot]);
 
-  /** Navigate back to the Arvot page */
-  const handleBack = () => {
-    navigate("/arvot"); // Navigate to the Arvot page
+
+
+  const handleMoveValue = (index: number, direction: "up" | "down") => {
+    setValues((prevValues) => {
+      const newValues = [...prevValues];
+      const [movedValue] = newValues.splice(index, 1); // Remove the value at the current index
+      const newIndex = direction === "up" ? index - 1 : index + 1; // Calculate the new index
+      newValues.splice(newIndex, 0, movedValue); // Insert the value at the new index
+      return newValues;
+    });
+  };
+  
+  /** Add a new value to the list */
+  const handleAddValue = () => {
+    const newValue: Values = {
+      tärkeys: 0,
+      nimi: "Uusi arvo",
+      kuvaus: "Kuvaus uudelle arvolle"
+    };
+    setValues((prevValues) => [...prevValues, newValue]);
   };
 
+  /** Remove a value from the list */
+  const handleRemoveValue = (index: number) => {
+    setValues((prevValues) => prevValues.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="relative">
@@ -53,21 +74,21 @@ const RenderCurrentValues: React.FC = () => {
                 {/* Buttons in front of the row */}
                 <div className="flex gap-2">
                   <button
-                    // onClick={() => handleMoveValue(index, "up")}
+                    onClick={() => handleMoveValue(index, "up")}
                     disabled={index === 0}
                     className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                   >
                     ↑
                   </button>
                   <button
-                    // onClick={() => handleMoveValue(index, "down")}
+                    onClick={() => handleMoveValue(index, "down")}
                     disabled={index === values.length - 1}
                     className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                   >
                     ↓
                   </button>
                   <button
-                    // onClick={() => handleRemoveValue(index)}
+                    onClick={() => handleRemoveValue(index)}
                     className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                   >
                     🗑️
@@ -110,6 +131,14 @@ const RenderCurrentValues: React.FC = () => {
           )}
 
           </div>
+          <div className="mt-4">
+    <button
+      onClick={() => handleAddValue()}
+      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+    >
+      Lisää arvo
+    </button>
+  </div>
         </div>
       </div>
 
