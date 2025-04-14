@@ -1,11 +1,15 @@
 const mongoose = require("mongoose");
 
-const ValueProposalSchema = new mongoose.Schema({
+const Values = new mongoose.Schema({
     nimi: { type: String, required: true },
     kuvaus: { type: String, required: true },
-    role: { type: String, required: false }, // Optional role field
 });
 
-const ValueProposals = mongoose.model("ValuePropoosals", ValueProposalSchema);
+const ValueProposalSchema = new mongoose.Schema({
+    role: { type: String, required: true },
+    values: { type: [Values], required: true }, // Array of Values
+});
+
+const ValueProposals = mongoose.model("ValueProposals", ValueProposalSchema);
 
 module.exports = ValueProposals;
