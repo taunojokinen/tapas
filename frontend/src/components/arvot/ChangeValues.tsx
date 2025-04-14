@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Values, Proposal } from "../../types/types";
-import { fetchValueProposals } from "./AIProposals";
+//import { fetchValueProposals } from "./AIProposals";
 import RenderCurrentValues from "./RenderCurrentValues";
+import RenderAIProposals from "./AIProposals";
 
 
 const rolesForAI = [
@@ -41,29 +42,6 @@ const ChangeValues: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const navigate = useNavigate(); // Initialize useNavigate
-
-  /** 🔄 Haetaan yrityksen arvot tietokannasta */
-
-
-
-
-/** Fetch 3 value proposals from AI */
-
-const handleFetchProposals = async () => {
-  try {
-    setLoading(true);
-
-    // Iterate over the async generator and update state for each proposal
-    for await (const proposal of fetchValueProposals()) {
-      setValueProposal((prevProposals) => [...prevProposals, proposal]);
-    }
-  } catch (error) {
-    console.error("Virhe arvoehdotusten hakemisessa AI:lta:", error);
-    alert("Arvoehdotusten hakeminen epäonnistui. Yritä uudelleen.");
-  } finally {
-    setLoading(false);
-  }
-};
 const valueProposals = async () => {
   try {
     setLoading(true); // Start loading
@@ -137,80 +115,20 @@ const valueProposals = async () => {
     }
   };
 
-
-
   return (
     <div className="relative">
       <h1 className="text-2xl font-bold mb-4">PÄIVITETÄÄN ARVOT</h1>
-      <RenderCurrentValues />
-    
+      <RenderCurrentValues values={values} setValues={setValues} />
+      <RenderAIProposals values={values} setValues={setValues} />
 
       {/* Render valueProposal grouped by role */}
 
-<div className="mb-6">
+{/* <div className="mb-6">
   {rolesForAI.map((role) => {
     const proposalsForRole = valueProposal.filter(
-      (proposal) => proposal.role === role
-    );
-
-    return (
-      <div key={role} className="mb-6">
-        <h2 className="text-xl font-bold mb-4">{role} ehdottaa uusia arvoja</h2>
-        {loading ? (
-          <p className="text-sm text-gray-500">Ladataan arvoehdotuksia...</p>
-        ) : proposalsForRole.length > 0 ? (
-          proposalsForRole.map((proposal, index) => (
-            <div key={index} className="mb-4 flex items-center gap-4">
-              {/* Buttons in front of the row */}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleAcceptProposal(proposal.nimi)}
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                >
-                  ✔️
-                </button>
-                <button
-                  onClick={() => handleRemoveProposal(proposal.nimi)}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  🗑️
-                </button>
-              </div>
-
-              {/* Proposal details */}
-              <div>
-                <p className="text-lg font-bold">{proposal.nimi}</p>
-                <p className="text-sm">{proposal.kuvaus}</p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>Ei arvoehdotuksia saatavilla.</p>
-        )}
-      </div>
-    );
-  })}
-</div>
-
-{/* Back Button and Update Button Container */}
-<div className="flex justify-between mt-8">
-
-
-
-  <button
-        onClick={handleFetchProposals}
-        className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-      >
-        Lisää arvoehdotuksia
-      </button>
-  {/* Päivitä arvot Button */}
-
-
-
-</div>
+      (proposal) => proposal.role === role */}
     </div>
-    
-  );
-};
+    );
+  }
 
 export default ChangeValues;

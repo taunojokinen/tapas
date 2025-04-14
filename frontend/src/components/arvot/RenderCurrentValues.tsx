@@ -4,8 +4,8 @@ import axios from "axios";
 import { Values } from "../../types/types";
 
 
-const RenderCurrentValues: React.FC = () => {
-  const [values, setValues] = useState<Values[]>([]); // Yrityksen arvot
+const RenderCurrentValues: React.FC<{ values: Values[]; setValues: React.Dispatch<React.SetStateAction<Values[]>> }> = ({ values, setValues }) => {
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null); // Virhetilanne
   const navigate = useNavigate(); // Initialize useNavigate
