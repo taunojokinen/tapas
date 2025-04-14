@@ -6,14 +6,13 @@ export interface RowData {
   }
 
  export interface Values {
-    tärkeys: number;
     nimi: string;
     kuvaus: string;
+    tärkeys?: number;
   }
   
  export interface Proposal {
-    nimi: string;
-    kuvaus: string;
-    role?: string; // Optional because initial proposals may not have a role
+    role: string;
+    values:Values[]; 
   }
   

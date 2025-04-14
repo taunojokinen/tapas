@@ -1,8 +1,6 @@
 import React, { useState , useEffect} from "react";
 import axios from "axios";
 import { Values, Proposal } from "../../types/types";
-import RenderCurrentValues from "./RenderCurrentValues";
-
 
 const rolesForAI = [
   "Chief Financial Officer",
@@ -11,26 +9,30 @@ const rolesForAI = [
   "Quality Manager",
 ];
 
-const initialValueProposal: Proposal[] = [
-  {
-    nimi: "Taloudellinen vastuullisuus",
-    kuvaus: "Pyrimme varmistamaan yrityksen kestävän taloudellisen kasvun ja resurssien tehokkaan käytön, jotta voimme tarjota pitkäaikaista arvoa asiakkaillemme, työntekijöillemme ja sidosryhmillemme.",
-    role: undefined, // Add role as undefined
-  },
-  {
-    nimi: "Tuloskeskeisyys",
-    kuvaus: "Keskitymme tavoitteiden saavuttamiseen ja liiketoiminnan tulosten parantamiseen, jotta voimme jatkuvasti ylittää odotukset ja pysyä kilpailukykyisinä markkinoilla.",
-    role: undefined,
-  },
-  {
-    nimi: "Läpinäkyvyys",
-    kuvaus: "Toimimme avoimesti ja rehellisesti kaikissa taloudellisissa prosesseissamme, jotta voimme rakentaa luottamusta asiakkaidemme, työntekijöidemme ja sijoittajiemme keskuudessa.",
-    role: undefined,
-  },
-];
 const RenderAIProposals: React.FC<{ values: Values[]; setValues: React.Dispatch<React.SetStateAction<Values[]>> }> = ({ values, setValues }) => {
-  const [valueProposal, setValueProposal] = useState(initialValueProposal);
+  const [valueProposal, setValueProposal] = useState<Proposal[]>([]); // State for AI proposals
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchInitialProposals = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("http://localhost:5000/api/valueproposals");
+        if (response.data && Array.isArray(response.data)) {
+          setValueProposal(response.data); // Assuming the API returns an array of proposals
+        } else {
+          console.error("Invalid response format from API");
+        }
+      } catch (error) {
+        console.error("Error fetching initial proposals:", error);
+        alert("Failed to fetch initial proposals. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitialProposals();
+  }, []);
 async function* fetchValueProposals(): AsyncGenerator<Proposal> {
   for (let i = 0; i < rolesForAI.length; i++) {
     const response = await axios.post("http://localhost:5000/api/ai/generate-proposals", {
@@ -68,13 +70,13 @@ const handleFetchProposals = async () => {
 
 const handleRemoveProposal = (proposalName: string) => {
   setValueProposal((prevProposals) =>
-    prevProposals.filter((proposal) => proposal.nimi !== proposalName)
+    prevProposals.filter((proposal) => proposal.role !== proposalName)
   );
 };
 
 const handleAcceptProposal = (proposalName: string) => {
   const selectedProposal = valueProposal.find(
-    (proposal) => proposal.nimi === proposalName
+    (proposal) => proposal.role === proposalName
   );
 
   if (!selectedProposal) return;
@@ -97,8 +99,8 @@ const handleAcceptProposal = (proposalName: string) => {
         i === index
           ? {
               ...arvo,
-              nimi: selectedProposal.nimi,
-              kuvaus: selectedProposal.kuvaus,
+              nimi: selectedProposal.role,
+              kuvaus: selectedProposal.role,
             }
           : arvo
       )
@@ -107,60 +109,53 @@ const handleAcceptProposal = (proposalName: string) => {
     //alert(`Arvo ${index + 1} korvattiin onnistuneesti.`);
   }
 };
-return rolesForAI.map((role) => {
-  const proposalsForRole = valueProposal.filter((proposal) => proposal.role === role);
-  return (
-    <div key={role} className="mb-6">
-      <h2 className="text-xl font-bold mb-4">{role} ehdottaa uusia arvoja</h2>
-      {loading ? (
-        <p className="text-sm text-gray-500">Ladataan arvoehdotuksia...</p>
-      ) : proposalsForRole.length > 0 ? (
-        proposalsForRole.map((proposal, index) => (
-          <div key={index} className="mb-4 flex items-center gap-4">
-            {/* Buttons in front of the row */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleAcceptProposal(proposal.nimi)}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-              >
-                ✔️
-              </button>
-              <button
-                onClick={() => handleRemoveProposal(proposal.nimi)}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                🗑️
-              </button>
-            </div>
+return (
+  <div>
+    {valueProposal.map((proposal, index) => (
+      <div key={index} className="mb-6">
+        <h2 className="text-xl font-bold mb-4">{proposal.role} ehdottaa uusia arvoja</h2>
+        {proposal.values.map((value, valueIndex) => (
+          <div key={valueIndex} className="mb-4 flex items-center">
+            {/* Accept and Delete Buttons */}
+            <button
+              onClick={() => handleAcceptProposal(proposal.role)}
+              className="mr-2 px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              ✓
+            </button>
+            <button
+              onClick={() => handleRemoveProposal(proposal.role)}
+              className="mr-4 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              🗑️
+            </button>
 
-            {/* Proposal details */}
+            {/* Value Details */}
             <div>
-              <p className="text-lg font-bold">{proposal.nimi}</p>
-              <p className="text-sm">{proposal.kuvaus}</p>
+              <p className="text-lg font-bold">{value.nimi}</p>
+              <p className="text-sm">{value.kuvaus}</p>
             </div>
           </div>
-        ))
-      ) : (
-        <p>Ei arvoehdotuksia saatavilla.</p>
-      )}
+        ))}
+      </div>
+    ))}
+
+    {/* Back Button and Update Button Container */}
+    <div className="flex justify-between mt-8">
+      <button
+        onClick={handleFetchProposals}
+        className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+      >
+        Lisää arvoehdotuksia
+      </button>
+      <button
+        // onClick={handleUpdateValues}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Päivitä arvot
+      </button>
     </div>
-  );
-})}
-
-{/* Back Button and Update Button Container */}
-<div className="flex justify-between mt-8">
-  <button
-    // onClick={handleFetchProposals}
-    className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-  >
-    Lisää arvoehdotuksia
-  </button>
-  <button
-    // onClick={handleUpdateValues}
-    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-  >
-    Päivitä arvot
-  </button>
-</div>
-
+  </div>
+);
+};
 export default RenderAIProposals;

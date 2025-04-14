@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const Values = new mongoose.Schema({
     nimi: { type: String, required: true },
     kuvaus: { type: String, required: true },
+    tärkeys: { type: Number, required: false },
 });
 
 const ValueProposalSchema = new mongoose.Schema({
