@@ -169,19 +169,30 @@ const handleUpdateValues = async () => {
 
 const handleUpdateValuePrposals = React.useCallback(async () => {
   try {
-    // Send updated values to the backend
-    const jsonData = { values: valueProposalUpdate }; // Use the updated proposals
-    console.log("Päivitetyt arvot:", jsonData);
+    // Validate valueProposalUpdate before sending
+    const isValid = valueProposalUpdate.every(
+      (proposal) =>
+        proposal.role &&
+        Array.isArray(proposal.values) &&
+        proposal.values.every((value) => value.nimi && value.kuvaus)
+    );
+
+    if (!isValid) {
+      alert("Data validation failed. Ensure all fields are filled.");
+      console.error("Invalid data:", valueProposalUpdate);
+      return;
+    }
+
+    // Log the data being sent
+    console.log("Päivitetyt arvot:", valueProposalUpdate);
 
     // First, delete the existing proposals
     await axios.delete("http://localhost:5000/api/valueproposals");
     console.log("Existing proposals deleted successfully.");
 
     // Then, post the updated proposals
-    await axios.post("http://localhost:5000/api/valueproposals", jsonData);
+    await axios.post("http://localhost:5000/api/valueproposals", valueProposalUpdate); // Send as an array
     console.log("Updated proposals saved successfully.");
-
- 
 
     alert("Arvot päivitettiin ja tallennettiin onnistuneesti!");
   } catch (err) {
