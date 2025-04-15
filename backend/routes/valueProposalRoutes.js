@@ -66,6 +66,7 @@ router.put("/", async (req, res) => {
 router.post("/", async (req, res) => {
     try {
       const proposals = req.body; // Expect an array of proposals or a single proposal object
+      console.log("Received proposals:", proposals); // Log the received proposals for debugging
   
       // Check if the request body is an array
       if (Array.isArray(proposals)) {

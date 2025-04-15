@@ -7,8 +7,7 @@ const { OPENAI_API_KEY } = require('../config');
 // Load environment variables
 dotenv.config();
 
-// Log the API key for debugging
-//console.log("This is OPENAI_API_KEY:", OPENAI_API_KEY);
+
 
 // Initialize OpenAI client
 const client = new OpenAI({
@@ -18,8 +17,6 @@ const client = new OpenAI({
 
 router.post("/generate-proposals", async (req, res) => {
   try {
-    console.log("POST request received at /api/ai/generate-proposals");
-    console.log("Request body:", req.body);
 
     const prompt = req.body.prompt || "Generate a list of three company values with descriptions. Answer as valid JSON.";
     const response = await client.responses.create({
@@ -38,7 +35,6 @@ router.post("/generate-proposals", async (req, res) => {
 
     // Sanitize the response to remove invalid characters but allow Scandinavian characters
     outputText = outputText.replace(/[^\x20-\x7EäöåÄÖÅ]/g, ""); // Allow ä, ö, å, Ä, Ö, Å
-    console.log("Sanitized Output Text:", outputText);
 
     // Replace invalid key names (e.g., "arvot:", "nimi:", "kuvaus:") with valid ones
     outputText = outputText
@@ -46,7 +42,6 @@ router.post("/generate-proposals", async (req, res) => {
       .replace(/"\s*nimi\s*:\s*"\s*:/gi, '"nimi":')
       .replace(/"\s*kuvaus\s*:\s*"\s*:/gi, '"kuvaus":');
 
-    console.log("Sanitized Keys Output Text:", outputText);
 
     // Parse the JSON string into an object
     let parsedData;

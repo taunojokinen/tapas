@@ -100,9 +100,7 @@ const RenderAIProposals: React.FC<{ values: Values[]; setValues: React.Dispatch<
     }
   };
 
-  useEffect(() => {
-    console.log("Updated valueProposalUpdate:", valueProposalUpdate);
-  }, [valueProposalUpdate]);
+
 
 const handleRemoveProposal = (proposalName: string, value: Values) => {
   setValueProposal((prevProposals) =>
@@ -168,6 +166,39 @@ const handleUpdateValues = async () => {
     alert("Arvojen päivittäminen epäonnistui. Yritä uudelleen.");
   }
 };
+
+const handleUpdateValuePrposals = React.useCallback(async () => {
+  try {
+    // Send updated values to the backend
+    const jsonData = { values: valueProposalUpdate }; // Use the updated proposals
+    console.log("Päivitetyt arvot:", jsonData);
+
+    // First, delete the existing proposals
+    await axios.delete("http://localhost:5000/api/valueproposals");
+    console.log("Existing proposals deleted successfully.");
+
+    // Then, post the updated proposals
+    await axios.post("http://localhost:5000/api/valueproposals", jsonData);
+    console.log("Updated proposals saved successfully.");
+
+ 
+
+    alert("Arvot päivitettiin ja tallennettiin onnistuneesti!");
+  } catch (err) {
+    console.error("Virhe arvotietojen päivittämisessä:", err);
+    alert("Arvojen päivittäminen epäonnistui. Yritä uudelleen.");
+  }
+}, [valueProposalUpdate]);
+
+useEffect(() => {
+  console.log("Updated valueProposalUpdate:", valueProposalUpdate);
+
+  // Update valueProposal with the content of valueProposalUpdate
+  if (valueProposalUpdate.length > 0) {
+    setValueProposal(valueProposalUpdate);
+    handleUpdateValuePrposals()
+  }
+}, [valueProposalUpdate, handleUpdateValuePrposals]);
 
 return (
   <div>
