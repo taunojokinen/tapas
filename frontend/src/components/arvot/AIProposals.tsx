@@ -9,6 +9,11 @@ const rolesForAI = [
   "Quality Manager",
 ];
 
+const aiQuestion = `Generate a list of three company values with descriptions. Keep strong focus in your role. Answer in Finnish.`;
+const aiFormat = `Answer strictly as a valid JSON object with the header "arvot" and two keys "nimi" and "kuvaus". 
+Do not include any additional text or formatting.`;
+const aiPrompt =  `${aiQuestion} ${aiFormat}`;
+
 const RenderAIProposals: React.FC<{ values: Values[]; setValues: React.Dispatch<React.SetStateAction<Values[]>> }> = ({ values, setValues }) => {
   const [valueProposal, setValueProposal] = useState<Proposal[]>([]); // State for initialValueproposals
   const [valueProposalUpdate, setValueProposalUpdate] = useState<Proposal[]>([]); // State for AI proposals
@@ -34,42 +39,70 @@ const RenderAIProposals: React.FC<{ values: Values[]; setValues: React.Dispatch<
 
     fetchInitialProposals();
   }, []);
-  async function* fetchValueProposals(): AsyncGenerator<Proposal> {
-    for (let i = 0; i < rolesForAI.length; i++) {
-      const response = await axios.post("http://localhost:5000/api/ai/generate-proposals", {
-        prompt: `Have a strict role of "${rolesForAI[i]}". Generate a list of three company values with descriptions. Keep strong focus in your role. Answer in Finnish. Answer as a JSON with header arvot: and two parameters nimi: and kuvaus:`,
-      });
-      console.log("AI response:", response.data); // Log the AI response
-      if (response.data && Array.isArray(response.data.proposals)) {
-        for (const proposal of response.data.proposals) {
-          yield {
-            ...proposal,
-            role: rolesForAI[i],
-          };
-        }
-      } else {
-        throw new Error(`Invalid response from AI for role: ${rolesForAI[i]}`);
+  async function* fetchValueProposals(role: string, prompt: string): AsyncGenerator<Proposal> {
+    const response = await axios.post("http://localhost:5000/api/ai/generate-proposals", {
+      prompt: `Have a strict role of "${role}". ${prompt}`,
+    });
+  
+    console.log("AI response for role:", role, response.data);
+  
+    if (response.data && Array.isArray(response.data.proposals)) {
+      for (const proposal of response.data.proposals) {
+        // Wrap the proposal in the expected structure
+        yield {
+          role,
+          values: [
+            {
+              nimi: proposal.nimi,
+              kuvaus: proposal.kuvaus,
+            },
+          ],
+        };
       }
+    } else {
+      throw new Error(`Invalid response from AI for role: ${role}`);
     }
   }
 
-const handleFetchProposals = async () => {
-  try {
-    setLoading(true);
-
-    // Iterate over the async generator and update state for each proposal
-    for await (const proposal of fetchValueProposals()) {
-      console.log("Fetched proposal:", proposal); // Log the fetched proposal
-      setValueProposalUpdate((prevProposals) => [...prevProposals, proposal]);
+  const handleFetchProposals = async () => {
+    try {
+      setLoading(true);
+      console.log(aiPrompt);
+  
+      const newProposals: Record<string, Proposal> = {};
+  
+      // Clear the previous proposals
+      setValueProposalUpdate([]); // Reset the state before fetching new proposals
+      console.log("valueProposalUpdate reset", valueProposalUpdate);
+  
+      for (const role of rolesForAI) {
+        for await (const proposal of fetchValueProposals(role, aiPrompt)) {
+          if (!newProposals[role]) {
+            newProposals[role] = { role, values: [] };
+          }
+  
+          // Validate proposal.values before accessing it
+          if (proposal.values && Array.isArray(proposal.values) && proposal.values.length > 0) {
+            newProposals[role].values.push(proposal.values[0]); // Add the first value
+          } else {
+            console.error(`Invalid proposal.values for role: ${role}`, proposal);
+          }
+        }
+      }
+  
+      // Update the state with grouped proposals
+      setValueProposalUpdate(Object.values(newProposals));
+    } catch (error) {
+      console.error("Error fetching proposals from AI:", error);
+      alert("Failed to fetch proposals. Please try again.");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Virhe arvoehdotusten hakemisessa AI:lta:", error);
-    alert("Arvoehdotusten hakeminen epäonnistui. Yritä uudelleen.");
-  } finally {
-    console.log("Final proposals:", valueProposalUpdate); // Log the final proposals
-    setLoading(false);
-  }
-};
+  };
+
+  useEffect(() => {
+    console.log("Updated valueProposalUpdate:", valueProposalUpdate);
+  }, [valueProposalUpdate]);
 
 const handleRemoveProposal = (proposalName: string, value: Values) => {
   setValueProposal((prevProposals) =>
@@ -139,38 +172,72 @@ const handleUpdateValues = async () => {
 return (
   <div>
     {loading && (
-  <div className="text-center my-4">
-    <p>Ladataan arvoehdotuksia...</p>
-  </div>
-)}
+      <div className="text-center my-4">
+        <p>Ladataan arvoehdotuksia...</p>
+      </div>
+    )}
+
+    {/* Render initial proposals */}
     {valueProposal.map((proposal, index) => (
       <div key={index} className="mb-6">
         <h2 className="text-xl font-bold mb-4">{proposal.role} ehdottaa uusia arvoja</h2>
-        {proposal.values && proposal.values.map((value, valueIndex) => (
-          <div key={valueIndex} className="mb-4 flex items-center">
-            {/* Accept and Delete Buttons */}
-            <button
-              onClick={() => handleAcceptProposal(proposal.role, value)}
-              className="mr-2 px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              ✓
-            </button>
-            <button
-              onClick={() => handleRemoveProposal(proposal.role, value)}
-              className="mr-4 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-            >
-              🗑️
-            </button>
+        {proposal.values &&
+          proposal.values.map((value, valueIndex) => (
+            <div key={valueIndex} className="mb-4 flex items-center">
+              {/* Accept and Delete Buttons */}
+              <button
+                onClick={() => handleAcceptProposal(proposal.role, value)}
+                className="mr-2 px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                ✓
+              </button>
+              <button
+                onClick={() => handleRemoveProposal(proposal.role, value)}
+                className="mr-4 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                🗑️
+              </button>
 
-            {/* Value Details */}
-            <div>
-              <p className="text-lg font-bold">{value.nimi}</p>
-              <p className="text-sm">{value.kuvaus}</p>
+              {/* Value Details */}
+              <div>
+                <p className="text-lg font-bold">{value.nimi}</p>
+                <p className="text-sm">{value.kuvaus}</p>
+              </div>
             </div>
+          ))}
+      </div>
+    ))}
+
+{/* Render updated proposals below */}
+<div className="mt-8">
+  <h2 className="text-2xl font-bold mb-4">Päivitetyt arvoehdotukset</h2>
+  {valueProposalUpdate
+    .reduce((acc: { role: string; values: Values[] }[], proposal) => {
+      // Ensure proposal and values are valid
+      if (!proposal || !proposal.values) return acc;
+
+      // Group proposals by role
+      const existingGroup = acc.find((group) => group.role === proposal.role);
+      if (existingGroup) {
+        existingGroup.values.push(...proposal.values);
+      } else {
+        acc.push({ role: proposal.role, values: proposal.values });
+      }
+      return acc;
+    }, [])
+    .map((group, index) => (
+      <div key={index} className="mb-6">
+        <h3 className="text-xl font-bold mb-4">{group.role} ehdottaa uusia arvoja</h3>
+        {group.values.map((value: Values, valueIndex) => (
+          <div key={valueIndex} className="mb-4">
+            <p className="text-lg font-bold">{value.nimi}</p>
+            <p className="text-sm">{value.kuvaus}</p>
           </div>
         ))}
       </div>
     ))}
+</div>
+
 
     {/* Back Button and Update Button Container */}
     <div className="flex justify-between mt-8">
