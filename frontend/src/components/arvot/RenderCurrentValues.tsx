@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Values } from "../../types/types";
 
-
-const RenderCurrentValues: React.FC<{ values: Values[]; setValues: React.Dispatch<React.SetStateAction<Values[]>> }> = ({ values, setValues }) => {
-
+const RenderCurrentValues: React.FC<{
+  values: Values[];
+  setValues: React.Dispatch<React.SetStateAction<Values[]>>;
+}> = ({ values, setValues }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null); // Virhetilanne
   const navigate = useNavigate(); // Initialize useNavigate
@@ -34,8 +35,6 @@ const RenderCurrentValues: React.FC<{ values: Values[]; setValues: React.Dispatc
     fetchArvot();
   }, [fetchArvot]);
 
-
-
   const handleMoveValue = (index: number, direction: "up" | "down") => {
     setValues((prevValues) => {
       const newValues = [...prevValues];
@@ -45,7 +44,7 @@ const RenderCurrentValues: React.FC<{ values: Values[]; setValues: React.Dispatc
       return newValues;
     });
   };
-  
+
   /** Remove a value from the list */
   const handleRemoveValue = (index: number) => {
     setValues((prevValues) => prevValues.filter((_, i) => i !== index));
@@ -56,35 +55,33 @@ const RenderCurrentValues: React.FC<{ values: Values[]; setValues: React.Dispatc
     const newValue: Values = {
       tärkeys: 0,
       nimi: "Uusi arvo",
-      kuvaus: "Kuvaus uudelle arvolle"
+      kuvaus: "Kuvaus uudelle arvolle",
     };
     setValues((prevValues) => [...prevValues, newValue]);
   };
 
+  /** Navigate back to the Arvot page */
+  const handleBack = () => {
+    navigate("/arvot"); // Navigate to the Arvot page
+  };
 
+  const updateValues = async () => {
+    try {
+      // Send updated values to the backend
+      const jsonData = { values };
+      console.log("Päivitetyt arvot:", jsonData); // Log the updated values
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/values`, jsonData);
 
-    /** Navigate back to the Arvot page */
-    const handleBack = () => {
-        navigate("/arvot"); // Navigate to the Arvot page
-      };
-
-        const updateValues = async () => {
-          try {
-            // Send updated values to the backend
-            const jsonData = { values };
-            console.log("Päivitetyt arvot:", jsonData); // Log the updated values
-            await axios.put(`${process.env.REACT_APP_API_URL}/api/values`, jsonData);
-      
-            alert("Arvot päivitettiin onnistuneesti!");
-          } catch (err) {
-            console.error("Virhe arvotietojen päivittämisessä:", err);
-            alert("Arvojen päivittäminen epäonnistui. Yritä uudelleen.");
-          }
-        };
+      alert("Arvot päivitettiin onnistuneesti!");
+    } catch (err) {
+      console.error("Virhe arvotietojen päivittämisessä:", err);
+      alert("Arvojen päivittäminen epäonnistui. Yritä uudelleen.");
+    }
+  };
 
   return (
     <div className="relative">
-      <h1 className="text-2xl font-bold mb-4">PÄIVITETÄÄN ARVOT</h1>
+      {/* <h1 className="text-2xl font-bold mb-4">PÄIVITETÄÄN ARVOT</h1> */}
 
       <div className="mt-6">
         <div className="mt-6">
@@ -114,66 +111,65 @@ const RenderCurrentValues: React.FC<{ values: Values[]; setValues: React.Dispatc
                   >
                     🗑️
                   </button>
-                  <h1><strong>{index + 1}</strong></h1>
+                  <h1>
+                    <strong>{index + 1}</strong>
+                  </h1>
                 </div>
-      <div>
-      
-        <input
-          type="text"
-          value={value.nimi}
-          onChange={(e) =>
-            setValues((prevValues) =>
-              prevValues.map((v, i) =>
-                i === index ? { ...v, nimi: e.target.value } : v
-              )
-            )
-          }
-          className="text-lg font-bold border border-gray-300 rounded px-2 py-1"
-        />
-        <textarea
-          value={value.kuvaus}
-          onChange={(e) =>
-            setValues((prevValues) =>
-              prevValues.map((v, i) =>
-                i === index ? { ...v, kuvaus: e.target.value } : v
-              )
-            )
-          }
-          className="text-sm border border-gray-300 rounded px-2 py-1 mt-1 w-full"
-        />
-      </div>
-    </div>
-  ))
+                <div>
+                  <input
+                    type="text"
+                    value={value.nimi}
+                    onChange={(e) =>
+                      setValues((prevValues) =>
+                        prevValues.map((v, i) =>
+                          i === index ? { ...v, nimi: e.target.value } : v
+                        )
+                      )
+                    }
+                    className="text-lg font-bold border border-gray-300 rounded px-2 py-1"
+                  />
+                  <textarea
+                    value={value.kuvaus}
+                    onChange={(e) =>
+                      setValues((prevValues) =>
+                        prevValues.map((v, i) =>
+                          i === index ? { ...v, kuvaus: e.target.value } : v
+                        )
+                      )
+                    }
+                    className="text-sm border border-gray-300 rounded px-2 py-1 mt-1 w-full"
+                  />
+                </div>
+              </div>
+            ))
           ) : (
             <p>Ei arvoja saatavilla.</p>
           )}
-
-          </div>
-          <div className="mt-4">
+        </div>
+        <div className="mt-4">
           <div className="mt-4 flex flex-wrap gap-4 justify-between">
-  <button
-    onClick={() => handleAddValue()}
-    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-  >
-    Lisää arvo
-  </button>
-  <button
-    onClick={handleBack}
-    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-  >
-    Palaa päivittämättä arvoja
-  </button>
-  <button
-    onClick={updateValues}
-    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-  >
-    Päivitä arvot
-  </button>
-</div>
-  </div>
+            <button
+              onClick={() => handleAddValue()}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Lisää arvo
+            </button>
+            <button
+              onClick={handleBack}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Palaa päivittämättä arvoja
+            </button>
+            <button
+              onClick={updateValues}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Päivitä arvot
+            </button>
+          </div>
         </div>
       </div>
-
+    </div>
   );
 };
 

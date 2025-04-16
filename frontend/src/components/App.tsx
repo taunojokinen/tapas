@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import ChangePassword from "../pages/ChangePassword";
-import Home from "../pages/Home";
+import YrityksenTavoitteet from "../pages/YrityksenTavoitteet";
 import Arvot from "../pages/Arvot";
 import ChangeValues from "./arvot/ChangeValues";
-import Tavoitteet from "../pages/Tavoitteet";
+import TiiminTavoitteet from "../pages/TiiminTavoitteet";
+import OmatTavoitteet from "../pages/OmatTavoitteet";
 import Tilannekuva from "../pages/Tilannekuva";
 import Ideat from "../pages/Ideat";
 import Aktiviteetit from "../pages/Aktiviteetit";
@@ -41,20 +42,21 @@ const App: React.FC = () => {
         <div className="flex-grow p-8 bg-gray-100 text-gray-800 ml-64 mt-32 flex">
           <div className="bg-white shadow-md rounded-lg p-6 flex-grow flex flex-col">
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<YrityksenTavoitteet />} />
 
               <Route path="/change-password" element={<ChangePassword />} />
-              <Route path="/etusivu" element={<Home />} />
+              <Route path="/etusivu" element={<YrityksenTavoitteet />} />
               <Route path="/arvot" element={<Arvot />} />
               <Route path="/change_values" element={<ChangeValues />} />
-              <Route path="/tavoitteet" element={<Tavoitteet />} />
+              <Route path="/tiimin_tavoitteet" element={<TiiminTavoitteet />} />
+              <Route path="/omat_tavoitteet" element={<OmatTavoitteet />} />
               <Route path="/tilannekuva" element={<Tilannekuva />} />
               <Route path="/ideat" element={<Ideat />} />
               <Route path="/aktiviteetit" element={<Aktiviteetit />} />
               <Route
                 path="/asetukset"
                 element={
-                  <ProtectedRoute allowedRoles={["admin", "manager"]}>
+                  <ProtectedRoute allowedRoles={["admin", "manager"]} >
                     <Asetukset />
                   </ProtectedRoute>
                 }

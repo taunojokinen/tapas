@@ -11,10 +11,10 @@ const nykytila = [
 const visio =
   "Olemme Suomen johtava ohjelmistokehityspalveluiden tarjoaja vuoteen 2030 mennessä.";
 
-const Home: React.FC = () => {
+const YrityksenTavoitteet: React.FC = () => {
   return (
     <div>
-      <h2 className="text-xl font-bold text-gray-800">Home</h2>
+      <h2 className="text-xl font-bold text-gray-800">Yrityksen tavoitteet</h2>
       <div className="flex flex-col space-y-6">
         <div className="bg-white p-4 rounded-lg shadow">
           <h2 className="text-lg font-bold">Perustehtävä</h2>
@@ -35,4 +35,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default YrityksenTavoitteet;

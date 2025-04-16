@@ -11,7 +11,7 @@ interface Selection {
   // Lisää muita kenttiä, jos niitä on
 }
 
-const Tavoitteet: React.FC = () => {
+const TiiminTavoitteet: React.FC = () => {
   const [selections, setSelections] = useState<Selection[]>([]); // Käytetään Selection-tyyppiä
   const [selectionName, setSelectionName] = useState<string>("");
 
@@ -214,4 +214,4 @@ const Tavoitteet: React.FC = () => {
   );
 };
 
-export default Tavoitteet;
+export default TiiminTavoitteet;

@@ -17,15 +17,6 @@ const Navi: React.FC = () => {
       <ul className="flex-grow space-y-4 p-4">
         <li>
           <Link
-            to="/"
-            className="flex items-center px-4 py-3 rounded hover:bg-gray-700"
-          >
-            <FaHome className="text-blue-500 text-2xl mr-4" />
-            <span className="text-lg font-semibold">Home</span>
-          </Link>
-        </li>
-        <li>
-          <Link
             to="/arvot"
             className="flex items-center px-4 py-3 rounded hover:bg-gray-700"
           >
@@ -35,20 +26,39 @@ const Navi: React.FC = () => {
         </li>
         <li>
           <Link
+            to="/"
+            className="flex items-center px-4 py-3 rounded hover:bg-gray-700"
+          >
+            <FaHome className="text-blue-500 text-2xl mr-4" />
+            <span className="text-lg font-semibold">Yrityksen tavoitteet</span>
+          </Link>
+        </li>
+
+        {/* <li>
+          <Link
             to="/change_values"
             className="flex items-center px-4 py-3 rounded hover:bg-gray-700"
           >
             <FaTasks className="text-yellow-500 text-2xl mr-4" />
             <span className="text-lg font-semibold">Change Values</span>
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link
-            to="/tavoitteet"
+            to="/tiimin_tavoitteet"
             className="flex items-center px-4 py-3 rounded hover:bg-gray-700"
           >
             <FaLightbulb className="text-purple-500 text-2xl mr-4" />
-            <span className="text-lg font-semibold">Tavoitteet</span>
+            <span className="text-lg font-semibold">Tiimin tavoitteet</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/omat_tavoitteet"
+            className="flex items-center px-4 py-3 rounded hover:bg-gray-700"
+          >
+            <FaLightbulb className="text-purple-500 text-2xl mr-4" />
+            <span className="text-lg font-semibold">Omat tavoitteet</span>
           </Link>
         </li>
         <li>
