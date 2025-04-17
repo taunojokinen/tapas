@@ -23,12 +23,12 @@ const MyMission: React.FC = () => {
         className="w-full p-2 border border-gray-300 rounded mb-4"
         rows={6}
       />
-      <button
+      {/* <button
         onClick={handleSaveMission}
         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
         Tallenna perustehtävä
-      </button>
+      </button> */}
     </div>
   );
 };

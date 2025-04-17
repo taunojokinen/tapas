@@ -7,12 +7,6 @@ const KeyObjectives: React.FC = () => {
     "Saavuttaa projektin tavoitteet",
   ]);
 
-  // Add a new objective
-  const handleAddObjective = () => {
-    const newObjective = "Uusi tavoite";
-    setObjectives((prevObjectives) => [...prevObjectives, newObjective]);
-  };
-
   // Move an objective up or down
   const handleMoveObjective = (index: number, direction: "up" | "down") => {
     const updatedObjectives = [...objectives];
@@ -70,31 +64,13 @@ const KeyObjectives: React.FC = () => {
             </div>
             {/* Objective text */}
             <div className="flex-grow">
-              <input
-                type="text"
-                value={objective}
-                onChange={(e) =>
-                  setObjectives((prevObjectives) =>
-                    prevObjectives.map((obj, i) =>
-                      i === index ? e.target.value : obj
-                    )
-                  )
-                }
-                className="text-lg font-bold border border-gray-300 rounded px-2 py-1 w-full"
-              />
+              <span>{objective}</span>
             </div>
           </div>
         ))
       ) : (
         <p className="text-gray-500">Ei avaintavoitteita.</p>
       )}
-      {/* Add Objective Button */}
-      <button
-        onClick={handleAddObjective}
-        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 mt-4"
-      >
-        Lisää tavoite
-      </button>
     </div>
   );
 };
