@@ -1,9 +1,20 @@
-import React from 'react'
+import React from "react";
+import MyMission from "../components/omatTavoitteet/mymission"; // Adjust the path if necessary
+
+
 
 const OmatTavoitteet = () => {
+
+
   return (
     <div>
-      Tälle sivulle tulee omat tavoitteet
+            <h2 className="text-xl font-bold text-gray-800">Omat tavoitteet</h2>
+      <div className="flex flex-col space-y-6">
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="text-lg font-bold">Perustehtävä</h2>
+          <MyMission />
+        </div>
+    </div>
     </div>
   )
 }
