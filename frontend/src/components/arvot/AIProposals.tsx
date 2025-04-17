@@ -18,6 +18,7 @@ const RenderAIProposals: React.FC<{ values: Values[]; setValues: React.Dispatch<
   const [valueProposal, setValueProposal] = useState<Proposal[]>([]); // State for initialValueproposals
   const [valueProposalUpdate, setValueProposalUpdate] = useState<Proposal[]>([]); // State for AI proposals
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("Ladataan ehdotuksia...");
 
   useEffect(() => {
     const fetchInitialProposals = async () => {
@@ -76,6 +77,7 @@ const RenderAIProposals: React.FC<{ values: Values[]; setValues: React.Dispatch<
       console.log("valueProposalUpdate reset", valueProposalUpdate);
   
       for (const role of rolesForAI) {
+        setLoadingMessage(`${role} miettii uusia ehdotuksia arvoiksi ...`);
         for await (const proposal of fetchValueProposals(role, aiPrompt)) {
           if (!newProposals[role]) {
             newProposals[role] = { role, values: [] };
@@ -97,6 +99,7 @@ const RenderAIProposals: React.FC<{ values: Values[]; setValues: React.Dispatch<
       alert("Failed to fetch proposals. Please try again.");
     } finally {
       setLoading(false);
+      setLoadingMessage("Ladataan ehdotuksia...");
     }
   };
 
@@ -153,20 +156,6 @@ const handleAcceptProposal = (proposalRole: string, value: Values) => {
   }
 };
 
-const handleUpdateValues = async () => {
-  try {
-    // Send updated values to the backend
-    const jsonData = { values };
-    console.log("Päivitetyt arvot:", jsonData); // Log the updated values
-    await axios.put(`${process.env.REACT_APP_API_URL}/api/values`, jsonData);
-
-    alert("Arvot päivitettiin onnistuneesti!");
-  } catch (err) {
-    console.error("Virhe arvotietojen päivittämisessä:", err);
-    alert("Arvojen päivittäminen epäonnistui. Yritä uudelleen.");
-  }
-};
-
 const handleUpdateValuePrposals = React.useCallback(async () => {
   try {
     // Validate valueProposalUpdate before sending
@@ -213,9 +202,12 @@ useEffect(() => {
 
 return (
   <div>
+    <h2 className="text-xl font-bold mb-4">Ehdotuksia arvoista, joilla voit korvata nykyisiä arvoja</h2>
     {loading && (
       <div className="text-center my-4">
-        <p>Ladataan arvoehdotuksia...</p>
+        <h2>
+        <strong>{loadingMessage}</strong>
+        </h2>
       </div>
     )}
 
@@ -249,53 +241,19 @@ return (
           ))}
       </div>
     ))}
-
-{/* Render updated proposals below */}
-<div className="mt-8">
-  <h2 className="text-2xl font-bold mb-4">Päivitetyt arvoehdotukset</h2>
-  {valueProposalUpdate
-    .reduce((acc: { role: string; values: Values[] }[], proposal) => {
-      // Ensure proposal and values are valid
-      if (!proposal || !proposal.values) return acc;
-
-      // Group proposals by role
-      const existingGroup = acc.find((group) => group.role === proposal.role);
-      if (existingGroup) {
-        existingGroup.values.push(...proposal.values);
-      } else {
-        acc.push({ role: proposal.role, values: proposal.values });
-      }
-      return acc;
-    }, [])
-    .map((group, index) => (
-      <div key={index} className="mb-6">
-        <h3 className="text-xl font-bold mb-4">{group.role} ehdottaa uusia arvoja</h3>
-        {group.values.map((value: Values, valueIndex) => (
-          <div key={valueIndex} className="mb-4">
-            <p className="text-lg font-bold">{value.nimi}</p>
-            <p className="text-sm">{value.kuvaus}</p>
-          </div>
-        ))}
-      </div>
-    ))}
-</div>
-
-
-    {/* Back Button and Update Button Container */}
-    <div className="flex justify-between mt-8">
-      <button
+            <button
         onClick={handleFetchProposals}
         className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
       >
         Lisää arvoehdotuksia
       </button>
-      <button
-        onClick={handleUpdateValues}
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        Päivitä arvot
-      </button>
-    </div>
+      {loading && (
+      <div className="text-center my-4">
+      <h2>
+        <strong>{loadingMessage}</strong>
+      </h2>
+      </div>
+    )}
   </div>
 );
 };

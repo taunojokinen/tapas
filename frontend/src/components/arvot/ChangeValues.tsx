@@ -19,15 +19,8 @@ const ChangeValues: React.FC = () => {
       <h1 className="text-2xl font-bold mb-4">PÄIVITETÄÄN ARVOT</h1>
       <RenderCurrentValues values={values} setValues={setValues} />
       <RenderAIProposals values={values} setValues={setValues} />
-
-      {/* Render valueProposal grouped by role */}
-
-{/* <div className="mb-6">
-  {rolesForAI.map((role) => {
-    const proposalsForRole = valueProposal.filter(
-      (proposal) => proposal.role === role */}
-    </div>
-    );
-  }
+      </div>
+  );
+} 
 
 export default ChangeValues;

@@ -64,7 +64,6 @@ const RenderCurrentValues: React.FC<{
   const handleBack = () => {
     navigate("/arvot"); // Navigate to the Arvot page
   };
-
   const updateValues = async () => {
     try {
       // Send updated values to the backend
@@ -81,7 +80,6 @@ const RenderCurrentValues: React.FC<{
 
   return (
     <div className="relative">
-      {/* <h1 className="text-2xl font-bold mb-4">PÄIVITETÄÄN ARVOT</h1> */}
 
       <div className="mt-6">
         <div className="mt-6">
@@ -154,6 +152,7 @@ const RenderCurrentValues: React.FC<{
             >
               Lisää arvo
             </button>
+
             <button
               onClick={handleBack}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
