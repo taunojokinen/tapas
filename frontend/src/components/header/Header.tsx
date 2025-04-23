@@ -20,6 +20,7 @@ const Header: React.FC = () => {
       <div className="flex items-center space-x-4">
         <img src={logo} alt="Company Logo" className="h-24" />
         <h1 className="text-4xl font-bold text-white">Tapas Johtamisavustin</h1>
+        <h1 className="text-4xl font-bold text-white">Hello</h1>
       </div>
 
       {/* Conditional Rendering for Login/Logout/Change Password */}

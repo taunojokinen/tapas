@@ -1,17 +1,15 @@
-# React build vaihe
-FROM node:18 as build
-WORKDIR /app
-COPY package*.json ./
+# Frontend Dockerfile
+FROM node:18
 
-# Asenna riippuvuudet ja tyypitykset
+WORKDIR /app
+
+COPY package*.json ./
 RUN npm install
-RUN npm install --save-dev @types/react-dom
 
 COPY . .
-RUN npm run build
 
-# Nginx vaihe
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
+ENV CHOKIDAR_USEPOLLING=true
+
+CMD ["npm", "start"]
+
