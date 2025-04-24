@@ -1,17 +1,22 @@
-# React build vaihe
-FROM node:18 as build
+FROM node:18
+
+# Luo työhakemisto
 WORKDIR /app
-COPY package*.json ./
 
-# Asenna riippuvuudet ja tyypitykset
+# Kopioi vain riippuvuustiedostot ja asenna
+COPY package.json package-lock.json* ./
 RUN npm install
-RUN npm install --save-dev @types/react-dom
 
+# Kopioi loppu koodi
 COPY . .
-RUN npm run build
 
-# Nginx vaihe
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Ympäristömuuttujat: hot reload + container access
+ENV CHOKIDAR_USEPOLLING=true
+ENV HOST=0.0.0.0
+ENV WATCHPACK_POLLING=true
+
+# Portti käyttöön
+EXPOSE 3000
+
+# Aja dev-server ilman sidosta aktiiviseen TTY:yn
+CMD ["npm", "react-scripts", "start"]

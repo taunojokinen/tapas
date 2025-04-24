@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 
 dotenv.config(); // Lataa ympäristömuuttujat .env-tiedostosta
 const MONGO_URI = process.env.MONGO_URI;
-console.log('MONGO_URI:', process.env.MONGO_URI);
+//console.log('MONGO_URI:', process.env.MONGO_URI);
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
