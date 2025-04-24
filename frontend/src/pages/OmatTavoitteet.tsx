@@ -8,7 +8,7 @@ import useAuth from "../hooks/useAuth"; // Import the custom hook
 
 
   const OmatTavoitteet = () => {
-  const { username } = useAuth();    const [username] = useState("tauno"); // Käyttäjänimi
+  const { username } = useAuth(); // Käyttäjänimi
     const [mission, setMission] = useState(
         "Ohjelmistosuunnittelijan perustehtävä on suunnitella, kehittää ja ylläpitää korkealaatuisia ohjelmistoratkaisuja, jotka vastaavat asiakkaiden ja organisaation tarpeita. Tehtävä sisältää ohjelmistojen teknisen suunnittelun, koodauksen, testauksen ja dokumentoinnin sekä yhteistyön tiimin ja sidosryhmien kanssa tehokkaiden ja innovatiivisten ratkaisujen luomiseksi."
       );
