@@ -26,7 +26,7 @@ import { testifunktio } from "../components/omatTavoitteet/myFunctions"; // Adju
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-gray-800">Omat tavoitteet</h2>
+      <h2 className="text-xl font-bold text-gray-800">Omat tavoitteet - ohjemoijaharjoittelija {username}</h2>
       <div className="flex flex-col space-y-6">
         <div className="bg-white p-4 rounded-lg shadow">
         <MyMission mission={mission} setMission={setMission} />
