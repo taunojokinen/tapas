@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 
-const KeyObjectives: React.FC = () => {
-  const [objectives, setObjectives] = useState<string[]>([
-    "Parantaa tiimityöskentelyä",
-    "Kehittää teknisiä taitoja",
-    "Saavuttaa projektin tavoitteet",
-  ]);
+interface KeyObjectivesProps {
+  objectives: string[]; // Array of objectives  
+  setObjectives: React.Dispatch<React.SetStateAction<string[]>>; // Function to update objectives
+}
+
+const KeyObjectives: React.FC<KeyObjectivesProps> = ({
+  objectives,
+  setObjectives,
+}) => {
   const [isEditing, setIsEditing] = useState(false); // Global editing state
 
   // Add a new objective
