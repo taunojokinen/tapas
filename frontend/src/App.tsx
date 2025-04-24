@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
-import ChangePassword from "../pages/ChangePassword";
-import YrityksenTavoitteet from "../pages/YrityksenTavoitteet";
-import Arvot from "../pages/Arvot";
-import ChangeValues from "./arvot/ChangeValues";
-import TiiminTavoitteet from "../pages/TiiminTavoitteet";
-import OmatTavoitteet from "../pages/OmatTavoitteet";
-import Tilannekuva from "../pages/Tilannekuva";
-import Ideat from "../pages/Ideat";
-import Aktiviteetit from "../pages/Aktiviteetit";
-import Asetukset from "../pages/Asetukset";
-import Header from "./header/Header";
-import Navi from "./header/Navi";
-import NotAuthorized from "../pages/NotAuthorized";
-import ProtectedRoute from "./ProtectedRoute";
+import ChangePassword from "./pages/ChangePassword";
+import YrityksenTavoitteet from "./pages/YrityksenTavoitteet";
+import Arvot from "./pages/Arvot";
+import ChangeValues from "./components/arvot/ChangeValues";
+import TiiminTavoitteet from "./pages/TiiminTavoitteet";
+import OmatTavoitteet from "./pages/OmatTavoitteet";
+import Tilannekuva from "./pages/Tilannekuva";
+import Ideat from "./pages/Ideat";
+import Aktiviteetit from "./pages/Aktiviteetit";
+import Asetukset from "./pages/Asetukset";
+import Header from "./components/header/Header";
+import Navi from "./components/header/Navi";
+import NotAuthorized from "./pages/NotAuthorized";
+import ProtectedRoute from "./components/ProtectedRoute";
 import axios from "axios";
 
 const App: React.FC = () => {
@@ -56,7 +56,7 @@ const App: React.FC = () => {
               <Route
                 path="/asetukset"
                 element={
-                  <ProtectedRoute allowedRoles={["admin", "manager"]} >
+                  <ProtectedRoute allowedRoles={["admin", "manager"]}>
                     <Asetukset />
                   </ProtectedRoute>
                 }
