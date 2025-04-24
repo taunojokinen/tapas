@@ -11,12 +11,18 @@ import { testifunktio } from "../components/omatTavoitteet/myFunctions"; // Adju
     const [mission, setMission] = useState(
         "Ohjelmistosuunnittelijan perustehtävä on suunnitella, kehittää ja ylläpitää korkealaatuisia ohjelmistoratkaisuja, jotka vastaavat asiakkaiden ja organisaation tarpeita. Tehtävä sisältää ohjelmistojen teknisen suunnittelun, koodauksen, testauksen ja dokumentoinnin sekä yhteistyön tiimin ja sidosryhmien kanssa tehokkaiden ja innovatiivisten ratkaisujen luomiseksi."
       );
-    const [avaintavoitteet, setAvaintavoitteet] = useState<string[]>([]);
-    const [tehtavat, setTehtavat] = useState<string[]>([]);
-    const [nykytila, setNykytila] = useState({
-      hindrances: [],
-      promoters: [],
-    });
+    const [objectives, setObjectives] = useState<string[]>([
+          "Parantaa tiimityöskentelyä",
+          "Kehittää teknisiä taitoja",
+          "Saavuttaa projektin tavoitteet",
+        ]);
+      const [myTasks, setMyTasks] = useState<string[]>([
+        "Tiskaa astiat",
+        "Pese sukat",
+        "Imuroi lattiat",
+      ]);
+  const [hindrances, setHindrances] = useState<string[]>([""]);
+  const [promoters, setPromoters] = useState<string[]>([""]);
 
   return (
     <div>
@@ -24,11 +30,9 @@ import { testifunktio } from "../components/omatTavoitteet/myFunctions"; // Adju
       <div className="flex flex-col space-y-6">
         <div className="bg-white p-4 rounded-lg shadow">
         <MyMission mission={mission} setMission={setMission} />
-          <KeyObjectives />
-          <MyTasks />
-          <MyCurrentState />
-
-
+          <KeyObjectives objectives = {objectives} setObjectives = {setObjectives} />
+          <MyTasks myTasks = {myTasks} setMyTasks = {setMyTasks} />
+          <MyCurrentState hindrances = {hindrances} setHindrances = {setHindrances } promoters ={promoters} setPromoters = {setPromoters}/>
         </div>
       </div>
     </div>

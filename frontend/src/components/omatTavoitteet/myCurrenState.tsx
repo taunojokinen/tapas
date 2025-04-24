@@ -1,8 +1,19 @@
 import React, { useState } from "react";
 
-const MyCurrentState: React.FC = () => {
-  const [hindrances, setHindrances] = useState<string[]>([""]);
-  const [promoters, setPromoters] = useState<string[]>([""]);
+interface MyCurrentStateProps {
+    hindrances: string[];
+    setHindrances: React.Dispatch<React.SetStateAction<string[]>>;
+    promoters: string[];
+    setPromoters: React.Dispatch<React.SetStateAction<string[]>>;
+  }
+
+  const MyCurrentState: React.FC<MyCurrentStateProps> = ({
+    hindrances,
+    setHindrances,
+    promoters,
+    setPromoters,
+  }) => {
+
   const [isEditing, setIsEditing] = useState(false);
 
   // Add a new hindrance

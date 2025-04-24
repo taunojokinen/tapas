@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-const MyTasks: React.FC = () => {
-  const [myTasks, setMyTasks] = useState<string[]>([
-    "Tiskaa astiat",
-    "Pese sukat",
-    "Imuroi lattiat",
-  ]);
+  interface MyTasksProps {
+    myTasks: string[];
+    setMyTasks: React.Dispatch<React.SetStateAction<string[]>>;
+  }
+  
+  const MyTasks: React.FC<MyTasksProps> = ({ myTasks, setMyTasks }) => {
   const [isEditing, setIsEditing] = useState(false); // Global editing state
 
   // Add a new objective
