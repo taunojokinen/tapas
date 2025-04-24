@@ -2,6 +2,7 @@ import React from "react";
 import MyMission from "../components/omatTavoitteet/mymission"; // Adjust the path if necessary
 import KeyObjectives from "../components/omatTavoitteet/keyObjectives"; // Adjust the path if necessary
 import MyTasks from "../components/omatTavoitteet/myTasks"; // Adjust the path if necessary
+import MyCurrentState from "../components/omatTavoitteet/myCurrenState"; // Adjust the path if necessary
 
 
 const OmatTavoitteet = () => {
@@ -15,6 +16,7 @@ const OmatTavoitteet = () => {
           <MyMission />
           <KeyObjectives />
           <MyTasks />
+          <MyCurrentState />
 
 
         </div>
