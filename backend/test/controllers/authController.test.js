@@ -1,7 +1,7 @@
 const request = require("supertest");
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const activeTokens = require("../../utils/activeTokens"); // Oletetaan, että tämä on oikea polku
 
 jest.mock("../../models/Userlist"); // Mockataan Mongoosen malli
