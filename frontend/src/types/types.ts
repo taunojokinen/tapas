@@ -27,4 +27,13 @@ export interface RowData {
     mittari: string;
     seuranta: string;
   } 
-  
+  export interface MyObjectivesJson {
+    user: string;
+    title: string;
+    date: string;
+    mission: string;
+    objectives: MyObjective[];
+    tasks: MyTask[];
+    hindrances: string[];
+    promoters: string[];
+  } 

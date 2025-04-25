@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { testifunktio } from "./myFunctions"; // Adjust the path if necessary
+
 
 interface MyMissionProps {
   mission: string; // Lisää mission propseihin
@@ -17,7 +17,6 @@ const MyMission: React.FC<MyMissionProps> = ({ mission,setMission }) => {
   };
 
   const handleSaveMission = () => {
-    testifunktio(mission);
     alert("Perustehtävä tallennettu: " + mission);
     setIsEditing(false); // Exit editing mode after saving
     // Voit lisätä tallennuslogiikan, esim. lähettää tiedot backendille
