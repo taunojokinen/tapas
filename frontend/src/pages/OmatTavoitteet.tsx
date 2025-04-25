@@ -5,6 +5,7 @@ import MyTasks from "../components/omatTavoitteet/myTasks"; // Adjust the path i
 import MyCurrentState from "../components/omatTavoitteet/myCurrenState"; // Adjust the path if necessary
 import { testifunktio } from "../components/omatTavoitteet/myFunctions"; // Adjust the path if necessary
 import useAuth from "../hooks/useAuth"; // Import the custom hook
+import { MyObjective } from "../types/types";
 
 
   const OmatTavoitteet = () => {
@@ -12,10 +13,10 @@ import useAuth from "../hooks/useAuth"; // Import the custom hook
     const [mission, setMission] = useState(
         "Ohjelmistosuunnittelijan perustehtävä on suunnitella, kehittää ja ylläpitää korkealaatuisia ohjelmistoratkaisuja, jotka vastaavat asiakkaiden ja organisaation tarpeita. Tehtävä sisältää ohjelmistojen teknisen suunnittelun, koodauksen, testauksen ja dokumentoinnin sekä yhteistyön tiimin ja sidosryhmien kanssa tehokkaiden ja innovatiivisten ratkaisujen luomiseksi."
       );
-    const [objectives, setObjectives] = useState<string[]>([
-          "Parantaa tiimityöskentelyä",
-          "Kehittää teknisiä taitoja",
-          "Saavuttaa projektin tavoitteet",
+    const [objectives, setObjectives] = useState<MyObjective[]>([
+          {"nimi":"Parantaa tiimityöskentelyä","mittari":"mittari","seuranta":"seuranta"},
+          {"nimi":"Kehittää teknisiä taitoja", "mittari":"mittari","seuranta":"seuranta"},
+          {"nimi":"Parantaa asiakaspalvelua", "mittari":"mittari","seuranta":"seuranta"},
         ]);
       const [myTasks, setMyTasks] = useState<string[]>([
         "Tiskaa astiat",

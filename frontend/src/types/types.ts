@@ -15,4 +15,16 @@ export interface RowData {
     role: string;
     values:Values[]; 
   }
+
+  export interface MyObjective {
+    nimi: string;
+    mittari: string;
+    seuranta: string;
+  } 
+
+  export interface MyTask {
+    nimi: string;
+    mittari: string;
+    seuranta: string;
+  } 
   

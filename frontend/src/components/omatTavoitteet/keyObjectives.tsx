@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { MyObjective } from "../../types/types";
 
 interface KeyObjectivesProps {
-  objectives: string[]; // Array of objectives  
-  setObjectives: React.Dispatch<React.SetStateAction<string[]>>; // Function to update objectives
+  objectives: MyObjective[]; // Array of objectives  
+  setObjectives: React.Dispatch<React.SetStateAction<MyObjective[]>>; // Function to update objectives
 }
 
 const KeyObjectives: React.FC<KeyObjectivesProps> = ({
@@ -13,7 +14,11 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
 
   // Add a new objective
   const handleAddObjective = () => {
-    const newObjective = "Uusi tavoite";
+    const newObjective: MyObjective = {
+      nimi: "Uusi tavoite", // Esimerkkiarvo
+      mittari: "Uusi mittari", // Esimerkkiarvo
+      seuranta: "Uusi seuranta", // Esimerkkiarvo
+    };
     setObjectives((prevObjectives) => [...prevObjectives, newObjective]);
   };
 
@@ -38,13 +43,15 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
   };
 
   // Update an objective's text
-  const handleObjectiveChange = (index: number, newValue: string) => {
-    setObjectives((prevObjectives) =>
-      prevObjectives.map((objective, i) =>
-        i === index ? newValue : objective
-      )
-    );
-  };
+  const handleObjectiveChange = (index: number, newValue: string, field: "nimi" | "mittari" | "seuranta") => {
+      setObjectives((prevObjectives) =>
+        prevObjectives.map((objective, i) =>
+          i === index
+            ? { ...objective, [field]: newValue } // Päivitä vain määritelty kenttä
+            : objective
+        )
+      );
+    };
 
   return (
   <div className="bg-white p-4 rounded-lg shadow mb-4">
@@ -52,48 +59,68 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
     <div className="w-full p-2 border border-gray-300 rounded mb-4">
     {objectives.length > 0 ? (
       objectives.map((objective, index) => (
-        <div key={index} className="mb-4 flex items-center gap-4">
-          {/* Buttons in front of the row */}
-          {isEditing && (
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleMoveObjective(index, "up")}
-                disabled={index === 0}
-                className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                ↑
-              </button>
-              <button
-                onClick={() => handleMoveObjective(index, "down")}
-                disabled={index === objectives.length - 1}
-                className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                ↓
-              </button>
-              <button
-                onClick={() => handleDeleteObjective(index)}
-                className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                🗑️
-              </button>
-            </div>
-          )}
-          {/* Objective text */}
-          <div className="flex-grow">
-            {isEditing ? (
-              <input
-                type="text"
-                value={objective}
-                onChange={(e) =>
-                  handleObjectiveChange(index, e.target.value)
-                }
-                className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
-              />
-            ) : (
-              <p className="text-lg">{objective}</p>
-            )}
-          </div>
-        </div>
+<div key={index} className="mb-4 flex items-center gap-4">
+  {/* Buttons in front of the row */}
+  {isEditing && (
+    <div className="flex gap-2">
+      <button
+        onClick={() => handleMoveObjective(index, "up")}
+        disabled={index === 0}
+        className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        ↑
+      </button>
+      <button
+        onClick={() => handleMoveObjective(index, "down")}
+        disabled={index === objectives.length - 1}
+        className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        ↓
+      </button>
+      <button
+        onClick={() => handleDeleteObjective(index)}
+        className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+      >
+        🗑️
+      </button>
+    </div>
+  )}
+  {/* Objective fields */}
+  <div className="flex-grow grid grid-cols-3 gap-4">
+    {isEditing ? (
+      <>
+        <input
+          type="text"
+          value={objective.nimi}
+          onChange={(e) => handleObjectiveChange(index, e.target.value, "nimi")}
+          className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
+        />
+        <input
+          type="text"
+          value={objective.mittari}
+          onChange={(e) =>
+            handleObjectiveChange(index, e.target.value, "mittari")
+          }
+          className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
+        />
+        <input
+          type="text"
+          value={objective.seuranta}
+          onChange={(e) =>
+            handleObjectiveChange(index, e.target.value, "seuranta")
+          }
+          className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
+        />
+      </>
+    ) : (
+      <>
+        <p className="text-lg">{objective.nimi}</p>
+        <p className="text-lg">{objective.mittari}</p>
+        <p className="text-lg">{objective.seuranta}</p>
+      </>
+    )}
+  </div>
+</div>
       ))
     ) : (
       <p className="text-gray-500">Ei avaintavoitteita.</p>
