@@ -103,20 +103,30 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
           }
           className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
         />
-        <input
-          type="text"
+
+          <select
           value={objective.seuranta}
           onChange={(e) =>
             handleObjectiveChange(index, e.target.value, "seuranta")
           }
-          className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
-        />
+          className="w-full p-1 border"
+        >
+          <option value="">Valitse</option>
+          <option value="Punainen">🔴 Punainen</option>
+          <option value="Keltainen">🟡 Keltainen</option>
+          <option value="Vihreä">🟢 Vihreä</option>
+        </select>
+
       </>
     ) : (
       <>
         <p className="text-lg">{objective.nimi}</p>
         <p className="text-lg">{objective.mittari}</p>
-        <p className="text-lg">{objective.seuranta}</p>
+        <p className="text-lg">
+      {objective.seuranta === "Punainen" && "🔴 Punainen"}
+      {objective.seuranta === "Keltainen" && "🟡 Keltainen"}
+      {objective.seuranta === "Vihreä" && "🟢 Vihreä"}
+    </p>
       </>
     )}
   </div>
