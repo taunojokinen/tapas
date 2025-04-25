@@ -5,7 +5,7 @@ import MyTasks from "../components/omatTavoitteet/myTasks"; // Adjust the path i
 import MyCurrentState from "../components/omatTavoitteet/myCurrenState"; // Adjust the path if necessary
 import { testifunktio } from "../components/omatTavoitteet/myFunctions"; // Adjust the path if necessary
 import useAuth from "../hooks/useAuth"; // Import the custom hook
-import { MyObjective } from "../types/types";
+import { MyObjective, MyTask } from "../types/types";
 
 
   const OmatTavoitteet = () => {
@@ -15,13 +15,13 @@ import { MyObjective } from "../types/types";
       );
     const [objectives, setObjectives] = useState<MyObjective[]>([
           {"nimi":"Parantaa tiimityöskentelyä","mittari":"mittari","seuranta":"seuranta"},
+          {"nimi": "Pese sukat", "mittari":"mittari","seuranta":"seuranta"},
+          {"nimi":"Imuroi lattiat", "mittari":"mittari","seuranta":"seuranta"},
+        ]);
+      const [myTasks, setMyTasks] = useState<MyTask[]>([
+        {"nimi":"Tiskaa astiat","mittari":"mittari","seuranta":"seuranta"},
           {"nimi":"Kehittää teknisiä taitoja", "mittari":"mittari","seuranta":"seuranta"},
           {"nimi":"Parantaa asiakaspalvelua", "mittari":"mittari","seuranta":"seuranta"},
-        ]);
-      const [myTasks, setMyTasks] = useState<string[]>([
-        "Tiskaa astiat",
-        "Pese sukat",
-        "Imuroi lattiat",
       ]);
   const [hindrances, setHindrances] = useState<string[]>([""]);
   const [promoters, setPromoters] = useState<string[]>([""]);
@@ -33,7 +33,7 @@ import { MyObjective } from "../types/types";
         <div className="bg-white p-4 rounded-lg shadow">
         <MyMission mission={mission} setMission={setMission} />
           <KeyObjectives objectives = {objectives} setObjectives = {setObjectives} />
-          <MyTasks myTasks = {myTasks} setMyTasks = {setMyTasks} />
+          <MyTasks tasks = {myTasks} setTasks = {setMyTasks} />
           <MyCurrentState hindrances = {hindrances} setHindrances = {setHindrances } promoters ={promoters} setPromoters = {setPromoters}/>
         </div>
       </div>
