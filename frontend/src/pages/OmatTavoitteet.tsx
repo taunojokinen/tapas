@@ -5,13 +5,14 @@ import MyTasks from "../components/omatTavoitteet/myTasks"; // Adjust the path i
 import MyCurrentState from "../components/omatTavoitteet/myCurrenState"; // Adjust the path if necessary
 import useAuth from "../hooks/useAuth"; // Import the custom hook
 import { MyObjective, MyTask, MyObjectivesJson } from "../types/types";
-import { fetchMyObjectiveData } from "../components/omatTavoitteet/myObjectiveFunctions";
-import { postMyObjectiveData } from "../components/omatTavoitteet/myObjectiveFunctions";
+import { fetchMyObjectiveData, patchMyObjectiveData, postMyObjectiveData } from "../components/omatTavoitteet/myObjectiveFunctions";
+
 
 const OmatTavoitteet = () => {
   const { username } = useAuth(); // Get the username from the custom hook
-  // State for dynamically fetched data
   const [myObjectiveData, setMyObjectiveData] = useState<MyObjectivesJson | null>(null);
+  const [isEditingTitle, setIsEditingTitle] = useState(false); // State for editing title
+  const [newTitle, setNewTitle] = useState(""); // State for the new title
 
   // Fetch data from the backend on component mount
   useEffect(() => {
@@ -64,39 +65,67 @@ const OmatTavoitteet = () => {
     );
   };
 
-  const handleSave = async () => {
+  const handleSaveTitle = async () => {
     if (myObjectiveData) {
-      const success = await postMyObjectiveData(myObjectiveData);
+      const updatedData = { ...myObjectiveData, title: newTitle }; // Update the title
+      setMyObjectiveData(updatedData); // Update the local state
+      const success = await patchMyObjectiveData(username, { title: newTitle }); // Save the updated title
       if (success) {
-        alert("Data successfully saved!");
+        alert("Title successfully updated!");
+        setIsEditingTitle(false); // Exit editing mode
       } else {
-        alert("Failed to save data.");
+        alert("Failed to update the title.");
       }
     }
   };
-
   return (
     <div>
       <h2 className="text-xl font-bold text-gray-800">
-        Käyttäjän {myObjectiveData.user} joka on {myObjectiveData.title} Omat tavoitteet
+        {myObjectiveData.title} {myObjectiveData.user} omat tavoitteet. 
       </h2>
       <div className="flex flex-col space-y-6">
         <div className="bg-white p-4 rounded-lg shadow">
-          <MyMission mission={myObjectiveData.mission} setMission={updateMission} />
-          <KeyObjectives objectives={myObjectiveData.objectives} setObjectives={updateObjectives} />
-          <MyTasks tasks={myObjectiveData.tasks} setTasks={updateTasks} />
+          <MyMission mission={myObjectiveData.mission} setMission={updateMission} username={username}/>
+          <KeyObjectives objectives={myObjectiveData.objectives} setObjectives={updateObjectives} username={username} />
+          <MyTasks tasks={myObjectiveData.tasks} setTasks={updateTasks} username={username} />
           <MyCurrentState
             hindrances={myObjectiveData.hindrances}
             setHindrances={updateHindrances}
             promoters={myObjectiveData.promoters}
             setPromoters={updatePromoters}
+            username={username}
           />
-          <button
-            onClick={handleSave}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Save Changes
-          </button>
+         {isEditingTitle ? (
+            <div className="mt-4">
+              <input
+                type="text"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded w-full"
+              />
+              <div className="flex gap-4 mt-2">
+                <button
+                  onClick={handleSaveTitle}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => setIsEditingTitle(false)}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Peruuta
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsEditingTitle(true)}
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Change Title
+            </button>
+          )}
         </div>
       </div>
     </div>

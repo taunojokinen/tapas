@@ -79,6 +79,29 @@ router.get("/all", async (req, res) => {
       res.status(500).json({ error: "Failed to retrieve MyObjectives" });
     }
   });
+
+  router.patch("/:user", async (req, res) => {
+    try {
+      const { user } = req.params; // Get the user from the route parameter
+      const updateData = req.body; // Get the fields to update from the request body
+  
+      // Find the document by user and update it with the provided fields
+      const updatedObjectives = await MyObjectives.findOneAndUpdate(
+        { user }, // Match by user
+        { $set: updateData }, // Update only the provided fields
+        { new: true } // Return the updated document
+      );
+  
+      if (updatedObjectives) {
+        res.status(200).json({ message: "MyObjectives successfully updated", updatedObjectives });
+      } else {
+        res.status(404).json({ error: "MyObjectives not found for the specified user" });
+      }
+    } catch (error) {
+      console.error("Error updating MyObjectives:", error);
+      res.status(500).json({ error: "Failed to update MyObjectives" });
+    }
+  });
   
 
   router.delete("/:user", async (req, res) => {

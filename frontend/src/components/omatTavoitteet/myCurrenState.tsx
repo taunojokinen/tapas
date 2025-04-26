@@ -1,43 +1,53 @@
 import React, { useState } from "react";
+import { patchMyObjectiveData } from "./myObjectiveFunctions";
 
 interface MyCurrentStateProps {
-    hindrances: string[];
-    setHindrances: React.Dispatch<React.SetStateAction<string[]>>;
-    promoters: string[];
-    setPromoters: React.Dispatch<React.SetStateAction<string[]>>;
-  }
+  hindrances: string[];
+  setHindrances: React.Dispatch<React.SetStateAction<string[]>>;
+  promoters: string[];
+  setPromoters: React.Dispatch<React.SetStateAction<string[]>>;
+  username: string;
+}
 
-  const MyCurrentState: React.FC<MyCurrentStateProps> = ({
-    hindrances,
-    setHindrances,
-    promoters,
-    setPromoters,
-  }) => {
-
+const MyCurrentState: React.FC<MyCurrentStateProps> = ({
+  hindrances,
+  setHindrances,
+  promoters,
+  setPromoters,
+  username,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
 
   // Add a new hindrance
-  const handleAddHindrance = () => {
-    setHindrances((prev) => [...prev, ""]);
+  const handleAddHindrance = async () => {
+    const updatedHindrances = [...hindrances, ""];
+    setHindrances(updatedHindrances);
+    await patchMyObjectiveData(username, { hindrances: updatedHindrances });
   };
 
   // Add a new promoter
-  const handleAddPromoter = () => {
-    setPromoters((prev) => [...prev, ""]);
+  const handleAddPromoter = async () => {
+    const updatedPromoters = [...promoters, ""];
+    setPromoters(updatedPromoters);
+    await patchMyObjectiveData(username, { promoters: updatedPromoters });
   };
 
   // Delete a hindrance
-  const handleDeleteHindrance = (index: number) => {
-    setHindrances((prev) => prev.filter((_, i) => i !== index));
+  const handleDeleteHindrance = async (index: number) => {
+    const updatedHindrances = hindrances.filter((_, i) => i !== index);
+    setHindrances(updatedHindrances);
+    await patchMyObjectiveData(username, { hindrances: updatedHindrances });
   };
 
   // Delete a promoter
-  const handleDeletePromoter = (index: number) => {
-    setPromoters((prev) => prev.filter((_, i) => i !== index));
+  const handleDeletePromoter = async (index: number) => {
+    const updatedPromoters = promoters.filter((_, i) => i !== index);
+    setPromoters(updatedPromoters);
+    await patchMyObjectiveData(username, { promoters: updatedPromoters });
   };
 
   // Move a hindrance up or down
-  const handleMoveHindrance = (index: number, direction: "up" | "down") => {
+  const handleMoveHindrance = async (index: number, direction: "up" | "down") => {
     const newHindrances = [...hindrances];
     const swapIndex = direction === "up" ? index - 1 : index + 1;
     [newHindrances[index], newHindrances[swapIndex]] = [
@@ -45,10 +55,11 @@ interface MyCurrentStateProps {
       newHindrances[index],
     ];
     setHindrances(newHindrances);
+    await patchMyObjectiveData(username, { hindrances: newHindrances });
   };
 
   // Move a promoter up or down
-  const handleMovePromoter = (index: number, direction: "up" | "down") => {
+  const handleMovePromoter = async (index: number, direction: "up" | "down") => {
     const newPromoters = [...promoters];
     const swapIndex = direction === "up" ? index - 1 : index + 1;
     [newPromoters[index], newPromoters[swapIndex]] = [
@@ -56,20 +67,25 @@ interface MyCurrentStateProps {
       newPromoters[index],
     ];
     setPromoters(newPromoters);
+    await patchMyObjectiveData(username, { promoters: newPromoters });
   };
 
   // Update hindrance text
-  const handleHindranceChange = (index: number, value: string) => {
-    setHindrances((prev) =>
-      prev.map((item, i) => (i === index ? value : item))
+  const handleHindranceChange = async (index: number, value: string) => {
+    const updatedHindrances = hindrances.map((item, i) =>
+      i === index ? value : item
     );
+    setHindrances(updatedHindrances);
+    await patchMyObjectiveData(username, { hindrances: updatedHindrances });
   };
 
   // Update promoter text
-  const handlePromoterChange = (index: number, value: string) => {
-    setPromoters((prev) =>
-      prev.map((item, i) => (i === index ? value : item))
+  const handlePromoterChange = async (index: number, value: string) => {
+    const updatedPromoters = promoters.map((item, i) =>
+      i === index ? value : item
     );
+    setPromoters(updatedPromoters);
+    await patchMyObjectiveData(username, { promoters: updatedPromoters });
   };
 
   return (

@@ -1,32 +1,45 @@
 import React, { useState } from "react";
 import { MyTask } from "../../types/types";
+import { patchMyObjectiveData } from "./myObjectiveFunctions";
 
 interface MyTasksProps {
   tasks: MyTask[]; // Array of tasks
   setTasks: React.Dispatch<React.SetStateAction<MyTask[]>>; // Function to update tasks
+  username: string;
 }
 
-const MyTasks: React.FC<MyTasksProps> = ({ tasks, setTasks }) => {
+const MyTasks: React.FC<MyTasksProps> = ({ tasks, setTasks, username }) => {
   const [isEditing, setIsEditing] = useState(false); // Global editing state
 
   // Add a new task
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     const newTask: MyTask = {
       nimi: "Uusi tehtävä", // Example value
       mittari: "Uusi deadline", // Example value
       seuranta: "Uusi status", // Example value
     };
-    setTasks((prevTasks) => [...prevTasks, newTask]);
+    const updatedTasks = [...tasks, newTask];
+    setTasks(updatedTasks);
+
+    // Save changes
+    interface MyObjectivesJson {
+      tasks: MyTask[];
+    }
+    const payload: Partial<MyObjectivesJson> = { tasks: updatedTasks };
+    await patchMyObjectiveData(username, payload);
   };
 
   // Delete a task
-  const handleDeleteTask = (index: number) => {
+  const handleDeleteTask = async (index: number) => {
     const updatedTasks = tasks.filter((_, i) => i !== index);
     setTasks(updatedTasks);
+
+    // Save changes
+    await patchMyObjectiveData(username, { tasks: updatedTasks });
   };
 
   // Move a task up or down
-  const handleMoveTask = (index: number, direction: "up" | "down") => {
+  const handleMoveTask = async (index: number, direction: "up" | "down") => {
     const newTasks = [...tasks];
     const swapIndex = direction === "up" ? index - 1 : index + 1;
 
@@ -37,20 +50,25 @@ const MyTasks: React.FC<MyTasksProps> = ({ tasks, setTasks }) => {
         newTasks[index],
       ];
       setTasks(newTasks);
+
+      // Save changes
+      await patchMyObjectiveData(username, { tasks: newTasks });
     }
   };
 
   // Update a task's text
-  const handleTaskChange = (
+  const handleTaskChange = async (
     index: number,
     newValue: string,
     field: "nimi" | "mittari" | "seuranta"
   ) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task, i) =>
-        i === index ? { ...task, [field]: newValue } : task
-      )
+    const updatedTasks = tasks.map((task, i) =>
+      i === index ? { ...task, [field]: newValue } : task
     );
+    setTasks(updatedTasks);
+
+    // Save changes
+    await patchMyObjectiveData(username, { tasks: updatedTasks });
   };
 
   return (

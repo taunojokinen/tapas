@@ -16,6 +16,24 @@ export const fetchMyObjectiveData = async (username: string): Promise<MyObjectiv
     }
   };
 
+  export const patchMyObjectiveData = async (
+    username: string,
+    updateData: Partial<MyObjectivesJson>
+  ): Promise<boolean> => {
+    try {
+      // Make a PATCH request to update the given user's data
+      const response = await axios.patch(`http://localhost:5000/api/myobjectives/${username}`, updateData);
+      if (response.status === 200) {
+        console.log("MyObjectiveData successfully updated:", response.data);
+        return true; // Indicate success
+      }
+      return false; // Indicate failure if status is not 200
+    } catch (error) {
+      console.error("Error patching MyObjectiveData:", error);
+      return false; // Indicate failure
+    }
+  };
+
 // Post updated data to the backend
 export const postMyObjectiveData = async (data: MyObjectivesJson): Promise<boolean> => {
   try {

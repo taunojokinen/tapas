@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import { patchMyObjectiveData } from "./myObjectiveFunctions";
 
 
 interface MyMissionProps {
   mission: string; // Lisää mission propseihin
   setMission: React.Dispatch<React.SetStateAction<string>>;
+  username: string; 
 }
 
-const MyMission: React.FC<MyMissionProps> = ({ mission,setMission }) => {
+const MyMission: React.FC<MyMissionProps> = ({ mission, setMission, username }) => {
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -16,10 +18,23 @@ const MyMission: React.FC<MyMissionProps> = ({ mission,setMission }) => {
     setMission(event.target.value);
   };
 
-  const handleSaveMission = () => {
-    alert("Perustehtävä tallennettu: " + mission);
-    setIsEditing(false); // Exit editing mode after saving
-    // Voit lisätä tallennuslogiikan, esim. lähettää tiedot backendille
+  const handleSaveMission = async () => {
+    try {
+
+  
+      // Call the backend to save the updated mission
+      const success = await patchMyObjectiveData(username, { mission });
+  
+      if (success) {
+        alert("Perustehtävä tallennettu: " + mission);
+        setIsEditing(false); // Exit editing mode after saving
+      } else {
+        alert("Tallennus epäonnistui. Yritä uudelleen.");
+      }
+    } catch (error) {
+      console.error("Error saving mission:", error);
+      alert("Tapahtui virhe tallennuksen aikana.");
+    }
   };
 
   return (
