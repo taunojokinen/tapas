@@ -10,19 +10,20 @@ import { postMyObjectiveData } from "../components/omatTavoitteet/myObjectiveFun
 
 const OmatTavoitteet = () => {
   const { username } = useAuth(); // Get the username from the custom hook
-
   // State for dynamically fetched data
   const [myObjectiveData, setMyObjectiveData] = useState<MyObjectivesJson | null>(null);
 
   // Fetch data from the backend on component mount
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchMyObjectiveData();
-      if (data) {
-        // Ensure the username is set in the fetched data
-        setMyObjectiveData({ ...data, user: username });
+      if (username) {
+        const data = await fetchMyObjectiveData(username); // Pass username here
+        if (data) {
+          setMyObjectiveData(data);
+        }
       }
     };
+
 
     fetchData();
   }, [username]); // Add username as a dependency to ensure it updates if it changes

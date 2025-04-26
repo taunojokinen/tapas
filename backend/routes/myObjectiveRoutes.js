@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
     }
   });
 
-router.get("/", async (req, res) => {
+router.get("/all", async (req, res) => {
     try {
       // Fetch all documents from the database
       const objectives = await MyObjectives.find();
@@ -50,6 +50,37 @@ router.get("/", async (req, res) => {
       res.status(500).json({ error: "Failed to retrieve MyObjectives" });
     }
   });
+
+  router.get("/", async (req, res) => {
+    try {
+      const { user } = req.query; // Get the user from query parameters
+  
+      if (!user) {
+        return res.status(400).json({ error: "User query parameter is required" });
+      }
+  
+      // Find the document matching the user
+      let objectives = await MyObjectives.findOne({ user });
+  
+      // If no objectives are found for the user, fetch the default user's data
+      if (!objectives) {
+        objectives = await MyObjectives.findOne({ user: "defaultuser" });
+        if (!objectives) {
+          return res.status(404).json({ error: "No objectives found for the specified user or default user" });
+        }
+  
+        // Replace the "user" field with the original query parameter
+        objectives = { ...objectives.toObject(), user };
+      }
+  
+      res.status(200).json(objectives);
+    } catch (error) {
+      console.error("Error retrieving MyObjectives:", error);
+      res.status(500).json({ error: "Failed to retrieve MyObjectives" });
+    }
+  });
+  
+
   router.delete("/:user", async (req, res) => {
     try {
       const { user } = req.params;

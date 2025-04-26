@@ -1,19 +1,20 @@
 import axios from "axios";
 import { MyObjectivesJson } from "../../types/types"; // Adjust the path if necessary
 
-export const fetchMyObjectiveData = async (): Promise<MyObjectivesJson | null> => {
-  try {
-    const response = await axios.get("http://localhost:5000/api/myobjectives");
-    if (response.data && response.data.length > 0) {
-      // Assuming the API returns an array of objectives, take the first one
-      return response.data[0];
+// Fetch data from the backend
+export const fetchMyObjectiveData = async (username: string): Promise<MyObjectivesJson | null> => {
+    try {
+      // Make a GET request with the username as a query parameter
+      const response = await axios.get(`http://localhost:5000/api/myobjectives?user=${username}`);
+      if (response.data) {
+        return response.data; // Return the fetched data
+      }
+      return null; // Return null if no data is found
+    } catch (error) {
+      console.error("Error fetching MyObjectiveData:", error);
+      return null;
     }
-    return null; // Return null if no data is found
-  } catch (error) {
-    console.error("Error fetching MyObjectiveData:", error);
-    return null;
-  }
-};
+  };
 
 // Post updated data to the backend
 export const postMyObjectiveData = async (data: MyObjectivesJson): Promise<boolean> => {
