@@ -80,12 +80,44 @@ const OmatTavoitteet = () => {
   };
   return (
     <div>
-      <h2 className="text-xl font-bold text-gray-800">
-        {myObjectiveData.title} {myObjectiveData.user} omat tavoitteet. 
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-gray-800">
+          {myObjectiveData.title} {myObjectiveData.user} - omat tavoitteet.
+        </h2>
+        <button
+          onClick={() => setIsEditingTitle(true)}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Change Title
+        </button>
+      </div>
+      {isEditingTitle && (
+        <div className="mt-2">
+          <input
+            type="text"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded w-full"
+          />
+          <div className="flex gap-4 mt-2">
+            <button
+              onClick={handleSaveTitle}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setIsEditingTitle(false)}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Peruuta
+            </button>
+          </div>
+        </div>
+      )}
       <div className="flex flex-col space-y-6">
         <div className="bg-white p-4 rounded-lg shadow">
-          <MyMission mission={myObjectiveData.mission} setMission={updateMission} username={username}/>
+          <MyMission mission={myObjectiveData.mission} setMission={updateMission} username={username} />
           <KeyObjectives objectives={myObjectiveData.objectives} setObjectives={updateObjectives} username={username} />
           <MyTasks tasks={myObjectiveData.tasks} setTasks={updateTasks} username={username} />
           <MyCurrentState
@@ -95,42 +127,11 @@ const OmatTavoitteet = () => {
             setPromoters={updatePromoters}
             username={username}
           />
-         {isEditingTitle ? (
-            <div className="mt-4">
-              <input
-                type="text"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded w-full"
-              />
-              <div className="flex gap-4 mt-2">
-                <button
-                  onClick={handleSaveTitle}
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={() => setIsEditingTitle(false)}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  Peruuta
-                </button>
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={() => setIsEditingTitle(true)}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Change Title
-            </button>
-          )}
         </div>
       </div>
     </div>
   );
-};
+}
 
 
 export default OmatTavoitteet;

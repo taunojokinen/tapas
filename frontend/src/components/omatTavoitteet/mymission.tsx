@@ -39,7 +39,17 @@ const MyMission: React.FC<MyMissionProps> = ({ mission, setMission, username }) 
 
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
-      <h2 className="text-xl font-bold mb-4">Perustehtävä</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold">Perustehtävä</h2>
+        {!isEditing && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Muokkaa
+          </button>
+        )}
+      </div>
       <div className="flex flex-col gap-4">
         {/* Mission Content */}
         {isEditing ? (
@@ -69,16 +79,6 @@ const MyMission: React.FC<MyMissionProps> = ({ mission, setMission, username }) 
           <p className="w-full p-2 border border-gray-300 rounded mb-4">
             {mission}
           </p>
-        )}
-
-        {/* Edit Button */}
-        {!isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="w-24 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Muokkaa
-          </button>
         )}
       </div>
     </div>

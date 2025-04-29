@@ -73,7 +73,19 @@ const MyTasks: React.FC<MyTasksProps> = ({ tasks, setTasks, username }) => {
 
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
-      <h2 className="text-xl font-bold mb-4">Omat Tehtävät</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold">Omat Tehtävät</h2>
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className={`px-4 py-2 ${
+            isEditing
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-blue-500 hover:bg-blue-600"
+          } text-white rounded`}
+        >
+          {isEditing ? "Tallenna" : "Muokkaa"}
+        </button>
+      </div>
       <div className="w-full p-2 border border-gray-300 rounded mb-4">
         {tasks.length > 0 ? (
           tasks.map((task, index) => (
@@ -132,6 +144,7 @@ const MyTasks: React.FC<MyTasksProps> = ({ tasks, setTasks, username }) => {
                     >
                       <option value="">Valitse</option>
                       <option value="Aloitettu">🟡 Aloitettu</option>
+                      <option value="Aloittamatta">🔴 Aloittamatta</option>
                       <option value="Kesken">🟠 Kesken</option>
                       <option value="Valmis">🟢 Valmis</option>
                     </select>
@@ -142,6 +155,7 @@ const MyTasks: React.FC<MyTasksProps> = ({ tasks, setTasks, username }) => {
                     <p className="text-lg">{task.mittari}</p>
                     <p className="text-lg">
                       {task.seuranta === "Aloitettu" && "🟡 Aloitettu"}
+                      {task.seuranta === "Aloittamatta" && "🔴 Aloittamatta"}
                       {task.seuranta === "Kesken" && "🟠 Kesken"}
                       {task.seuranta === "Valmis" && "🟢 Valmis"}
                     </p>
@@ -155,34 +169,22 @@ const MyTasks: React.FC<MyTasksProps> = ({ tasks, setTasks, username }) => {
         )}
       </div>
       {/* Edit/Save and Cancel Buttons */}
-      <div className="flex gap-4 mt-4">
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className={`px-4 py-2 ${
-            isEditing
-              ? "bg-green-500 hover:bg-green-600"
-              : "bg-blue-500 hover:bg-blue-600"
-          } text-white rounded`}
-        >
-          {isEditing ? "Tallenna" : "Muokkaa"}
-        </button>
-        {isEditing && (
-          <>
-            <button
-              onClick={handleAddTask}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              Lisää uusi tehtävä
-            </button>
-            <button
-              onClick={() => setIsEditing(false)}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Peruuta
-            </button>
-          </>
-        )}
-      </div>
+      {isEditing && (
+        <div className="flex gap-4 mt-4">
+          <button
+            onClick={handleAddTask}
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            Lisää uusi tehtävä
+          </button>
+          <button
+            onClick={() => setIsEditing(false)}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Peruuta
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -90,7 +90,19 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
 
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
-      <h2 className="text-xl font-bold mb-4">Nykytila</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold">Nykytila</h2>
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className={`px-4 py-2 ${
+            isEditing
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-blue-500 hover:bg-blue-600"
+          } text-white rounded`}
+        >
+          {isEditing ? "Tallenna" : "Muokkaa"}
+        </button>
+      </div>
       <div className="grid grid-cols-2 gap-4">
         {/* Hindrances Section */}
         <div>
@@ -208,28 +220,18 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
         </div>
       </div>
       {/* Edit/Save and Cancel Buttons */}
-      <div className="flex gap-4 mt-4">
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className={`px-4 py-2 ${
-            isEditing
-              ? "bg-green-500 hover:bg-green-600"
-              : "bg-blue-500 hover:bg-blue-600"
-          } text-white rounded`}
-        >
-          {isEditing ? "Tallenna" : "Muokkaa"}
-        </button>
-        {isEditing && (
+      {isEditing && (
+        <div className="flex gap-4 mt-4">
           <button
             onClick={() => setIsEditing(false)}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Peruuta
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default MyCurrentState;

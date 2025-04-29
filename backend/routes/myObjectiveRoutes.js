@@ -64,19 +64,26 @@ router.get("/all", async (req, res) => {
   
       // If no objectives are found for the user, fetch the default user's data
       if (!objectives) {
-        objectives = await MyObjectives.findOne({ user: "defaultuser" });
-        if (!objectives) {
-          return res.status(404).json({ error: "No objectives found for the specified user or default user" });
+        const defaultObjectives = await MyObjectives.findOne({ user: "defaultuser" });
+  
+        if (!defaultObjectives) {
+          return res.status(404).json({ error: "No default objectives found to create a new user" });
         }
   
-        // Replace the "user" field with the original query parameter
-        objectives = { ...objectives.toObject(), user };
+        // Create a new document for the user using the default user's values
+        objectives = new MyObjectives({
+          ...defaultObjectives.toObject(),
+          user, // Replace the "user" field with the original query parameter
+          _id: undefined, // Remove the `_id` field to allow MongoDB to generate a new one
+        });
+  
+        await objectives.save(); // Save the new document to the database
       }
   
       res.status(200).json(objectives);
     } catch (error) {
-      console.error("Error retrieving MyObjectives:", error);
-      res.status(500).json({ error: "Failed to retrieve MyObjectives" });
+      console.error("Error retrieving or creating MyObjectives:", error);
+      res.status(500).json({ error: "Failed to retrieve or create MyObjectives" });
     }
   });
 
