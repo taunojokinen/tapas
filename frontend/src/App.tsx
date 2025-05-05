@@ -4,7 +4,8 @@ import ChangePassword from "./pages/ChangePassword";
 import YrityksenTavoitteet from "./pages/YrityksenTavoitteet";
 import Arvot from "./pages/Arvot";
 import ChangeValues from "./components/arvot/ChangeValues";
-import TiiminTavoitteet from "./pages/TiiminTavoitteet";
+//import TiiminTavoitteet from "./pages/TiiminTavoitteet";
+import MyTeamObjectives from "./pages/MyTeamObjectives";
 import OmatTavoitteet from "./pages/OmatTavoitteet";
 import Tilannekuva from "./pages/Tilannekuva";
 import Ideat from "./pages/Ideat";
@@ -49,7 +50,7 @@ const App: React.FC = () => {
               <Route path="/etusivu" element={<YrityksenTavoitteet />} />
               <Route path="/arvot" element={<Arvot />} />
               <Route path="/change_values" element={<ChangeValues />} />
-              <Route path="/tiimin_tavoitteet" element={<TiiminTavoitteet />} />
+              <Route path="/my_team_objectives" element={<MyTeamObjectives />} />
               <Route path="/omat_tavoitteet" element={<OmatTavoitteet />} />
               <Route path="/tilannekuva" element={<Tilannekuva />} />
               <Route path="/ideat" element={<Ideat />} />

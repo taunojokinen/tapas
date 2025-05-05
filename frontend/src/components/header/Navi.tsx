@@ -45,7 +45,7 @@ const Navi: React.FC = () => {
         </li> */}
         <li>
           <Link
-            to="/tiimin_tavoitteet"
+            to="/my_team_objectives"
             className="flex items-center px-4 py-3 rounded hover:bg-gray-700"
           >
             <FaLightbulb className="text-purple-500 text-2xl mr-4" />
