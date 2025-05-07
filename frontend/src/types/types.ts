@@ -40,6 +40,7 @@ export interface RowData {
   }
   
   export interface Team {
+    _id: string; // MongoDB ID for the team
     owner: string;
     name: string;
     type: string;

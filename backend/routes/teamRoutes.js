@@ -9,6 +9,17 @@ router.get("/", async (req, res) => {
     res.json(teams);
 });
 
+// Hae kaikki tiimit tietylle omistajalle
+router.get("/owner/:owner", async (req, res) => {
+    try {
+        const { owner } = req.params;
+        const teams = await Team.find({ owner });
+        res.status(200).json(teams);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Lisää uusi tiimi
 router.post("/", async (req, res) => {
     try {
