@@ -41,6 +41,17 @@ router.post("/", async (req, res) => {
     }
 });
 
+router.put("/:id", async (req, res) => {
+    try {
+      const updatedTeam = await Team.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
+      res.status(200).json(updatedTeam);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
 // Poista tiimi
 router.delete("/:id", async (req, res) => {
     await Team.findByIdAndDelete(req.params.id);
