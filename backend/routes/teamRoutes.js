@@ -11,9 +11,23 @@ router.get("/", async (req, res) => {
 
 // Lisää uusi tiimi
 router.post("/", async (req, res) => {
-    const newTeam = new Team({ name: req.body.name });
-    await newTeam.save();
-    res.json(newTeam);
+    try {
+        const { owner, name, type, mission, members } = req.body;
+
+        // Create a new team with all required fields
+        const newTeam = new Team({
+            owner,
+            name,
+            type,
+            mission: mission || "", // Optional field
+            members: members || [], // Default to an empty array if not provided
+        });
+
+        await newTeam.save();
+        res.status(201).json(newTeam);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 });
 
 // Poista tiimi

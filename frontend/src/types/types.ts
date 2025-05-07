@@ -26,7 +26,8 @@ export interface RowData {
     nimi: string;
     mittari: string;
     seuranta: string;
-  } 
+  }
+
   export interface MyObjectivesJson {
     user: string;
     title: string;
@@ -36,4 +37,12 @@ export interface RowData {
     tasks: MyTask[];
     hindrances: string[];
     promoters: string[];
-  } 
+  }
+  
+  export interface Team {
+    owner: string;
+    name: string;
+    type: string;
+    mission: string;
+    members: string[];
+  }

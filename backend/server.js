@@ -88,7 +88,6 @@ app.use("/api/proscons", prosConsRoutes);
 const strategiatRoutes = require("./routes/strategiat");
 app.use("/api/strategiat", strategiatRoutes);
 
-app.use("/api/teams", teamRoutes);
 app.use("/api/projects", projectRoutes);
 
 const saveSelections = require("./routes/saveSelections");
@@ -99,8 +98,9 @@ app.use("/api/userlist", userlistRoutes); // Käyttäjälistareitit käyttöön
 app.use("/api/values", valuesRoutes); // Arvotietojen reitit käyttöön
 app.use("/api/ai", aiRoutes); // AI-reitit käyttöön
 app.use("/api/valueproposals", valueProposalRoutes); // valueProposalRoutes käyttöön
-
 app.use("/api/myobjectives", myObjectiveRoutes); // myObjectiveRoutes käyttöön
+app.use("/api/teams", teamRoutes); // tiimireitit käyttöön
+
 
 // Login endpoint
 // Routes
