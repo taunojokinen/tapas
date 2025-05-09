@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchUserTeams, saveNewTeam, updateTeam, deleteTeam  } from "./TeamFunctions"; // Import the fetch function
+import { fetchUserTeams, saveNewTeam, updateTeam, deleteTeam, fetchTeamsForUser  } from "./TeamFunctions"; // Import the fetch function
 import useAuth from "../../hooks/useAuth"; // Import the custom hook
 import { Team } from "../../types/types"; // Adjust the path as needed
 
@@ -25,14 +25,17 @@ const MyTeams: React.FC = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       if (username) {
-        const userTeams = await fetchUserTeams(username); // Fetch teams for the user
-        if (userTeams) {
-          setTeams(userTeams); // Update the state with the fetched teams
+        try {
+          const userTeams = await fetchTeamsForUser(username); // Use the new function
+          setTeams(userTeams); // Update the state with the filtered teams
+        } catch (error) {
+          console.error("Failed to fetch teams:", error);
+        } finally {
+          setLoading(false); // Stop loading
         }
-        setLoading(false); // Stop loading
       }
     };
-
+  
     const fetchUserList = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/userlist");
@@ -42,7 +45,7 @@ const MyTeams: React.FC = () => {
         console.error("Error fetching user list:", error);
       }
     };
-
+  
     fetchTeams();
     fetchUserList();
   }, [username]);
@@ -156,7 +159,7 @@ const MyTeams: React.FC = () => {
       {selectedTeam ? (
   <div className="mt-4 p-4 border border-gray-300 rounded">
     <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">{selectedTeam.name} - {selectedTeam.mission}</h3>
+            <h3 className="text-lg font-semibold">{selectedTeam.name} - {selectedTeam.mission} - Omistaja: {selectedTeam.owner}</h3>
             {selectedTeam && (
             <button
               onClick={handleShowAllTeams}
@@ -180,28 +183,36 @@ const MyTeams: React.FC = () => {
       <div>
         <h3 className="text-lg font-semibold">{team.name}</h3>
         <p className="text-sm text-gray-600">Tyyppi: {team.type}</p>
-            <p className="text-sm text-gray-600">Tehtävä: {team.mission}</p>
-            <p className="text-sm text-gray-600">
-              Jäsenet: {team.members.join(", ")}
-            </p>
+        <p className="text-sm text-gray-600">Tehtävä: {team.mission}</p>
+        <p className="text-sm text-gray-600">
+          Jäsenet: {team.members.join(", ")}
+        </p>
       </div>
-      <div className="flex gap-2">
-        <button
-          onClick={() => handleEditTeam(team)}
-          className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-        >
-          Muokkaa
-        </button>
-        <button
-          onClick={() => handleDeleteTeam(team._id)}
-          className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+      {team.owner === username && ( // Only show buttons if the user is the owner
+        <div className="flex gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent triggering handleTeamSelect
+              handleEditTeam(team);
+            }}
+            className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+          >
+            Muokkaa
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent triggering handleTeamSelect
+              handleDeleteTeam(team._id);
+            }}
+            className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
           >
             🗑️
-        </button>
-      </div>
+          </button>
+        </div>
+      )}
     </li>
   ))}
-</ul>
+</ul>           
           ) : (
             <p className="text-gray-600 mt-4">Ei tiimejä.</p>
           )}
