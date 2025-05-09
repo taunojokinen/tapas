@@ -5,6 +5,7 @@ export interface RowData {
     seuranta: string;
   }
 
+// interfaces for Values and Proposal
  export interface Values {
     nimi: string;
     kuvaus: string;
@@ -14,6 +15,19 @@ export interface RowData {
  export interface Proposal {
     role: string;
     values:Values[]; 
+  }
+
+  // interfaces for MyObjectives
+
+  export interface MyObjectivesJson {
+    user: string;
+    title: string;
+    date: string;
+    mission: string;
+    objectives: MyObjective[];
+    tasks: MyTask[];
+    hindrances: string[];
+    promoters: string[];
   }
 
   export interface MyObjective {
@@ -28,17 +42,17 @@ export interface RowData {
     seuranta: string;
   }
 
-  export interface MyObjectivesJson {
-    user: string;
-    title: string;
-    date: string;
-    mission: string;
-    objectives: MyObjective[];
-    tasks: MyTask[];
-    hindrances: string[];
-    promoters: string[];
-  }
-  
+
+  // interfaces for MyTeamObjectives
+export interface MyTeamObjectivesJson {
+  user: string;
+  date: string;
+team: Team;
+objectives: MyObjective;
+tasks: MyTask[];
+hindrances: string[];
+}
+
   export interface Team {
     _id: string; // MongoDB ID for the team
     owner: string;
