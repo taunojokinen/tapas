@@ -16,6 +16,7 @@ const MyTeamObjectives: React.FC = () => {
     tasks: [], // Default empty tasks
     hindrances: [], // Default empty hindrances
   });
+  
 
   const handleInputChange = (field: keyof MyTeamObjectivesJson, value: any) => {
     setTeamObjectives((prev) => ({
@@ -45,23 +46,15 @@ const MyTeamObjectives: React.FC = () => {
       </div>
 
       <MyTeams />
+      <TeamObjectives
+        teamObjectives={teamObjectives}
+        onUpdate={(updatedObjectives) => handleInputChange("objectives", updatedObjectives)}
+      />
+
+      {/* Team Current State */}
 
 
-      {/* Objectives */}
-      <div className="bg-white p-4 rounded-lg shadow mb-6">
-        <label className="block text-sm font-medium text-gray-700">Tavoite</label>
-        <input
-          type="text"
-          value={teamObjectives.objectives.nimi}
-          onChange={(e) =>
-            handleInputChange("objectives", {
-              ...teamObjectives.objectives,
-              nimi: e.target.value,
-            })
-          }
-          className="mt-1 block w-full p-2 border border-gray-300 rounded"
-        />
-      </div>
+
 
       {/* Tasks */}
       <div className="bg-white p-4 rounded-lg shadow mb-6">
