@@ -50,9 +50,13 @@ const MyTeamObjectives: React.FC = () => {
         teamObjectives={teamObjectives}
         onUpdate={(updatedObjectives) => handleInputChange("objectives", updatedObjectives)}
       />
+      <TeamTasks
+        tasks={teamObjectives.tasks}
+        onUpdate={(updatedTasks) => handleInputChange("tasks", updatedTasks)}
+      />
 
-      {/* Team Current State */}
-
+    
+    
 
 
 
