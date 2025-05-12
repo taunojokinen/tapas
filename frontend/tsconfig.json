@@ -9,7 +9,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": "./src",
     "typeRoots": ["./node_modules/@types", "./types", "./src/types"],
     "lib": ["dom", "dom.iterable", "es2015"],
     "allowJs": true,
