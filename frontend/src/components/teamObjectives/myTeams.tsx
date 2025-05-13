@@ -70,7 +70,10 @@ const MyTeams: React.FC<MyTeamsProps> = ({ onTeamSelect }) => {
   };
 
   const handleShowAllTeams = () => {
-    setSelectedTeam(null);
+    setSelectedTeam(null); // Reset the selected team locally
+    if (onTeamSelect) {
+      onTeamSelect({ _id: "", name: "", owner: "", type: "", mission: "", members: [] }); // Notify parent
+    }
   };
 
   const handleCreateNewTeam = () => {

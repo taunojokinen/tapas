@@ -49,15 +49,26 @@ const TeamObjectives: React.FC<TeamObjectivesProps> = ({ teamObjectives, onUpdat
     const strategy = keyStrategies.find((s) => s._id === strategyId);
     if (strategy) {
       setSelectedStrategy(strategy);
+      // Notify the parent component about the selected strategy
+      onUpdate({
+        ...teamObjectives,
+        objectives: {
+          nimi: strategy.nimi,
+          mittari: strategy.mittari,
+          seuranta: strategy.seuranta,
+        },
+      });
     } else {
       console.error(`Strategy with ID ${strategyId} not found.`);
     }
   };
-
   const handleShowAllStrategies = () => {
     setSelectedStrategy(null);
+    onUpdate({
+      ...teamObjectives,
+      objectives: { nimi: "", mittari: "", seuranta: "" }, // Clear objectives
+    });
   };
-
   const handleAddStrategy = () => {
     if (!newStrategy.nimi || !newStrategy.mittari || !newStrategy.seuranta) {
       alert("Please fill in all fields for the new strategy.");
