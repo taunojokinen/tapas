@@ -35,7 +35,12 @@ export interface RowData {
     mittari: string;
     seuranta: string;
   } 
-
+  export interface TeamObjective {
+    _id: string; // MongoDB ID for the objective
+    nimi: string;
+    mittari: string;
+    seuranta: string;
+  } 
   export interface MyTask {
     nimi: string;
     mittari: string;
@@ -48,7 +53,7 @@ export interface TeamObjectivesJson {
   user: string;
   date: string;
 team: Team;
-objectives: MyObjective;
+objectives: TeamObjective;
 tasks: MyTask[];
 hindrances: string[];
 }

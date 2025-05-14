@@ -1,43 +1,58 @@
 const express = require("express");
 const MyObjectives = require("../models/MyObjectiveModel"); // Import the MyObjectives model
 const router = express.Router();
+const mongoose = require("mongoose"); 
+
+
 
 // POST route to create a new MyObjectives document
 router.post("/", async (req, res) => {
-    try {
-      const {
+  try {
+    const {
+      user,
+      title,
+      date,
+      mission,
+      objectives,
+      tasks,
+      hindrances,
+      promoters,
+    } = req.body;
+
+    // Ensure each objective has a valid _id
+    const validatedObjectives = objectives.map((objective) => {
+      if (!objective._id || !mongoose.Types.ObjectId.isValid(objective._id)) {
+        objective._id = new mongoose.Types.ObjectId(); // Generate a new ObjectId
+      }
+      return objective;
+    });
+
+    // Find an existing document for the user and update it, or create a new one if it doesn't exist
+    const updatedObjectives = await MyObjectives.findOneAndUpdate(
+      { user }, // Match by user
+      {
         user,
         title,
         date,
         mission,
-        objectives,
+        objectives: validatedObjectives,
         tasks,
         hindrances,
         promoters,
-      } = req.body;
-  
-      // Find an existing document for the user and update it, or create a new one if it doesn't exist
-      const updatedObjectives = await MyObjectives.findOneAndUpdate(
-        { user }, // Match by user
-        {
-          user,
-          title,
-          date,
-          mission,
-          objectives,
-          tasks,
-          hindrances,
-          promoters,
-        },
-        { new: true, upsert: true } // Return the updated document and create it if it doesn't exist
-      );
-  
-      res.status(200).json(updatedObjectives); // Respond with the updated document
-    } catch (error) {
-      console.error("Error creating or updating MyObjectives:", error);
-      res.status(500).json({ error: "Failed to create or update MyObjectives" });
-    }
-  });
+      },
+      { new: true, upsert: true } // Return the updated document and create it if it doesn't exist
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "MyObjectives successfully created or updated",
+      data: updatedObjectives,
+    });
+  } catch (error) {
+    console.error("Error creating or updating MyObjectives:", error);
+    res.status(500).json({ success: false, error: "Failed to create or update MyObjectives" });
+  }
+});
 
 router.get("/all", async (req, res) => {
     try {
@@ -88,21 +103,34 @@ router.get("/all", async (req, res) => {
 
   router.patch("/:user", async (req, res) => {
     try {
-      const { user } = req.params; // Get the user from the route parameter
-      const updateData = req.body; // Get the fields to update from the request body
+      const { objectives } = req.body;
   
-      // Find the document by user and update it with the provided fields
-      const updatedObjectives = await MyObjectives.findOneAndUpdate(
-        { user }, // Match by user
-        { $set: updateData }, // Update only the provided fields
-        { new: true } // Return the updated document
+      // Validate objectives
+      if (objectives) {
+        req.body.objectives = objectives.map((objective) => {
+          if (!objective._id || !mongoose.Types.ObjectId.isValid(objective._id)) {
+            objective._id = new mongoose.Types.ObjectId(); // Generate a new ObjectId
+          }
+          return objective;
+        });
+      }
+  
+      // Update the document in the database
+      const updatedDocument = await MyObjectives.findOneAndUpdate(
+        { user: req.params.user }, // Match by user (fixed from username to user)
+        { $set: req.body }, // Update the fields
+        { new: true, runValidators: true } // Return the updated document
       );
   
-      if (updatedObjectives) {
-        res.status(200).json({ message: "MyObjectives successfully updated", updatedObjectives });
-      } else {
-        res.status(404).json({ error: "MyObjectives not found for the specified user" });
+      if (!updatedDocument) {
+        return res.status(404).json({ error: "User not found" });
       }
+  
+      res.status(200).json({
+        success: true,
+        message: "MyObjectives successfully updated",
+        data: updatedDocument,
+      });
     } catch (error) {
       console.error("Error updating MyObjectives:", error);
       res.status(500).json({ error: "Failed to update MyObjectives" });

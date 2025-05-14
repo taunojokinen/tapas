@@ -69,13 +69,17 @@ export const fetchUserTeams = async (username: string) => {
     }
   };
 
-  export const checkOrCreateTeamObjective = async (team: string, objectives: string) => {
-    try {
-      const response = await axios.post("/api/teamobjectives/check", { team, objectives });
-      return response.data; // Return the team objective data
-    } catch (error) {
-      console.error("Failed to check or create team objective:", error);
-      throw error;
-    }
-  };
+  export const handleTeamAndObjectiveSelect = async (
+      teamId: string,
+      objectiveId: string,
+      onUpdate: (teamObjective: any) => void // Add onUpdate as a parameter
+  ) => {
+      try {
+        const response = await axios.post("/api/team-objectives/check", { teamId, objectiveId });
+        console.log(response.data.message); // Log whether it was found or created
+        onUpdate(response.data.teamObjective); // Update the UI with the returned data
+      } catch (error) {
+        console.error("Error checking or creating team objective:", error);
+      }
+    };
 

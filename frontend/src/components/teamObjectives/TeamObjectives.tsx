@@ -53,6 +53,7 @@ const TeamObjectives: React.FC<TeamObjectivesProps> = ({ teamObjectives, onUpdat
       onUpdate({
         ...teamObjectives,
         objectives: {
+          _id: strategy._id,
           nimi: strategy.nimi,
           mittari: strategy.mittari,
           seuranta: strategy.seuranta,
@@ -66,7 +67,7 @@ const TeamObjectives: React.FC<TeamObjectivesProps> = ({ teamObjectives, onUpdat
     setSelectedStrategy(null);
     onUpdate({
       ...teamObjectives,
-      objectives: { nimi: "", mittari: "", seuranta: "" }, // Clear objectives
+      objectives: { _id: "", nimi: "", mittari: "", seuranta: "" }, // Clear objectives
     });
   };
   const handleAddStrategy = () => {

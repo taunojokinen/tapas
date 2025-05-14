@@ -35,21 +35,26 @@ router.post("/create", async (req, res) => {
 
 router.post("/check", async (req, res) => {
   try {
-    const { teamId, objectives } = req.body;
+    const { teamId, objectiveId } = req.body;
 
     // Validate input
-    if (!teamId || !objectives) {
-      return res.status(400).json({ message: "Team ID and objectives are required." });
+    if (!teamId || !objectiveId) {
+      return res.status(400).json({ message: "Team ID and Objective ID are required." });
     }
 
-    // Check if a document exists for the given team ID and objectives
-    let teamObjective = await TeamObjectives.findOne({ team: teamId, objectives });
+    // Check if a document exists for the given team ID and objective ID
+    let teamObjective = await TeamObjectives.findOne({ team: teamId, "objectives._id": objectiveId });
 
     if (!teamObjective) {
       // If not found, create a new document
       teamObjective = new TeamObjectives({
         team: teamId,
-        objectives,
+        objectives: {
+          _id: objectiveId,
+          nimi: "Default Name",
+          mittari: "Default Metric",
+          seuranta: "Default Tracking",
+        },
         tasks: [], // Initialize with empty tasks
         hindrances: [], // Initialize with empty hindrances
         date: new Date(), // Set the current date

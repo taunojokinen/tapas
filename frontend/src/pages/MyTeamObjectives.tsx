@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MyTeams from "../components/teamObjectives/myTeams";
 import TeamObjectives from "../components/teamObjectives/TeamObjectives";
 import TeamTasks from "../components/teamObjectives/TeamTasks";
 import TeamCurrentState from "../components/teamObjectives/TeamCurrentState";
 import useAuth from "../hooks/useAuth"; // Import the custom hook
 import { MyObjective, MyTask, Team, TeamObjectivesJson } from "../types/types";
+import { handleTeamAndObjectiveSelect } from "../components/teamObjectives/TeamFunctions"; // Import the function
 
 const MyTeamObjectives: React.FC = () => {
   const { username } = useAuth(); // Get the logged-in user's username
@@ -12,10 +13,33 @@ const MyTeamObjectives: React.FC = () => {
     user: username || "",
     date: new Date().toISOString().split("T")[0], // Default to today's date
     team: { _id: "", owner: "", name: "", type: "", mission: "", members: [] }, // Default empty team
-    objectives: { nimi: "", mittari: "", seuranta: "" }, // Default empty objectives
+    objectives: {_id: "", nimi: "", mittari: "", seuranta: "" }, // Default empty objectives
     tasks: [], // Default empty tasks
     hindrances: [], // Default empty hindrances
   });
+
+  const isTeamSelected = teamObjectives.team._id !== ""; // Check if a team is selected
+  const areObjectivesSelected =
+    teamObjectives.objectives.nimi !== "" ||
+    teamObjectives.objectives.mittari !== "" ||
+    teamObjectives.objectives.seuranta !== ""; // Check if objectives are selected
+
+  // Call handleTeamAndObjectiveSelect when both team and objectives are selected
+  useEffect(() => {
+    if (isTeamSelected && areObjectivesSelected) {
+      handleTeamAndObjectiveSelect(
+        teamObjectives.team._id,
+        teamObjectives.objectives._id,
+        (teamObjective) => {
+          // Update the state with the returned data
+          setTeamObjectives((prev) => ({
+            ...prev,
+            ...teamObjective,
+          }));
+        }
+      );
+    }
+  }, [isTeamSelected, areObjectivesSelected, teamObjectives.team._id, teamObjectives.objectives._id]);
 
   const handleInputChange = (field: keyof TeamObjectivesJson, value: any) => {
     setTeamObjectives((prev) => ({
@@ -24,18 +48,10 @@ const MyTeamObjectives: React.FC = () => {
     }));
   };
 
-
-
   const handleSave = () => {
     console.log("Saving team objectives:", teamObjectives);
     // Add logic to save the data to the backend
   };
-
-  const isTeamSelected = teamObjectives.team._id !== ""; // Check if a team is selected
-  const areObjectivesSelected =
-    teamObjectives.objectives.nimi !== "" ||
-    teamObjectives.objectives.mittari !== "" ||
-    teamObjectives.objectives.seuranta !== ""; // Check if objectives are selected
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
@@ -46,19 +62,17 @@ const MyTeamObjectives: React.FC = () => {
         </h1>
       </div>
 
-<MyTeams
-onTeamSelect={(selectedTeam) => {
-  alert(`Selected team: ${JSON.stringify(selectedTeam)}`);
-  handleInputChange("team", selectedTeam);
-}}
-/>
-<TeamObjectives
-  teamObjectives={teamObjectives}
-  onUpdate={(updatedObjectives) => {
-    alert(`Updated objectives: ${JSON.stringify(updatedObjectives)}`);
-    handleInputChange("objectives", updatedObjectives.objectives);
-  }}
-/>
+      <MyTeams
+        onTeamSelect={(selectedTeam) => {
+          handleInputChange("team", selectedTeam);
+        }}
+      />
+      <TeamObjectives
+        teamObjectives={teamObjectives}
+        onUpdate={(updatedObjectives) => {
+          handleInputChange("objectives", updatedObjectives.objectives);
+        }}
+      />
 
       {/* Conditionally render TeamTasks and Save Button */}
       {isTeamSelected && areObjectivesSelected && (

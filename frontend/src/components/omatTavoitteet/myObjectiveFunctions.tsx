@@ -1,6 +1,7 @@
 import axios from "axios";
 import { MyObjectivesJson } from "../../types/types"; // Adjust the path if necessary
 
+
 // Fetch data from the backend
 export const fetchMyObjectiveData = async (
   username: string
@@ -25,6 +26,7 @@ export const patchMyObjectiveData = async (
   updateData: Partial<MyObjectivesJson>
 ): Promise<boolean> => {
   try {
+    // alert("Data being sent to the server: " + JSON.stringify(updateData));
     // Make a PATCH request to update the given user's data
     const response = await axios.patch(
       `http://localhost:5000/api/myobjectives/${username}`,
