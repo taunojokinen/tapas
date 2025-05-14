@@ -1,6 +1,5 @@
 const express = require("express");
 const MyObjectives = require("../models/MyObjectiveModel"); // Import the MyObjectives model
-const checkRole = require("../middleware/checkRole"); // Middleware for role checking
 const router = express.Router();
 
 // POST route to create a new MyObjectives document

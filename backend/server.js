@@ -20,6 +20,7 @@ const authRoutes = require("./routes/authRoutes"); // Tuo autentikaatioreitit
 const userRoutes = require("./routes/userRoutes"); // Tuo käyttäjäreitit
 const valueProposalRoutes = require("./routes/valueProposalRoutes"); // Tuo valueProposalRoutes
 const myObjectiveRoutes = require("./routes/myObjectiveRoutes"); // Tuo myObjectiveRoutes
+const TeamObjectiveRoutes = require("./routes/TeamObjectiveRoutes"); // Tuo TeamObjectiveRoutes
 
 const app = express();
 app.use(cors());
@@ -100,7 +101,7 @@ app.use("/api/ai", aiRoutes); // AI-reitit käyttöön
 app.use("/api/valueproposals", valueProposalRoutes); // valueProposalRoutes käyttöön
 app.use("/api/myobjectives", myObjectiveRoutes); // myObjectiveRoutes käyttöön
 app.use("/api/teams", teamRoutes); // tiimireitit käyttöön
-
+app.use("/api/teamobjectives", TeamObjectiveRoutes); // TeamObjectiveRoutes käyttöön
 
 // Login endpoint
 // Routes

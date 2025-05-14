@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FetchKeyStrategies } from "./TeamObjectiveFunctions"; // Import the fetch function
-import { MyTeamObjectivesJson } from "../../types/types";
+import { TeamObjectivesJson } from "../../types/types";
 
 interface TeamObjectivesProps {
-  teamObjectives: MyTeamObjectivesJson; // Use the correct type for teamObjectives
-  onUpdate: (updatedObjectives: MyTeamObjectivesJson) => void; // Use the correct type for updatedObjectives
+  teamObjectives: TeamObjectivesJson; // Use the correct type for teamObjectives
+  onUpdate: (updatedObjectives: TeamObjectivesJson) => void; // Use the correct type for updatedObjectives
 }
 interface KeyStrategy {
   _id: string; // MongoDB ID for the strategy

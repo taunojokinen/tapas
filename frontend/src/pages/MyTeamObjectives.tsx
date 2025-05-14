@@ -4,11 +4,11 @@ import TeamObjectives from "../components/teamObjectives/TeamObjectives";
 import TeamTasks from "../components/teamObjectives/TeamTasks";
 import TeamCurrentState from "../components/teamObjectives/TeamCurrentState";
 import useAuth from "../hooks/useAuth"; // Import the custom hook
-import { MyObjective, MyTask, Team, MyTeamObjectivesJson } from "../types/types";
+import { MyObjective, MyTask, Team, TeamObjectivesJson } from "../types/types";
 
 const MyTeamObjectives: React.FC = () => {
   const { username } = useAuth(); // Get the logged-in user's username
-  const [teamObjectives, setTeamObjectives] = useState<MyTeamObjectivesJson>({
+  const [teamObjectives, setTeamObjectives] = useState<TeamObjectivesJson>({
     user: username || "",
     date: new Date().toISOString().split("T")[0], // Default to today's date
     team: { _id: "", owner: "", name: "", type: "", mission: "", members: [] }, // Default empty team
@@ -17,19 +17,14 @@ const MyTeamObjectives: React.FC = () => {
     hindrances: [], // Default empty hindrances
   });
 
-  const handleInputChange = (field: keyof MyTeamObjectivesJson, value: any) => {
+  const handleInputChange = (field: keyof TeamObjectivesJson, value: any) => {
     setTeamObjectives((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const handleAddTask = () => {
-    setTeamObjectives((prev) => ({
-      ...prev,
-      tasks: [...prev.tasks, { nimi: "", mittari: "", seuranta: "" }],
-    }));
-  };
+
 
   const handleSave = () => {
     console.log("Saving team objectives:", teamObjectives);

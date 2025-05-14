@@ -44,7 +44,7 @@ export interface RowData {
 
 
   // interfaces for MyTeamObjectives
-export interface MyTeamObjectivesJson {
+export interface TeamObjectivesJson {
   user: string;
   date: string;
 team: Team;
