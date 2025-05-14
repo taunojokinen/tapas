@@ -1,12 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  FaHome,
-  FaCogs,
-  FaChartBar,
-  FaLightbulb,
-  FaTasks,
-} from "react-icons/fa";
+import { FaHome, FaCogs, FaChartBar, FaLightbulb } from "react-icons/fa";
 
 const Navi: React.FC = () => {
   return (
@@ -69,7 +63,7 @@ const Navi: React.FC = () => {
             <FaCogs className="text-red-500 text-2xl mr-4" />
             <span className="text-lg font-semibold">Asetukset</span>
           </Link>
-        </li> 
+        </li>
       </ul>
       <div className="p-4 text-sm border-t border-gray-700">© 2025 Tapas</div>
     </nav>
