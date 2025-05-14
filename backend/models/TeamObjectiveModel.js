@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 // Team schema
 const teamSchema = new mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true }, // Explicitly define _id
   owner: { type: String, required: true,},
   name: { type: String, required: true, }, type: { type: String, required: true,},
   mission: { type: String, required: false, },
@@ -10,6 +11,7 @@ const teamSchema = new mongoose.Schema({
 
 // Objective schema
 const objectiveSchema = new mongoose.Schema({
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true }, // Explicitly define _id
     nimi: { type: String, required: true },
     mittari: { type: String, required: true },
     seuranta: { type: String, required: true },

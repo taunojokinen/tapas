@@ -33,6 +33,37 @@ router.post("/create", async (req, res) => {
   }
 });
 
+router.post("/check", async (req, res) => {
+  try {
+    const { teamId, objectives } = req.body;
+
+    // Validate input
+    if (!teamId || !objectives) {
+      return res.status(400).json({ message: "Team ID and objectives are required." });
+    }
+
+    // Check if a document exists for the given team ID and objectives
+    let teamObjective = await TeamObjectives.findOne({ team: teamId, objectives });
+
+    if (!teamObjective) {
+      // If not found, create a new document
+      teamObjective = new TeamObjectives({
+        team: teamId,
+        objectives,
+        tasks: [], // Initialize with empty tasks
+        hindrances: [], // Initialize with empty hindrances
+        date: new Date(), // Set the current date
+      });
+      await teamObjective.save();
+      return res.status(201).json({ message: "Team objective created.", teamObjective });
+    }
+
+    res.status(200).json({ message: "Team objective found.", teamObjective }); // Return the found document
+  } catch (error) {
+    res.status(500).json({ message: "Failed to check or create team objective.", error });
+  }
+});
+
 // PATCH route to update a specific team objective by _id
 router.patch("/:id", async (req, res) => {
   try {
