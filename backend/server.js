@@ -23,6 +23,14 @@ const myObjectiveRoutes = require("./routes/myObjectiveRoutes"); // Tuo myObject
 const TeamObjectiveRoutes = require("./routes/TeamObjectiveRoutes"); // Tuo TeamObjectiveRoutes
 
 const app = express();
+
+const corsOptions = {
+  origin: 'http://localhost:3000', // React-sovelluksen osoite
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], // Lisää PATCH tähän
+  allowedHeaders: ['Content-Type', 'Authorization'], // Tässä voi lisätä tarvittavat headerit
+  credentials: true, // Jos käytät evästeitä
+};
+
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
