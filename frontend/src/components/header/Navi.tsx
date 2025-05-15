@@ -18,9 +18,10 @@ const Navi: React.FC = () => {
             <span className="text-lg font-semibold">Arvot</span>
           </Link>
         </li>
+        
         <li>
           <Link
-            to="/"
+            to="/etusivu"
             className="flex items-center px-4 py-3 rounded hover:bg-gray-700"
           >
             <FaHome className="text-blue-500 text-2xl mr-4" />
@@ -28,15 +29,6 @@ const Navi: React.FC = () => {
           </Link>
         </li>
 
-        {/* <li>
-          <Link
-            to="/change_values"
-            className="flex items-center px-4 py-3 rounded hover:bg-gray-700"
-          >
-            <FaTasks className="text-yellow-500 text-2xl mr-4" />
-            <span className="text-lg font-semibold">Change Values</span>
-          </Link>
-        </li> */}
         <li>
           <Link
             to="/my_team_objectives"

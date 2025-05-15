@@ -61,3 +61,26 @@ hindrances: string[];
     mission: string;
     members: string[];
   }
+
+  export interface CompanyObjectivesJson {
+    user: string;
+    title: string;
+    date: string;
+    mission: string;
+    objectives: CompanyObjective[];
+    tasks: CompanyTask[];
+    hindrances: string[];
+    promoters: string[];
+  }
+
+  export interface CompanyObjective {
+    nimi: string;
+    mittari: string;
+    seuranta: string;
+  } 
+
+  export interface CompanyTask {
+    nimi: string;
+    mittari: string;
+    seuranta: string;
+  }

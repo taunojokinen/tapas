@@ -24,8 +24,6 @@ const MyTeamObjectives: React.FC = () => {
     }));
   };
 
-
-
   const handleSave = () => {
     console.log("Saving team objectives:", teamObjectives);
     // Add logic to save the data to the backend
@@ -41,31 +39,33 @@ const MyTeamObjectives: React.FC = () => {
     <div className="bg-gray-100 min-h-screen p-6">
       <div className="bg-white p-4 rounded-lg shadow mb-6">
         <h1 className="text-2xl font-bold text-gray-800">
-          Tiimin Tavoitteet - täällä voit tarkastella ja muokata tiimin tavoitteita.{" "}
-          {teamObjectives.team.name}
+          Tiimin Tavoitteet - täällä voit tarkastella ja muokata tiimin
+          tavoitteita. {teamObjectives.team.name}
         </h1>
       </div>
 
-<MyTeams
-onTeamSelect={(selectedTeam) => {
-  alert(`Selected team: ${JSON.stringify(selectedTeam)}`);
-  handleInputChange("team", selectedTeam);
-}}
-/>
-<TeamObjectives
-  teamObjectives={teamObjectives}
-  onUpdate={(updatedObjectives) => {
-    alert(`Updated objectives: ${JSON.stringify(updatedObjectives)}`);
-    handleInputChange("objectives", updatedObjectives.objectives);
-  }}
-/>
+      <MyTeams
+        onTeamSelect={(selectedTeam) => {
+          alert(`Selected team: ${JSON.stringify(selectedTeam)}`);
+          handleInputChange("team", selectedTeam);
+        }}
+      />
+      <TeamObjectives
+        teamObjectives={teamObjectives}
+        onUpdate={(updatedObjectives) => {
+          alert(`Updated objectives: ${JSON.stringify(updatedObjectives)}`);
+          handleInputChange("objectives", updatedObjectives.objectives);
+        }}
+      />
 
       {/* Conditionally render TeamTasks and Save Button */}
       {isTeamSelected && areObjectivesSelected && (
         <>
           <TeamTasks
             tasks={teamObjectives.tasks}
-            onUpdate={(updatedTasks) => handleInputChange("tasks", updatedTasks)}
+            onUpdate={(updatedTasks) =>
+              handleInputChange("tasks", updatedTasks)
+            }
           />
 
           {/* Save Button */}

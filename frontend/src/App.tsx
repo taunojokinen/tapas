@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import ChangePassword from "./pages/ChangePassword";
-import YrityksenTavoitteet from "./pages/YrityksenTavoitteet";
+import CompanyObjectives from "./pages/CompanyObjectives";
 import Arvot from "./pages/Arvot";
 import ChangeValues from "./components/arvot/ChangeValues";
-//import TiiminTavoitteet from "./pages/TiiminTavoitteet";
 import MyTeamObjectives from "./pages/MyTeamObjectives";
 import OmatTavoitteet from "./pages/OmatTavoitteet";
 import Tilannekuva from "./pages/Tilannekuva";
@@ -41,16 +40,19 @@ const App: React.FC = () => {
         <Navi />
 
         {/* Main Content */}
-        <div className="flex-grow p-8 bg-gray-100 text-gray-800 ml-64 mt-32 flex">
-          <div className="bg-white shadow-md rounded-lg p-6 flex-grow flex flex-col">
+        <div className="flex-grow bg-gray-100 text-gray-800 ml-64 mt-32 flex">
+          <div className="bg-white shadow-md rounded-lg flex-grow flex flex-col">
             <Routes>
-              <Route path="/" element={<YrityksenTavoitteet />} />
+              <Route path="/" element={<CompanyObjectives />} />
 
               <Route path="/change-password" element={<ChangePassword />} />
-              <Route path="/etusivu" element={<YrityksenTavoitteet />} />
+              <Route path="/etusivu" element={<CompanyObjectives />} />
               <Route path="/arvot" element={<Arvot />} />
               <Route path="/change_values" element={<ChangeValues />} />
-              <Route path="/my_team_objectives" element={<MyTeamObjectives />} />
+              <Route
+                path="/my_team_objectives"
+                element={<MyTeamObjectives />}
+              />
               <Route path="/omat_tavoitteet" element={<OmatTavoitteet />} />
               <Route path="/tilannekuva" element={<Tilannekuva />} />
               <Route path="/ideat" element={<Ideat />} />
