@@ -1,10 +1,5 @@
 import { FaTrash, FaPlus } from "react-icons/fa";
-
-type Strategia = {
-  tavoite: string;
-  toimenpide: string;
-  seuranta: "green" | "yellow" | "red";
-};
+import { Strategia } from "../../types/types";
 
 const AvainstrategiaRivit: React.FC<{
   strategiat: Strategia[];

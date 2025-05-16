@@ -1,9 +1,5 @@
 import { FaTrash, FaPlus } from "react-icons/fa";
-
-type OsaTiedot = {
-  otsikko: string;
-  rivit: string[];
-};
+import { OsaTiedot } from "../../types/types";
 
 const TekstikenttaOsio: React.FC<
   OsaTiedot & {

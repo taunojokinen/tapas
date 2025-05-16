@@ -1,11 +1,6 @@
 // hooks/useCompanyObjectives.ts
 import { useEffect, useState } from "react";
-
-type Strategia = {
-  tavoite: string;
-  toimenpide: string;
-  seuranta: "green" | "yellow" | "red";
-};
+import {Strategia} from "../types/types"
 
 export const useCompanyObjectives = () => {
   const [perustehtava, setPerustehtava] = useState<string[]>([]);
