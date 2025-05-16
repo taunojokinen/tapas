@@ -6,7 +6,7 @@ const CompanyObjective = require('../models/CompanyObjective');
 router.get('/', async (req, res) => {
   try {
     const objectives = await CompanyObjective.find();
-    console.log("Haetut tiedot: ", objectives)
+    //console.log("Haetut tiedot: ", objectives)
     res.json(objectives);
   } catch (error) {
     res.status(500).json({ message: "Virhe tiedon haussa" });
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 // POST: lisää uusi
 router.post("/", async (req, res) => {
     const { perustehtava, paamaara, avainstrategiat, nykytila } = req.body;
-    console.log("Vastaanotettu data:", req.body);
+    //console.log("Vastaanotettu data:", req.body);
     try {
       const companyObjective = new CompanyObjective({
         perustehtava,
@@ -78,7 +78,7 @@ router.patch('/:id', async (req, res) => {
     }
     res.json(updated);
   } catch (error) {
-    console.error('POST error:', error); // 🛠️ Tulosta virhe konsoliin
+    //console.error('POST error:', error); // 🛠️ Tulosta virhe konsoliin
     res.status(500).json({ message: 'Server error' });
   }
 });

@@ -2,16 +2,23 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../pictures/logo.png";
-import useAuth from "../../hooks/useAuth"; // Import the custom hook
+import { useAuth } from "../context/AuthContext"; // Import the custom hook
+import { useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
   const { token, username, error, handleLogin, handleLogout } = useAuth();
   const [loginUsername, setLoginUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmitLogin = (e: React.FormEvent) => {
+  const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleLogin(loginUsername, password);
+    await handleLogin(loginUsername, password);
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/etusivu"); // ohjataan vain jos login onnistui
+    }
   };
 
   return (
