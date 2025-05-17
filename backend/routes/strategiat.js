@@ -46,6 +46,16 @@ router.post('/', async (req, res) => {
       res.status(500).json({ error: 'Tapahtui virhe tallennettaessa strategiaa' });
     }
   });
+// Hae kaikki strategiat
+
+router.get("/all", async (req, res) => {
+    try {
+      const strategiat = await Strategia.find();
+      res.json(strategiat);
+    } catch (error) {
+      res.status(500).json({ error: "Tietojen hakeminen epäonnistui." });
+    }
+  });
 
 // Poista strategia ID:n perusteella
 router.delete("/:id", async (req, res) => {

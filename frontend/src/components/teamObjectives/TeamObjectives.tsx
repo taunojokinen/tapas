@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FetchKeyStrategies } from "./TeamObjectiveFunctions"; // Import the fetch function
-import { TeamObjectivesJson } from "../../types/types";
+import { TeamObjectivesJson, TeamObjective } from "../../types/types";
 
 interface TeamObjectivesProps {
   teamObjectives: TeamObjectivesJson; // Use the correct type for teamObjectives
@@ -48,7 +48,9 @@ const TeamObjectives: React.FC<TeamObjectivesProps> = ({ teamObjectives, onUpdat
   const handleStrategySelect = (strategyId: string) => {
     const strategy = keyStrategies.find((s) => s._id === strategyId);
     if (strategy) {
+      console.log("Selected Strategy:", strategy); // Debug log
       setSelectedStrategy(strategy);
+      console.log("Selected Strategy:", strategy); // Debug log
       // Notify the parent component about the selected strategy
       onUpdate({
         ...teamObjectives,
@@ -64,6 +66,7 @@ const TeamObjectives: React.FC<TeamObjectivesProps> = ({ teamObjectives, onUpdat
     }
   };
   const handleShowAllStrategies = () => {
+    console.log("Clearing objectives"); // Debug log
     setSelectedStrategy(null);
     onUpdate({
       ...teamObjectives,

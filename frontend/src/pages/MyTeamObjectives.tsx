@@ -26,10 +26,12 @@ const MyTeamObjectives: React.FC = () => {
 
   // Call handleTeamAndObjectiveSelect when both team and objectives are selected
   useEffect(() => {
-    if (isTeamSelected && areObjectivesSelected) {
+    if (isTeamSelected && areObjectivesSelected && teamObjectives.team._id && teamObjectives.objectives._id) {
+      console.log("Team ID: ", teamObjectives.team._id, " Objective ID:", teamObjectives.objectives._id);
       handleTeamAndObjectiveSelect(
-        teamObjectives.team._id,
-        teamObjectives.objectives._id,
+        teamObjectives.team._id, // teamId
+        teamObjectives.objectives._id, // objectiveId
+        username, // user
         (teamObjective) => {
           // Update the state with the returned data
           setTeamObjectives((prev) => ({
@@ -39,9 +41,16 @@ const MyTeamObjectives: React.FC = () => {
         }
       );
     }
-  }, [isTeamSelected, areObjectivesSelected, teamObjectives.team._id, teamObjectives.objectives._id]);
+  }, [
+    isTeamSelected,
+    areObjectivesSelected,
+    teamObjectives.team._id,
+    teamObjectives.objectives._id,
+    username,
+  ]);
 
   const handleInputChange = (field: keyof TeamObjectivesJson, value: any) => {
+    console.log(`Updating field: ${field}`, value); // Debug log
     setTeamObjectives((prev) => ({
       ...prev,
       [field]: value,
@@ -67,12 +76,13 @@ const MyTeamObjectives: React.FC = () => {
           handleInputChange("team", selectedTeam);
         }}
       />
-      <TeamObjectives
-        teamObjectives={teamObjectives}
-        onUpdate={(updatedObjectives) => {
-          handleInputChange("objectives", updatedObjectives.objectives);
-        }}
-      />
+<TeamObjectives
+  teamObjectives={teamObjectives}
+  onUpdate={(updatedObjectives) => {
+    console.log("Updated Objectives:", updatedObjectives); // Debug log
+    handleInputChange("objectives", updatedObjectives.objectives); // Pass the entire array
+  }}
+/>
 
       {/* Conditionally render TeamTasks and Save Button */}
       {isTeamSelected && areObjectivesSelected && (

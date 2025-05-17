@@ -70,16 +70,33 @@ export const fetchUserTeams = async (username: string) => {
   };
 
   export const handleTeamAndObjectiveSelect = async (
-      teamId: string,
-      objectiveId: string,
-      onUpdate: (teamObjective: any) => void // Add onUpdate as a parameter
+    teamId: string,
+    objectiveId: string,
+    user: string,
+    onUpdate: (teamObjective: any) => void
   ) => {
-      try {
-        const response = await axios.post("/api/team-objectives/check", { teamId, objectiveId });
-        console.log(response.data.message); // Log whether it was found or created
-        onUpdate(response.data.teamObjective); // Update the UI with the returned data
-      } catch (error) {
-        console.error("Error checking or creating team objective:", error);
-      }
-    };
+    try {
+      const response = await axios.post("http://localhost:5000/api/teamobjectives/check", {
+        teamId,
+        objectiveId,
+        user,
+      });
+  
+      const teamObjective = response.data.teamObjective;
+      console.log("returned Team Objective:", teamObjective); // Debug log
+  
+      // Ensure the response includes the correct _id fields
+      onUpdate({
+        ...teamObjective,
+        objectives: teamObjective.objectives.map((obj: any) => ({
+          _id: obj._id,
+          nimi: obj.nimi,
+          mittari: obj.mittari,
+          seuranta: obj.seuranta,
+        })),
+      });
+    } catch (error) {
+      console.error("Error checking or creating team objective:", error);
+    }
+  };
 
