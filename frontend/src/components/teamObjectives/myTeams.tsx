@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { saveNewTeam, updateTeam, deleteTeam, fetchTeamsForUser  } from "./TeamFunctions"; // Import the fetch function
 import useAuth from "../../hooks/useAuth"; // Import the custom hook
-import { Team } from "../../types/types"; // Adjust the path as needed
+import { Team, TeamObjective } from "../../types/types"; // Adjust the path as needed
 
 export interface User {
   _id: string; // MongoDB ID for the user
@@ -17,11 +17,12 @@ const MyTeams: React.FC<MyTeamsProps> = ({ onTeamSelect }) => {
   const [loading, setLoading] = useState(true);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [newTeam, setNewTeam] = useState<{ name: string; type: string; mission: string; members: string[] }>({
+  const [newTeam, setNewTeam] = useState<{ name: string; type: string; mission: string; members: string[]; teamObjectives: TeamObjective[] }>({
     name: "",
     type: "",
     mission: "",
     members: [],
+    teamObjectives: [],
   });
   const [userList, setUserList] = useState<User[]>([]);
 
@@ -72,7 +73,7 @@ const MyTeams: React.FC<MyTeamsProps> = ({ onTeamSelect }) => {
   const handleShowAllTeams = () => {
     setSelectedTeam(null); // Reset the selected team locally
     if (onTeamSelect) {
-      onTeamSelect({ _id: "", name: "", owner: "", type: "", mission: "", members: [] }); // Notify parent
+      onTeamSelect({ _id: "default-id", name: "", owner: "", type: "", mission: "", members: [], teamObjectives: [] }); // Notify parent
     }
   };
 
@@ -82,23 +83,26 @@ const MyTeams: React.FC<MyTeamsProps> = ({ onTeamSelect }) => {
 
   const handleModalClose = () => {
     setShowModal(false);
-    setNewTeam({ name: "", type: "", mission: "", members: [] });
+    setNewTeam({ name: "", type: "", mission: "", members: [], teamObjectives: [] });
   };
 
   const handleSaveNewTeam = async () => {
     try {
       if (selectedTeam) {
+        // Update the existing team
         const updatedTeam = await updateTeam(selectedTeam._id, newTeam, username);
         setTeams((prev) =>
-          prev.map((team) => (team._id === selectedTeam._id ? updatedTeam : team))
+          prev.map((team) => (team._id === updatedTeam._id ? updatedTeam : team))
         );
         console.log("Team updated:", updatedTeam);
       } else {
+        // Create a new team
         const createdTeam = await saveNewTeam(newTeam, username);
         setTeams((prev) => [...prev, createdTeam]);
         console.log("New team created:", createdTeam);
       }
-
+  
+      // Close the modal and reset the form
       handleModalClose();
       setSelectedTeam(null);
     } catch (error) {
@@ -125,15 +129,22 @@ const MyTeams: React.FC<MyTeamsProps> = ({ onTeamSelect }) => {
   };
 
   const handleEditTeam = (team: Team) => {
+    // Populate the form with the selected team's details
     setNewTeam({
       name: team.name,
       type: team.type,
       mission: team.mission,
       members: team.members,
+      teamObjectives: team.teamObjectives || [], // Ensure teamObjectives is included
     });
+  
+    // Set the selected team for editing
     setSelectedTeam(team);
+  
+    // Open the modal for editing
     setShowModal(true);
   };
+
 
   const handleMemberToggle = (userId: string) => {
     setNewTeam((prev) => {

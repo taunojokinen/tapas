@@ -35,12 +35,6 @@ export interface MyObjective {
   mittari: string;
   seuranta: string;
 }
-export interface TeamObjective {
-  _id: string; // MongoDB ID for the objective
-  nimi: string;
-  mittari: string;
-  seuranta: string;
-}
 
 export interface MyTask {
   nimi: string;
@@ -48,12 +42,23 @@ export interface MyTask {
   seuranta: string;
 }
 
+export interface TeamObjective {
+  nimi: string;
+  mittari: string;
+  seuranta: string;
+  tasks: MyTask[];
+  hindrances: string[];
+  promoters: string[];
+}
+
+
+
 // interfaces for MyTeamObjectives
 export interface TeamObjectivesJson {
   user: string;
   date: string;
 team: Team;
-objectives: TeamObjective;
+objectives: TeamObjective[];
 tasks: MyTask[];
 hindrances: string[];
 }
@@ -65,6 +70,7 @@ export interface Team {
   type: string;
   mission: string;
   members: string[];
+  teamObjectives: TeamObjective[];
 }
 
 export interface Strategia {

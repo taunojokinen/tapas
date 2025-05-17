@@ -12,25 +12,25 @@ const MyTeamObjectives: React.FC = () => {
   const [teamObjectives, setTeamObjectives] = useState<TeamObjectivesJson>({
     user: username || "",
     date: new Date().toISOString().split("T")[0], // Default to today's date
-    team: { _id: "", owner: "", name: "", type: "", mission: "", members: [] }, // Default empty team
-    objectives: {_id: "", nimi: "", mittari: "", seuranta: "" }, // Default empty objectives
+    team: { _id: "", owner: "", name: "", type: "", mission: "", members: [], teamObjectives: [] }, // Default empty team
+    objectives: [], // Default empty objectives
     tasks: [], // Default empty tasks
     hindrances: [], // Default empty hindrances
   });
 
   const isTeamSelected = teamObjectives.team._id !== ""; // Check if a team is selected
   const areObjectivesSelected =
-    teamObjectives.objectives.nimi !== "" ||
-    teamObjectives.objectives.mittari !== "" ||
-    teamObjectives.objectives.seuranta !== ""; // Check if objectives are selected
+    teamObjectives.objectives.some((objective) => objective.nimi !== "") ||
+    teamObjectives.objectives.some((objective) => objective.mittari !== "") ||
+    teamObjectives.objectives.some((objective) => objective.seuranta !== ""); // Check if objectives are selected
 
   // Call handleTeamAndObjectiveSelect when both team and objectives are selected
   useEffect(() => {
-    if (isTeamSelected && areObjectivesSelected && teamObjectives.team._id && teamObjectives.objectives._id) {
-      console.log("Team ID: ", teamObjectives.team._id, " Objective ID:", teamObjectives.objectives._id);
+    if (isTeamSelected && areObjectivesSelected && teamObjectives.team._id && teamObjectives.objectives.some((objective) => objective.nimi)) {
+      console.log("Team ID: ", teamObjectives.team._id, " Objective Names:", teamObjectives.objectives.map((objective) => objective.nimi || "N/A"));
       handleTeamAndObjectiveSelect(
         teamObjectives.team._id, // teamId
-        teamObjectives.objectives._id, // objectiveId
+        teamObjectives.objectives.map((objective: MyObjective) => objective.nimi || "").join(","), // objectiveIds
         username, // user
         (teamObjective) => {
           // Update the state with the returned data
@@ -45,7 +45,7 @@ const MyTeamObjectives: React.FC = () => {
     isTeamSelected,
     areObjectivesSelected,
     teamObjectives.team._id,
-    teamObjectives.objectives._id,
+    teamObjectives.objectives.map((objective) => objective.nimi),
     username,
   ]);
 

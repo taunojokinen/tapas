@@ -54,12 +54,16 @@ const TeamObjectives: React.FC<TeamObjectivesProps> = ({ teamObjectives, onUpdat
       // Notify the parent component about the selected strategy
       onUpdate({
         ...teamObjectives,
-        objectives: {
-          _id: strategy._id,
-          nimi: strategy.nimi,
-          mittari: strategy.mittari,
-          seuranta: strategy.seuranta,
-        },
+        objectives: [
+          {
+            nimi: strategy.nimi,
+            mittari: strategy.mittari,
+            seuranta: strategy.seuranta,
+            tasks: [],
+            hindrances: [],
+            promoters: [],
+          },
+        ],
       });
     } else {
       console.error(`Strategy with ID ${strategyId} not found.`);
@@ -70,9 +74,10 @@ const TeamObjectives: React.FC<TeamObjectivesProps> = ({ teamObjectives, onUpdat
     setSelectedStrategy(null);
     onUpdate({
       ...teamObjectives,
-      objectives: { _id: "", nimi: "", mittari: "", seuranta: "" }, // Clear objectives
+      objectives: [{ nimi: "", mittari: "", seuranta: "", tasks: [], hindrances: [], promoters: [] }], // Clear objectives
     });
   };
+
   const handleAddStrategy = () => {
     if (!newStrategy.nimi || !newStrategy.mittari || !newStrategy.seuranta) {
       alert("Please fill in all fields for the new strategy.");
