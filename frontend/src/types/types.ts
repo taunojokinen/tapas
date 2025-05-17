@@ -51,18 +51,6 @@ export interface TeamObjective {
   promoters: string[];
 }
 
-
-
-// interfaces for MyTeamObjectives
-export interface TeamObjectivesJson {
-  user: string;
-  date: string;
-team: Team;
-objectives: TeamObjective[];
-tasks: MyTask[];
-hindrances: string[];
-}
-
 export interface Team {
   _id: string; // MongoDB ID for the team
   owner: string;

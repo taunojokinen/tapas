@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import TekstikenttaOsio from "../../../src/components/tavoitteet/TekstikenttaOsio";
+import TekstikenttaOsio from "../../../src/components/companyObjectives/TekstikenttaOsio";
 
 describe("TekstikenttaOsio", () => {
   const mockPaivita = jest.fn();
