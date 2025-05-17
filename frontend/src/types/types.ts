@@ -35,6 +35,12 @@ export interface MyObjective {
   mittari: string;
   seuranta: string;
 }
+export interface TeamObjective {
+  _id: string; // MongoDB ID for the objective
+  nimi: string;
+  mittari: string;
+  seuranta: string;
+}
 
 export interface MyTask {
   nimi: string;
