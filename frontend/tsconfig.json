@@ -4,7 +4,7 @@
     "module": "esnext",
     "jsx": "react-jsx",
     "strict": true,
-    "types": ["jest", "node"],
+    "types": ["jest", "node", "@testing-library/jest-dom", "jest-fetch-mock"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -23,6 +23,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["src/**/*", "test"],
+  "include": ["src/**/*", "test", "types"],
   "exclude": ["node_modules", "dist"]
 }

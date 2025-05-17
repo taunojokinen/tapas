@@ -19,6 +19,7 @@ const valueProposalRoutes = require("./routes/valueProposalRoutes"); // Tuo valu
 const myObjectiveRoutes = require("./routes/myObjectiveRoutes"); // Tuo myObjectiveRoutes
 const saveSelections = require("./routes/saveSelections");
 const TeamObjectiveRoutes = require("./routes/TeamObjectiveRoutes"); // Tuo TeamObjectiveRoutes
+const companyObjectivesRoute = require('./routes/companyObjectives');
 
 const app = express();
 
@@ -61,6 +62,7 @@ app.use("/api/valueproposals", valueProposalRoutes); // valueProposalRoutes käy
 app.use("/api/myobjectives", myObjectiveRoutes); // myObjectiveRoutes käyttöön
 app.use("/api/teams", teamRoutes); // tiimireitit käyttöön
 app.use("/api/teamobjectives", TeamObjectiveRoutes); // TeamObjectiveRoutes käyttöön
+app.use('/api/companyObjectives', companyObjectivesRoute);
 
 // Login endpoint
 // Routes

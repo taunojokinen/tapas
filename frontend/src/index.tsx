@@ -5,6 +5,7 @@ import "./index.css";
 //import './media.css';
 import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./components/context/UserContext";
+import { AuthProvider } from "../src/components/context/AuthContext";
 
 /**
  * Main component of the application.
@@ -13,9 +14,9 @@ import { UserProvider } from "./components/context/UserContext";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
-      <UserProvider>
+      <AuthProvider>
         <App />
-      </UserProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import ChangePassword from "./pages/ChangePassword";
-import YrityksenTavoitteet from "./pages/YrityksenTavoitteet";
+import CompanyObjectives from "./pages/CompanyObjectives";
 import Arvot from "./pages/Arvot";
 import ChangeValues from "./components/arvot/ChangeValues";
-//import TiiminTavoitteet from "./pages/TiiminTavoitteet";
 import MyTeamObjectives from "./pages/MyTeamObjectives";
 import OmatTavoitteet from "./pages/OmatTavoitteet";
 import Tilannekuva from "./pages/Tilannekuva";
@@ -15,10 +14,13 @@ import Header from "./components/header/Header";
 import Navi from "./components/header/Navi";
 import NotAuthorized from "./pages/NotAuthorized";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useAuth } from "../src/components/context/AuthContext";
+import logo from "./pictures/logo.png";
 import axios from "axios";
 
 const App: React.FC = () => {
   const [message, setMessage] = useState("");
+  const { token } = useAuth();
 
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
@@ -29,6 +31,21 @@ const App: React.FC = () => {
   }, []);
   const role = localStorage.getItem("role");
   console.log("User Role in Asetukset:", role);
+
+  if (!token) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <img src={logo} alt="Company Logo" className="h-64 mb-6" />
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          Tervetuloa Tapas Johtamisavustimeen
+        </h1>
+        <p className="text-2xl text-gray-700 mb-4">
+          Kirjaudu oikeasta yläkulmasta
+        </p>
+        <Header /> {/* Tämä sisältää login-lomakkeen */}
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header Section */}
@@ -41,17 +58,45 @@ const App: React.FC = () => {
         <Navi />
 
         {/* Main Content */}
-        <div className="flex-grow p-8 bg-gray-100 text-gray-800 ml-64 mt-32 flex">
-          <div className="bg-white shadow-md rounded-lg p-6 flex-grow flex flex-col">
+        <div className="flex-grow bg-gray-100 text-gray-800 ml-64 mt-32 flex">
+          <div className="bg-white shadow-md rounded-lg flex-grow flex flex-col">
             <Routes>
-              <Route path="/" element={<YrityksenTavoitteet />} />
-
+              <Route path="/" element={<Header />} />
+              <Route
+                path="/etusivu"
+                element={
+                  <ProtectedRoute>
+                    <CompanyObjectives />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/change-password" element={<ChangePassword />} />
-              <Route path="/etusivu" element={<YrityksenTavoitteet />} />
-              <Route path="/arvot" element={<Arvot />} />
+              {/* <Route path="/etusivu" element={<CompanyObjectives />} /> */}
+              <Route
+                path="/arvot"
+                element={
+                  <ProtectedRoute>
+                    <Arvot />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/change_values" element={<ChangeValues />} />
-              <Route path="/my_team_objectives" element={<MyTeamObjectives />} />
-              <Route path="/omat_tavoitteet" element={<OmatTavoitteet />} />
+              <Route
+                path="/my_team_objectives"
+                element={
+                  <ProtectedRoute>
+                    <MyTeamObjectives />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/omat_tavoitteet"
+                element={
+                  <ProtectedRoute>
+                    <OmatTavoitteet />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/tilannekuva" element={<Tilannekuva />} />
               <Route path="/ideat" element={<Ideat />} />
               <Route path="/aktiviteetit" element={<Aktiviteetit />} />

@@ -66,8 +66,8 @@ const MyTeamObjectives: React.FC = () => {
     <div className="bg-gray-100 min-h-screen p-6">
       <div className="bg-white p-4 rounded-lg shadow mb-6">
         <h1 className="text-2xl font-bold text-gray-800">
-          Tiimin Tavoitteet - täällä voit tarkastella ja muokata tiimin tavoitteita.{" "}
-          {teamObjectives.team.name}
+          Tiimin Tavoitteet - täällä voit tarkastella ja muokata tiimin
+          tavoitteita. {teamObjectives.team.name}
         </h1>
       </div>
 
@@ -89,7 +89,9 @@ const MyTeamObjectives: React.FC = () => {
         <>
           <TeamTasks
             tasks={teamObjectives.tasks}
-            onUpdate={(updatedTasks) => handleInputChange("tasks", updatedTasks)}
+            onUpdate={(updatedTasks) =>
+              handleInputChange("tasks", updatedTasks)
+            }
           />
 
           {/* Save Button */}
