@@ -2,36 +2,21 @@ import axios from "axios";
 import { Team } from "../../types/types";
 
 // Function to fetch teams for a specific user
-export const fetchUserTeams = async (username: string) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/teams/owner/${username}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch teams: ${response.statusText}`);
-      }
-      const teams = await response.json();
-      return teams; // Returns the list of teams
-    } catch (error) {
-      console.error("Error fetching user teams:", error);
-      return null; // Return null in case of an error
+export const fetchTeamsForUser = async (username: string) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/teamobjectives/user/${username}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch teams: ${response.statusText}`);
     }
-  };
+    const teams = await response.json();
+    return teams; // Returns the list of teams
+  } catch (error) {
+    console.error("Error fetching user teams:", error);
+    return null; // Return null in case of an error
+  }
+};
 
-  export const fetchTeamsForUser = async (username: string) => {
-    try {
-      const response = await axios.get(`http://localhost:5000/api/teams`);
-      const teams: Team[] = response.data;
-  
-      // Filter teams where the user is either the owner or a member
-      const filteredTeams = teams.filter(
-        (team) => team.owner === username || team.members.includes(username)
-      );
-  
-      return filteredTeams; // Return the filtered list of teams
-    } catch (error) {
-      console.error("Error fetching teams for user:", error);
-      throw error; // Re-throw the error for handling in the calling code
-    }
-  };
+
 
   export const saveNewTeam = async (newTeam: Omit<Team, "_id" | "owner">, owner: string) => {
     try {

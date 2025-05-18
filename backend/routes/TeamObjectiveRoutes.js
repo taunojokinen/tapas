@@ -96,6 +96,24 @@ router.get("/all", async (req, res) => {
   }
 });
 
+// GET route to fetch team objectives by user
+router.get("/user/:user", async (req, res) => {
+  try {
+    const { user } = req.params;
+
+    // Find all team objectives where the user is the owner or a member
+    const teamObjectives = await TeamObjectives.find({
+      $or: [{ owner: user }, { members: user }],
+    });
+
+    // Respond with the matching team objectives
+    res.status(200).json(teamObjectives);
+  } catch (error) {
+    console.error("Error fetching team objectives for user:", error);
+    res.status(500).json({ message: "Failed to fetch team objectives for user", error });
+  }
+});
+
 // DELETE route to delete all team objectives
 router.delete("/all", async (req, res) => {
   try {
