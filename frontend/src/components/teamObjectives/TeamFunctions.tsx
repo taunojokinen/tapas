@@ -17,7 +17,6 @@ export const fetchTeamsForUser = async (username: string) => {
 };
 
 
-
   export const saveNewTeam = async (newTeam: Omit<Team, "_id" | "owner">, owner: string) => {
     try {
       const response = await axios.post("http://localhost:5000/api/teams", {
