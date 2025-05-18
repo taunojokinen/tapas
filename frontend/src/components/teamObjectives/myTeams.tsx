@@ -7,15 +7,16 @@ export interface User {
   _id: string; // MongoDB ID for the user
   username: string; // Username of the user
 }
-interface MyTeamsProps {
-  onTeamSelect?: (team: Team) => void; // Optional callback function to pass the selected team
+export interface MyTeamsProps {
+  selectedTeam: Team | null;
+  setSelectedTeam: React.Dispatch<React.SetStateAction<Team | null>>;
+  onTeamSelect?: (team: Team | null) => void; // Optional callback for team selection
 }
 
-const MyTeams: React.FC<MyTeamsProps> = ({ onTeamSelect }) => {
+const MyTeams: React.FC<MyTeamsProps> = ({ selectedTeam, setSelectedTeam, onTeamSelect }) => {
   const { username } = useAuth();
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [newTeam, setNewTeam] = useState<{ name: string; type: string; mission: string; members: string[]; teamObjectives: TeamObjective[] }>({
     name: "",

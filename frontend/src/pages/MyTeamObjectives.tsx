@@ -10,6 +10,9 @@ import { handleTeamAndObjectiveSelect } from "../components/teamObjectives/TeamF
 const MyTeamObjectives: React.FC = () => {
   const { username } = useAuth(); // Get the logged-in user's username
 
+    // Create a useState of type Team
+    const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+
 
 
   return (
@@ -19,6 +22,13 @@ const MyTeamObjectives: React.FC = () => {
           Tiimin Tavoitteet - täällä voit tarkastella ja muokata tiimin
           tavoitteita. 
         </h1>
+      </div>
+            {/* Render MyTeams component */}
+            <div className="bg-white p-4 rounded-lg shadow mb-6">
+        <MyTeams
+          selectedTeam={selectedTeam}
+          setSelectedTeam={setSelectedTeam}
+        />
       </div>
       </div>
 

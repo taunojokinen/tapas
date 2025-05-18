@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const TeamObjectives = require("../models/TeamObjectiveModel"); // Import the MyObjectives model
 const router = express.Router();
 
@@ -6,33 +7,34 @@ const router = express.Router();
 router.post("/create", async (req, res) => {
   try {
     const {
-      user,
-      date,
-      team,
-      objectives,
-      tasks,
-      hindrances,
+      owner,
+      name,
+      type,
+      mission,
+      members,
+      teamObjectives,
     } = req.body;
 
-    // Create a new TeamObjective document
-    const newTeamObjective = new TeamObjectives({
-      user,
-      date,
-      team,
-      objectives,
-      tasks,
-      hindrances,
+    // Create a new team document
+    const newTeam = new TeamObjectives({
+      owner,
+      name,
+      type,
+      mission,
+      members,
+      teamObjectives,
     });
 
-    // Save the document to the database
-    const savedTeamObjective = await newTeamObjective.save();
-    res.status(201).json(savedTeamObjective); // Respond with the created document
+    // Save the team document to the database
+    const savedTeam = await newTeam.save();
+    res.status(201).json(savedTeam);
   } catch (error) {
-    res.status(500).json({ message: "Failed to create team objective", error });
+    console.error("Error creating team objective:", error);
+    res.status(500).json({ error: "Failed to create team objective" });
   }
 });
 
-const mongoose = require("mongoose");
+
 
 router.post("/check", async (req, res) => {
   console.log("Checking team objective...", JSON.stringify(req.body));
@@ -86,7 +88,7 @@ router.post("/check", async (req, res) => {
 // GET route to fetch all team objectives
 router.get("/all", async (req, res) => {
   try {
-    const teamObjectives = await TeamObjectives.find().populate("team"); // Populate the team field with referenced data
+    const teamObjectives = await TeamObjectives.find(); // Fetch all documents in the collection
     res.status(200).json(teamObjectives); // Respond with all team objectives
   } catch (error) {
     console.error("Error fetching team objectives:", error);
