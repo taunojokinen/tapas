@@ -34,55 +34,22 @@ router.post("/create", async (req, res) => {
   }
 });
 
-
-
-router.post("/check", async (req, res) => {
-  console.log("Checking team objective...", JSON.stringify(req.body));
+// PUT route to update a team objective or create if not exists (upsert)
+router.put("/:id", async (req, res) => {
   try {
-    const { teamId, objectiveId, user } = req.body;
+    const { id } = req.params;
+    const updateData = req.body;
 
-    // Validate input
-    if (!teamId || !objectiveId || !user) {
-      return res.status(400).json({ message: "Team ID, Objective ID, and User are required." });
-    }
+    const updatedTeamObjective = await TeamObjectives.findOneAndUpdate(
+      { _id: id },
+      updateData,
+      { new: true, upsert: true } // upsert: true creates if not exists
+    );
 
-    // Validate Team ID format
-    if (!mongoose.Types.ObjectId.isValid(teamId)) {
-      return res.status(400).json({ message: "Invalid Team ID format." });
-    }
-    const teamObjectId = new mongoose.Types.ObjectId(teamId);
-
-    // Find existing team objective
-    let teamObjective = await TeamObjectives.findOne({ team: teamObjectId, "objectives._id": objectiveId })
-      .populate("team"); // Populate the team field
-
-    if (!teamObjective) {
-      console.log("No matching team objective found. Creating a new one...");
-      teamObjective = new TeamObjectives({
-        user,
-        team: teamObjectId,
-        objectives: [
-          {
-            _id: objectiveId,
-            nimi: "Default Name",
-            mittari: "Default Metric",
-            seuranta: "Default Tracking",
-          },
-        ],
-        tasks: [],
-        hindrances: [],
-        date: new Date(),
-      });
-      console.log("Saving team objective:", teamObjective);
-      await teamObjective.save();
-      return res.status(201).json({ message: "Team objective created.", teamObjective });
-    }
-
-    // Return the found team objective
-    res.status(200).json({ message: "Team objective found.", teamObjective });
+    res.status(200).json(updatedTeamObjective);
   } catch (error) {
-    console.error("Error in /check route:", error.message, error.stack);
-    res.status(500).json({ message: "Failed to check or create team objective.", error });
+    console.error("Error updating or creating team objective:", error);
+    res.status(500).json({ message: "Failed to update or create team objective", error });
   }
 });
 // GET route to fetch all team objectives

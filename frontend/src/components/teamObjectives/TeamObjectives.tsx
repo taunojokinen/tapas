@@ -1,31 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { FetchKeyStrategies } from "./TeamObjectiveFunctions"; // Import the fetch function
 import { Team, TeamObjective } from "../../types/types";
 
-interface TeamObjectivesProps {
-  teamObjectives: Team; // Use the correct type for teamObjectives
-  onUpdate: (updatedObjectives: Team) => void; // Use the correct type for updatedObjectives
+interface Props {
+  selectedTeam: Team | null;
+  setSelectedTeam: React.Dispatch<React.SetStateAction<Team | null>>;
 }
 
 
-const TeamObjectives: React.FC<TeamObjectivesProps> = ({ teamObjectives, onUpdate }) => {
+const TeamObjectives: React.FC<Props> = ({ selectedTeam, setSelectedTeam  }) => {
   const [keyStrategies, setKeyStrategies] = useState<TeamObjective[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedStrategy, setSelectedStrategy] = useState<TeamObjective | null>(null);
-  const [newTeamObjective, setNewTeamObjective] = useState<TeamObjective>({
-    nimi: "",
-    mittari: "",
-    seuranta: "",
-    tasks: [],
-    hindrances: [],
-    promoters: [],
-  });
-
 
   return (
-    <div>
-      <h1>Team Objectives</h1>
-      {/* Add more JSX elements here as needed */}
+    <div className="bg-white p-4 rounded-lg shadow mb-6">
+      <h2 className="text-lg font-bold text-gray-800">Tiimin Tavoitteet</h2>
+      {keyStrategies.length > 0 ? (
+        keyStrategies.map((obj, idx) => (
+          <div key={idx} className="mb-2">
+            <div><b>Nimi:</b> {obj.nimi}</div>
+            <div><b>Mittari:</b> {obj.mittari}</div>
+            <div><b>Seuranta:</b> {obj.seuranta}</div>
+          </div>
+        ))
+      ) : (
+        <p className="text-gray-500">Ei tavoitteita.</p>
+      )}
     </div>
   );
 };

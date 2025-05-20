@@ -1,6 +1,12 @@
 import React from "react";
+import { Team } from "../../types/types";
 
-const TeamCurrentState: React.FC = () => {
+interface Props {
+  selectedTeam: Team | null;
+  setSelectedTeam: React.Dispatch<React.SetStateAction<Team | null>>;
+}
+
+const TeamCurrentState: React.FC<Props> = ({ selectedTeam, setSelectedTeam }) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <h2 className="text-xl font-bold text-gray-800">Nykytila</h2>

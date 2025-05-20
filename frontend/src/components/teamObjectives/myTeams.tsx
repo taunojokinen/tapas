@@ -71,13 +71,12 @@ const MyTeams: React.FC<MyTeamsProps> = ({ selectedTeam, setSelectedTeam, onTeam
     }
   };
 
-  const handleShowAllTeams = () => {
-    setSelectedTeam(null); // Reset the selected team locally
-    if (onTeamSelect) {
-      onTeamSelect({ _id: "default-id", name: "", owner: "", type: "", mission: "", members: [], teamObjectives: [] }); // Notify parent
-    }
-  };
-
+const handleShowAllTeams = () => {
+  setSelectedTeam(null); // Reset the selected team locally
+  if (onTeamSelect) {
+    onTeamSelect(null); // Notify parent with null, not a dummy object
+  }
+};
   const handleCreateNewTeam = () => {
     setShowModal(true);
   };
@@ -158,6 +157,7 @@ const MyTeams: React.FC<MyTeamsProps> = ({ selectedTeam, setSelectedTeam, onTeam
   };
 
   return (
+
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex items-center justify-between">
         {!selectedTeam && <h2 className="text-xl font-bold text-gray-800">Tiimit</h2>}
