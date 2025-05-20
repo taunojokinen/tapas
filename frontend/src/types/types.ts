@@ -71,3 +71,22 @@ export interface OsaTiedot {
   otsikko: string;
   rivit: string[];
 }
+
+export interface ProsJaCons {
+  pros: string[];
+  cons: string[];
+}
+
+export interface CompanyObjectives {
+  perustehtava: string; 
+  paamaara: string;
+  avainstrategiat: Strategia[];
+  nimi: string;
+  kuvaus: string;
+  strategiat: Strategia[];
+  nykytila: ProsJaCons[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  _id: string;
+}

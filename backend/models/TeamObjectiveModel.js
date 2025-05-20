@@ -13,8 +13,8 @@ const ObjectiveSchema = new mongoose.Schema({
   mittari: { type: String, required: true },
   seuranta: { type: String, required: true },
   tasks: { type: [TaskSchema], default: [] },
-  hindrances: { type: String, required: true },
-  promoters: { type: String, required: true },
+  hindrances: { type: [String], required: true },
+  promoters: { type: [String], required: true },
 });
 
 // Team schema = main schema

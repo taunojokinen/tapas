@@ -1,21 +1,4 @@
-import { TeamObjective, CompanyObjectives, Strategia } from "../../types/types";
-
-export async function FetchKeyStrategies() {
-    try {
-        console.log('Fetching key strategies...');
-        const response = await fetch('http://localhost:5000/api/strategiat');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        console.log('Response received:', response);
-        const data = await response.json();
-        //alert('Key strategies fetched successfully!');
-        return data;
-    } catch (error) {
-        console.error('Error fetching key strategies:', error);
-        throw error;
-    }
-}
+import { TeamObjective, CompanyObjectives, Strategia } from "../types/types";
 
 export async function fetchCompanyObjectives(query: string): Promise<TeamObjective[] | null> {
   try {
@@ -49,23 +32,15 @@ export async function fetchCompanyObjectives(query: string): Promise<TeamObjecti
     return null;
   }
 }
-export async function putTeamObjectiveData(teamObjectiveId: string, payload: any): Promise<void> {
-    try {
-        const response = await fetch(`http://localhost:5000/api/teamobjectives/${teamObjectiveId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-        });
 
-        if (!response.ok) {
-            throw new Error(`Failed to update team objective. Status: ${response.status}`);
-        }
 
-        console.log("Team objective updated successfully.");
-    } catch (error) {
-        console.error("Error updating team objective:", error);
-        throw error;
-    }
+export async function updateObjectives(username: string, updatedObjectives: any[]) {
+  await fetch(`http://localhost:5000/api/myobjectives/${username}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ objectives: updatedObjectives }),
+  });
 }
+
+// Example usage:
+// updateObjectives(username, updatedObjectives);

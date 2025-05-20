@@ -53,34 +53,4 @@ export const fetchTeamsForUser = async (username: string) => {
     }
   };
 
-  export const handleTeamAndObjectiveSelect = async (
-    teamId: string,
-    objectiveId: string,
-    user: string,
-    onUpdate: (teamObjective: any) => void
-  ) => {
-    try {
-      const response = await axios.post("http://localhost:5000/api/teamobjectives/check", {
-        teamId,
-        objectiveId,
-        user,
-      });
   
-      const teamObjective = response.data.teamObjective;
-      console.log("returned Team Objective:", teamObjective); // Debug log
-  
-      // Ensure the response includes the correct _id fields
-      onUpdate({
-        ...teamObjective,
-        objectives: teamObjective.objectives.map((obj: any) => ({
-          _id: obj._id,
-          nimi: obj.nimi,
-          mittari: obj.mittari,
-          seuranta: obj.seuranta,
-        })),
-      });
-    } catch (error) {
-      console.error("Error checking or creating team objective:", error);
-    }
-  };
-

@@ -53,7 +53,45 @@ router.post("/", async (req, res) => {
     res.status(500).json({ success: false, error: "Failed to create or update MyObjectives" });
   }
 });
+  router.patch("/:user", async (req, res) => {
+    try {
+      const { objectives } = req.body;
+      console.log("Objectives:", objectives);
+  
+      // Validate objectives
+      if (objectives) {
+        req.body.objectives = objectives.map((objective) => {
+          if (!objective._id || !mongoose.Types.ObjectId.isValid(objective._id)) {
+            objective._id = new mongoose.Types.ObjectId(); // Generate a new ObjectId
+          }
+          return objective;
+        });
+      }
+  
+      // Update the document in the database
+      const updatedDocument = await MyObjectives.findOneAndUpdate(
+        { user: req.params.user }, // Match by user (fixed from username to user)
+        { $set: req.body }, // Update the fields
+        { new: true, runValidators: true } // Return the updated document
+      );
+  
+      if (!updatedDocument) {
+                console.log("User not found");
+        return res.status(404).json({ error: "User not found" });
 
+      }
+  
+      res.status(200).json({
+        console: "Updated document",
+        success: true,
+        message: "MyObjectives successfully updated",
+        data: updatedDocument,
+      });
+    } catch (error) {
+      console.error("Error updating MyObjectives:", error);
+      res.status(500).json({ error: "Failed to update MyObjectives" });
+    }
+  });
 router.get("/all", async (req, res) => {
     try {
       // Fetch all documents from the database
@@ -101,41 +139,7 @@ router.get("/all", async (req, res) => {
     }
   });
 
-  router.patch("/:user", async (req, res) => {
-    try {
-      const { objectives } = req.body;
-  
-      // Validate objectives
-      if (objectives) {
-        req.body.objectives = objectives.map((objective) => {
-          if (!objective._id || !mongoose.Types.ObjectId.isValid(objective._id)) {
-            objective._id = new mongoose.Types.ObjectId(); // Generate a new ObjectId
-          }
-          return objective;
-        });
-      }
-  
-      // Update the document in the database
-      const updatedDocument = await MyObjectives.findOneAndUpdate(
-        { user: req.params.user }, // Match by user (fixed from username to user)
-        { $set: req.body }, // Update the fields
-        { new: true, runValidators: true } // Return the updated document
-      );
-  
-      if (!updatedDocument) {
-        return res.status(404).json({ error: "User not found" });
-      }
-  
-      res.status(200).json({
-        success: true,
-        message: "MyObjectives successfully updated",
-        data: updatedDocument,
-      });
-    } catch (error) {
-      console.error("Error updating MyObjectives:", error);
-      res.status(500).json({ error: "Failed to update MyObjectives" });
-    }
-  });
+
   
 
   router.delete("/:user", async (req, res) => {
