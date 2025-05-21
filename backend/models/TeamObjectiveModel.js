@@ -9,6 +9,7 @@ const TaskSchema = new mongoose.Schema({
 
 // Objective schema
 const ObjectiveSchema = new mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true }, // Explicitly define _id
   type: { type: String, required: true },
   nimi: { type: String, required: true },
   mittari: { type: String, required: true },

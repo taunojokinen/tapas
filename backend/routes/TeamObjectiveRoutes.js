@@ -52,6 +52,29 @@ router.put("/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to update or create team objective", error });
   }
 });
+
+router.put("/objective/:objectiveId", async (req, res) => {
+  try {
+    const { objectiveId } = req.params;
+    const updateData = req.body;
+
+    // Find the team containing the objective
+    const team = await TeamObjectives.findOne({ "teamObjectives._id": objectiveId });
+    if (!team) return res.status(404).json({ message: "Team not found" });
+
+    // Find the objective and update its fields
+    const objective = team.teamObjectives.id(objectiveId);
+    if (!objective) return res.status(404).json({ message: "Objective not found" });
+
+    Object.assign(objective, updateData);
+
+    await team.save();
+    res.status(200).json(objective);
+  } catch (error) {
+    console.error("Error updating team objective:", error);
+    res.status(500).json({ message: "Failed to update team objective", error });
+  }
+});
 // GET route to fetch all team objectives
 router.get("/all", async (req, res) => {
   try {

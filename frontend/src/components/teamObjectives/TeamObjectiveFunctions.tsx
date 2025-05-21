@@ -35,6 +35,7 @@ export async function fetchCompanyObjectives(query: string): Promise<TeamObjecti
     // Map CompanyObjectives to TeamObjective[]
     const teamObjectives: TeamObjective[] = filtered.flatMap((obj: CompanyObjectives) =>
       obj.avainstrategiat.map((strategia: Strategia) => ({
+        _id: `${obj._id}_${strategia.tavoite}`, // Use strategia._id if available, otherwise generate a fallback
         type: "team", // or another appropriate value for your use case
         nimi: strategia.tavoite,
         mittari: strategia.toimenpide,
@@ -52,7 +53,7 @@ export async function fetchCompanyObjectives(query: string): Promise<TeamObjecti
 }
 export async function putTeamObjectiveData(teamObjectiveId: string, payload: any): Promise<void> {
     try {
-        const response = await fetch(`http://localhost:5000/api/teamobjectives/${teamObjectiveId}`, {
+        const response = await fetch(`http://localhost:5000/api/teamobjectives/objective/${teamObjectiveId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -67,6 +68,27 @@ export async function putTeamObjectiveData(teamObjectiveId: string, payload: any
         console.log("Team objective updated successfully.");
     } catch (error) {
         console.error("Error updating team objective:", error);
+        throw error;
+    }
+}
+
+export async function putTeamObjectivesArray(teamId: string, objectives: any[]): Promise<void> {
+    try {
+        const response = await fetch(`http://localhost:5000/api/teamobjectives/${teamId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ teamObjectives: objectives }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to update team objectives array. Status: ${response.status}`);
+        }
+
+        console.log("Team objectives array updated successfully.");
+    } catch (error) {
+        console.error("Error updating team objectives array:", error);
         throw error;
     }
 }
