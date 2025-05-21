@@ -35,6 +35,7 @@ export async function fetchCompanyObjectives(query: string): Promise<TeamObjecti
     // Map CompanyObjectives to TeamObjective[]
     const teamObjectives: TeamObjective[] = filtered.flatMap((obj: CompanyObjectives) =>
       obj.avainstrategiat.map((strategia: Strategia) => ({
+        type: "team", // or another appropriate value for your use case
         nimi: strategia.tavoite,
         mittari: strategia.toimenpide,
         seuranta: strategia.seuranta,

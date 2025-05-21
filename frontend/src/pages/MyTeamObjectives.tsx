@@ -3,17 +3,19 @@ import MyTeams from "../components/teamObjectives/myTeams";
 import TeamObjectives from "../components/teamObjectives/TeamObjectives";
 import TeamTasks from "../components/teamObjectives/TeamTasks";
 import TeamCurrentState from "../components/teamObjectives/TeamCurrentState";
-import useAuth from "../hooks/useAuth"; // Import the custom hook
-import { Team  } from "../types/types";
-
+import useAuth from "../hooks/useAuth";
+import { Team } from "../types/types";
 
 const MyTeamObjectives: React.FC = () => {
-  const { username } = useAuth(); // Get the logged-in user's username
+  const { username } = useAuth();
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [selectedObjectiveIndex, setSelectedObjectiveIndex] = useState<number | null>(null);
 
-    // Create a useState of type Team
-    const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
-
-
+  // Get the selected objective if available
+  const selectedObjective =
+    selectedTeam &&
+    selectedObjectiveIndex !== null &&
+    selectedTeam.teamObjectives[selectedObjectiveIndex];
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
@@ -23,12 +25,23 @@ const MyTeamObjectives: React.FC = () => {
         </h1>
       </div>
       <MyTeams selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />
-      <TeamObjectives selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />
-      <TeamTasks selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />
-      <TeamCurrentState selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />
+      <TeamObjectives
+        selectedTeam={selectedTeam}
+        setSelectedTeam={setSelectedTeam}
+        onSelectObjective={setSelectedObjectiveIndex}
+        selectedObjectiveIndex={selectedObjectiveIndex}
+      />
+      {selectedObjective && (
+        <>
+          <TeamTasks tasks={selectedObjective.tasks} />
+          <TeamCurrentState
+            hindrances={selectedObjective.hindrances}
+            promoters={selectedObjective.promoters}
+          />
+        </>
+      )}
     </div>
   );
 };
-
 
 export default MyTeamObjectives;

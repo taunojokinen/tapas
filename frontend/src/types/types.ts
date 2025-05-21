@@ -43,6 +43,7 @@ export interface MyTask {
 }
 
 export interface TeamObjective {
+  type: string;
   nimi: string;
   mittari: string;
   seuranta: string;
@@ -81,9 +82,7 @@ export interface CompanyObjectives {
   perustehtava: string; 
   paamaara: string;
   avainstrategiat: Strategia[];
-  nimi: string;
-  kuvaus: string;
-  strategiat: Strategia[];
+
   nykytila: ProsJaCons[];
   createdAt: string;
   updatedAt: string;

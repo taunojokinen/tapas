@@ -9,6 +9,7 @@ const TaskSchema = new mongoose.Schema({
 
 // Objective schema
 const ObjectiveSchema = new mongoose.Schema({
+  type: { type: String, required: true },
   nimi: { type: String, required: true },
   mittari: { type: String, required: true },
   seuranta: { type: String, required: true },

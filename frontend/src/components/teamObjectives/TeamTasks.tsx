@@ -1,53 +1,31 @@
-import { MyTask, Team } from "../../types/types";
+import { MyTask } from "../../types/types";
 
 interface Props {
-  selectedTeam: Team | null;
-  setSelectedTeam: React.Dispatch<React.SetStateAction<Team | null>>;
+  tasks: MyTask[];
 }
 
-const TeamTasks: React.FC<Props> = ({ selectedTeam, setSelectedTeam  }) => {
-  const tasks =
-    selectedTeam?.teamObjectives?.flatMap((objective) => objective.tasks ?? []) ?? [];
-
-    const handleTaskChange = (index: number, value: string, field: keyof MyTask) => {
-  if (!selectedTeam) return;
-  let taskCounter = 0;
-  const updatedObjectives = selectedTeam.teamObjectives.map((objective) => {
-    const updatedTasks = objective.tasks.map((task) => {
-      const currentIndex = taskCounter;
-      taskCounter++;
-      if (currentIndex === index) {
-        return { ...task, [field]: value };
-      }
-      return task;
-    });
-    return { ...objective, tasks: updatedTasks };
-  });
-  setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
-};
-
+const TeamTasks: React.FC<Props> = ({ tasks }) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
-      <p>TeamTasks</p>
-      {/* <h2 className="text-lg font-bold text-gray-800">Tiimin Tehtävät</h2>
+      <h2 className="text-lg font-bold text-gray-800">Tiimin Tehtävät</h2>
       {tasks.length > 0 ? (
         tasks.map((task, index) => (
           <div key={index} className="mb-4 flex items-center gap-4">
             <input
               type="text"
               value={task.nimi}
-              onChange={(e) => handleTaskChange(index, e.target.value, "nimi")}
+              readOnly
               className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
             />
             <input
               type="text"
               value={task.mittari}
-              onChange={(e) => handleTaskChange(index, e.target.value, "mittari")}
+              readOnly
               className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
             />
             <select
               value={task.seuranta}
-              onChange={(e) => handleTaskChange(index, e.target.value, "seuranta")}
+              disabled
               className="w-full p-1 border"
             >
               <option value="">Valitse</option>
@@ -60,7 +38,7 @@ const TeamTasks: React.FC<Props> = ({ selectedTeam, setSelectedTeam  }) => {
         ))
       ) : (
         <p className="text-gray-500">Ei tehtäviä.</p>
-      )} */}
+      )}
     </div>
   );
 };
