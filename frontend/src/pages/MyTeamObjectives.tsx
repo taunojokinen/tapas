@@ -1,111 +1,91 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import MyTeams from "../components/teamObjectives/myTeams";
 import TeamObjectives from "../components/teamObjectives/TeamObjectives";
 import TeamTasks from "../components/teamObjectives/TeamTasks";
 import TeamCurrentState from "../components/teamObjectives/TeamCurrentState";
-import useAuth from "../hooks/useAuth"; // Import the custom hook
-import { MyObjective, MyTask, Team, TeamObjectivesJson } from "../types/types";
-import { handleTeamAndObjectiveSelect } from "../components/teamObjectives/TeamFunctions"; // Import the function
+import useAuth from "../hooks/useAuth";
+import { Team } from "../types/types";
+import { putTeamObjectiveData, putTeamObjectivesArray } from "../components/teamObjectives/TeamObjectiveFunctions";
+// Import or define updateObjectives
+// Example import (adjust the path as needed):
+// import { updateObjectives } from "../api/objectives";
+const updateObjectives = async (username: string, objectives: any) => {
+  // TODO: Implement API call to persist objectives
+  console.log("Persisting objectives for", username, objectives);
+};
 
 const MyTeamObjectives: React.FC = () => {
-  const { username } = useAuth(); // Get the logged-in user's username
-  const [teamObjectives, setTeamObjectives] = useState<TeamObjectivesJson>({
-    user: username || "",
-    date: new Date().toISOString().split("T")[0], // Default to today's date
-    team: { _id: "", owner: "", name: "", type: "", mission: "", members: [] }, // Default empty team
-    objectives: {_id: "", nimi: "", mittari: "", seuranta: "" }, // Default empty objectives
-    tasks: [], // Default empty tasks
-    hindrances: [], // Default empty hindrances
-  });
+  const { username } = useAuth();
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [selectedObjectiveIndex, setSelectedObjectiveIndex] = useState<number | null>(null);
 
-  const isTeamSelected = teamObjectives.team._id !== ""; // Check if a team is selected
-  const areObjectivesSelected =
-    teamObjectives.objectives.nimi !== "" ||
-    teamObjectives.objectives.mittari !== "" ||
-    teamObjectives.objectives.seuranta !== ""; // Check if objectives are selected
-
-  // Call handleTeamAndObjectiveSelect when both team and objectives are selected
-  useEffect(() => {
-    if (isTeamSelected && areObjectivesSelected && teamObjectives.team._id && teamObjectives.objectives._id) {
-      console.log("Team ID: ", teamObjectives.team._id, " Objective ID:", teamObjectives.objectives._id);
-      handleTeamAndObjectiveSelect(
-        teamObjectives.team._id, // teamId
-        teamObjectives.objectives._id, // objectiveId
-        username, // user
-        (teamObjective) => {
-          // Update the state with the returned data
-          setTeamObjectives((prev) => ({
-            ...prev,
-            ...teamObjective,
-          }));
-        }
-      );
-    }
-  }, [
-    isTeamSelected,
-    areObjectivesSelected,
-    teamObjectives.team._id,
-    teamObjectives.objectives._id,
-    username,
-  ]);
-
-  const handleInputChange = (field: keyof TeamObjectivesJson, value: any) => {
-    console.log(`Updating field: ${field}`, value); // Debug log
-    setTeamObjectives((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleSave = () => {
-    console.log("Saving team objectives:", teamObjectives);
-    // Add logic to save the data to the backend
-  };
+  // Get the selected objective if available
+  const selectedObjective: Team["teamObjectives"][number] | undefined =
+    selectedTeam && selectedObjectiveIndex !== null
+      ? selectedTeam.teamObjectives[selectedObjectiveIndex]
+      : undefined;
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
       <div className="bg-white p-4 rounded-lg shadow mb-6">
         <h1 className="text-2xl font-bold text-gray-800">
-          Tiimin Tavoitteet - täällä voit tarkastella ja muokata tiimin
-          tavoitteita. {teamObjectives.team.name}
+          Tiimin Tavoitteet - täällä voit tarkastella ja muokata tiimin tavoitteita.
         </h1>
       </div>
+    <MyTeams selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />
 
-      <MyTeams
-        onTeamSelect={(selectedTeam) => {
-          handleInputChange("team", selectedTeam);
-        }}
-      />
 <TeamObjectives
-  teamObjectives={teamObjectives}
-  onUpdate={(updatedObjectives) => {
-    console.log("Updated Objectives:", updatedObjectives); // Debug log
-    handleInputChange("objectives", updatedObjectives.objectives); // Pass the entire array
+  selectedTeam={selectedTeam}
+  setSelectedTeam={async (updatedTeam) => {
+    setSelectedTeam(updatedTeam);
+    if (updatedTeam && typeof updatedTeam === "object" && "_id" in updatedTeam && "teamObjectives" in updatedTeam) {
+      await putTeamObjectivesArray(updatedTeam._id, updatedTeam.teamObjectives);
+    }
   }}
+  selectedObjectiveIndex={selectedObjectiveIndex}
+  onSelectObjective={setSelectedObjectiveIndex}
 />
 
-      {/* Conditionally render TeamTasks and Save Button */}
-      {isTeamSelected && areObjectivesSelected && (
-        <>
-          <TeamTasks
-            tasks={teamObjectives.tasks}
-            onUpdate={(updatedTasks) =>
-              handleInputChange("tasks", updatedTasks)
-            }
-          />
+{selectedObjectiveIndex !== null && selectedObjectiveIndex !== undefined && selectedTeam && (
+  <>
+    <TeamTasks
+      tasks={selectedTeam.teamObjectives[selectedObjectiveIndex]?.tasks ?? []}
+      onTasksChange={async (updatedTasks) => {
+        if (!selectedTeam || selectedObjectiveIndex === null) return;
+        const updatedObjectives = selectedTeam.teamObjectives.map((obj, idx) =>
+          idx === selectedObjectiveIndex ? { ...obj, tasks: updatedTasks } : obj
+        );
+        setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
+        const updatedObjective = updatedObjectives[selectedObjectiveIndex];
+        await putTeamObjectiveData(updatedObjective._id, updatedObjective);
+      }}
+    />
+    <TeamCurrentState
+      hindrances={selectedTeam.teamObjectives[selectedObjectiveIndex]?.hindrances ?? []}
+      promoters={selectedTeam.teamObjectives[selectedObjectiveIndex]?.promoters ?? []}
+      onChangeHindrances={async (updatedHindrances) => {
+        if (!selectedTeam || selectedObjectiveIndex === null) return;
+        const updatedObjectives = selectedTeam.teamObjectives.map((obj, idx) =>
+          idx === selectedObjectiveIndex ? { ...obj, hindrances: updatedHindrances } : obj
+        );
+        setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
+        const updatedObjective = updatedObjectives[selectedObjectiveIndex];
+        await putTeamObjectiveData(updatedObjective._id, updatedObjective);
+      }}
+      onChangePromoters={async (updatedPromoters) => {
+        if (!selectedTeam || selectedObjectiveIndex === null) return;
+        const updatedObjectives = selectedTeam.teamObjectives.map((obj, idx) =>
+          idx === selectedObjectiveIndex ? { ...obj, promoters: updatedPromoters } : obj
+        );
+        setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
+        const updatedObjective = updatedObjectives[selectedObjectiveIndex];
+        await putTeamObjectiveData(updatedObjective._id, updatedObjective);
+      }}
+    />
+  </>
+)}
 
-          {/* Save Button */}
-          <div className="flex justify-end mt-4">
-            <button
-              onClick={handleSave}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Tallenna
-            </button>
-          </div>
-        </>
-      )}
-    </div>
+  </div>
   );
 };
 

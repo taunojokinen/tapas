@@ -1,176 +1,302 @@
-import React, { useEffect, useState } from "react";
-import { FetchKeyStrategies } from "./TeamObjectiveFunctions"; // Import the fetch function
-import { TeamObjectivesJson, TeamObjective } from "../../types/types";
+import React, { useState } from "react";
+import { Team, TeamObjective } from "../../types/types";
+import { putTeamObjectiveData, fetchCompanyObjectives } from "./TeamObjectiveFunctions";
 
-interface TeamObjectivesProps {
-  teamObjectives: TeamObjectivesJson; // Use the correct type for teamObjectives
-  onUpdate: (updatedObjectives: TeamObjectivesJson) => void; // Use the correct type for updatedObjectives
-}
-interface KeyStrategy {
-  _id: string; // MongoDB ID for the strategy
-  nimi: string; // Name of the strategy
-  mittari: string; // Description of the strategy
-  seuranta: string; // Tracking method for the strategy
+interface Props {
+  selectedTeam: Team | null;
+  setSelectedTeam: React.Dispatch<React.SetStateAction<Team | null>>;
+  onSelectObjective?: (index: number | null) => void;
+  selectedObjectiveIndex?: number | null;
 }
 
-const TeamObjectives: React.FC<TeamObjectivesProps> = ({ teamObjectives, onUpdate }) => {
-  const [keyStrategies, setKeyStrategies] = useState<KeyStrategy[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedStrategy, setSelectedStrategy] = useState<KeyStrategy | null>(null);
-  const [newStrategy, setNewStrategy] = useState<KeyStrategy>({
-    _id: "", // Temporary ID will be generated
-    nimi: "",
-    mittari: "",
-    seuranta: "",
-  });
+const TeamObjectives: React.FC<Props> = ({
+  selectedTeam,
+  setSelectedTeam,
+  onSelectObjective,
+  selectedObjectiveIndex
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [showCompanyObjectiveSelector, setShowCompanyObjectiveSelector] = useState(false);
+  const [companyObjectives, setCompanyObjectives] = useState<TeamObjective[]>([]);
+  const [selectedCompanyObjective, setSelectedCompanyObjective] = useState<TeamObjective | null>(null);
 
-  useEffect(() => {
-    console.log("useEffect triggered: Fetching strategies...");
-    const fetchStrategies = async () => {
-      try {
-        const strategies = await FetchKeyStrategies();
-        console.log("Strategies fetched:", strategies);
-        setKeyStrategies(strategies);
-      } catch (error) {
-        console.error("Failed to fetch key strategies:", error);
-      } finally {
-        setLoading(false);
-      }
+  // Fetch company objectives when selector is opened
+  const handleOpenCompanyObjectiveSelector = async () => {
+    setShowCompanyObjectiveSelector(true);
+    if (companyObjectives.length === 0) {
+      const fetched = await fetchCompanyObjectives("");
+      if (fetched) setCompanyObjectives(fetched);
+    }
+  };
+
+  // Save changes to backend and local state
+  const saveChanges = async (updatedObjectives: TeamObjective[]) => {
+    if (!selectedTeam) return;
+    const updatedTeam = { ...selectedTeam, teamObjectives: updatedObjectives };
+    setSelectedTeam(updatedTeam);
+    try {
+      await putTeamObjectiveData(selectedTeam._id, updatedTeam);
+    } catch (error) {
+      console.error("Failed to update objectives in backend:", error);
+    }
+  };
+
+  // Add selected company objective
+  const handleAddSelectedCompanyObjective = () => {
+    if (!selectedCompanyObjective || !selectedTeam) return;
+    // Ensure type is set to "company"
+    const companyObjectiveWithType = { ...selectedCompanyObjective, type: "company" };
+    const updatedObjectives = [...(selectedTeam.teamObjectives ?? []), companyObjectiveWithType];
+    saveChanges(updatedObjectives);
+    setShowCompanyObjectiveSelector(false);
+    setSelectedCompanyObjective(null);
+  };
+
+  // Add a new empty team objective
+  function handleAddTeamObjective(): void {
+    if (!isEditing || !selectedTeam) return;
+    const newObjective: TeamObjective = {
+      _id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2),
+      type: "team",
+      nimi: "",
+      mittari: "",
+      seuranta: "",
+      tasks: [],
+      hindrances: [],
+      promoters: []
     };
-
-    fetchStrategies();
-  }, []);
-
-  if (loading) {
-    return <p>Loading key strategies...</p>;
+    const updatedObjectives = [...(selectedTeam.teamObjectives ?? []), newObjective];
+    setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
   }
 
-  const handleStrategySelect = (strategyId: string) => {
-    const strategy = keyStrategies.find((s) => s._id === strategyId);
-    if (strategy) {
-      console.log("Selected Strategy:", strategy); // Debug log
-      setSelectedStrategy(strategy);
-      console.log("Selected Strategy:", strategy); // Debug log
-      // Notify the parent component about the selected strategy
-      onUpdate({
-        ...teamObjectives,
-        objectives: {
-          _id: strategy._id,
-          nimi: strategy.nimi,
-          mittari: strategy.mittari,
-          seuranta: strategy.seuranta,
-        },
-      });
-    } else {
-      console.error(`Strategy with ID ${strategyId} not found.`);
-    }
-  };
-  const handleShowAllStrategies = () => {
-    console.log("Clearing objectives"); // Debug log
-    setSelectedStrategy(null);
-    onUpdate({
-      ...teamObjectives,
-      objectives: { _id: "", nimi: "", mittari: "", seuranta: "" }, // Clear objectives
-    });
-  };
-  const handleAddStrategy = () => {
-    if (!newStrategy.nimi || !newStrategy.mittari || !newStrategy.seuranta) {
-      alert("Please fill in all fields for the new strategy.");
-      return;
-    }
+  // Delete an objective by index
+  function handleDeleteObjective(index: number): void {
+    if (!isEditing || !selectedTeam) return;
+    const updatedObjectives = (selectedTeam.teamObjectives ?? []).filter((_, i) => i !== index);
+    saveChanges(updatedObjectives);
+  }
 
-    const strategyToAdd = {
-      ...newStrategy,
-      _id: Date.now().toString(), // Generate a unique ID for the new strategy
-    };
+  // Move an objective up or down
+  function handleMoveObjective(index: number, direction: "up" | "down"): void {
+    if (!isEditing || !selectedTeam) return;
+    const objectives = [...(selectedTeam.teamObjectives ?? [])];
+    if (direction === "up" && index > 0) {
+      [objectives[index - 1], objectives[index]] = [objectives[index], objectives[index - 1]];
+      setSelectedTeam({ ...selectedTeam, teamObjectives: objectives });
+    } else if (direction === "down" && index < objectives.length - 1) {
+      [objectives[index + 1], objectives[index]] = [objectives[index], objectives[index + 1]];
+      setSelectedTeam({ ...selectedTeam, teamObjectives: objectives });
+    }
+  }
 
-    setKeyStrategies((prevStrategies) => [...prevStrategies, strategyToAdd]);
-    setNewStrategy({ _id: "", nimi: "", mittari: "", seuranta: "" }); // Reset the input fields
-  };
+  // Change a field in an objective
+  function handleObjectiveChange(index: number, value: string, field: keyof TeamObjective): void {
+    if (!isEditing || !selectedTeam) return;
+    const updatedObjectives = (selectedTeam.teamObjectives ?? []).map((obj, i) =>
+      i === index ? { ...obj, [field]: value } : obj
+    );
+    setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
+  }
+
+  if (!selectedTeam) return null;
+
+  const objectives = selectedTeam.teamObjectives ?? [];
 
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
-      <div className="flex items-center justify-between">
-        {!selectedStrategy && <h2 className="text-xl font-bold text-gray-800">Key Strategies</h2>}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold">Tiimin Tavoitteet</h2>
+        {(!isEditing && selectedObjectiveIndex !== undefined && selectedObjectiveIndex !== null) ? (
+          <button
+            onClick={() => {
+              if (onSelectObjective) onSelectObjective(null);
+            }}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+          >
+            Näytä kaikki tavoitteet
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              if (isEditing) {
+                saveChanges(objectives); // Save when finishing editing
+              }
+              setIsEditing(!isEditing);
+            }}
+            className={`px-4 py-2 ${
+              isEditing
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-blue-500 hover:bg-blue-600"
+            } text-white rounded`}
+          >
+            {isEditing ? "Tallenna" : "Muokkaa"}
+          </button>
+        )}
       </div>
-      {selectedStrategy ? (
-        <div className="mt-4 p-4 border border-gray-300 rounded">
-          <div className="flex items-center justify-between">
-            <span className="flex-1">
-              <strong>Valittu strategia:</strong> {selectedStrategy.nimi}
-            </span>
-            <span className="flex-1 text-center">
-              <strong>Mittari:</strong> {selectedStrategy.mittari}
-            </span>
-            <span className="flex-1 text-right">
-              <strong>Seuranta:</strong> {selectedStrategy.seuranta}
-            </span>
-            <button
-              onClick={handleShowAllStrategies}
-              className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Show All Strategies
-            </button>
-          </div>
-        </div>
-      ) : (
-        <>
-          {keyStrategies.length > 0 ? (
-            <ul className="mt-4 space-y-2">
-              {keyStrategies.map((strategy) => (
-                <li
-                  key={strategy._id}
-                  className="p-2 border border-gray-300 rounded flex justify-between items-center hover:bg-gray-100"
-                  onClick={() => handleStrategySelect(strategy._id)}
-                >
-                  <div>
-                    <h3 className="text-lg font-semibold">{strategy.nimi}</h3>
-                    <p className="text-sm text-gray-600">{strategy.mittari}</p>
-                    <p className="text-sm text-gray-600">{strategy.seuranta}</p>
+
+      <div className="w-full p-2 border border-gray-300 rounded mb-4">
+        {objectives.length > 0 ? (
+          // If not editing and an objective is selected, show only that one
+          !isEditing && selectedObjectiveIndex !== undefined && selectedObjectiveIndex !== null
+            ? (
+              <div
+                key={selectedObjectiveIndex}
+                className="mb-4 flex items-center gap-4 cursor-pointer"
+              >
+                <div className="flex-grow grid grid-cols-4 gap-4">
+                  <p className="text-lg">{objectives[selectedObjectiveIndex].type}</p>
+                  <p className="text-lg">{objectives[selectedObjectiveIndex].nimi}</p>
+                  <p className="text-lg">{objectives[selectedObjectiveIndex].mittari}</p>
+                  <p className="text-lg">
+                    {objectives[selectedObjectiveIndex].seuranta === "Punainen" && "🔴 Punainen"}
+                    {objectives[selectedObjectiveIndex].seuranta === "Keltainen" && "🟡 Keltainen"}
+                    {objectives[selectedObjectiveIndex].seuranta === "Vihreä" && "🟢 Vihreä"}
+                  </p>
+                </div>
+              </div>
+            )
+            // Otherwise, show all objectives (editing or nothing selected)
+            : objectives.map((objective, index) => (
+              <div
+                key={index}
+                className={`mb-4 flex items-center gap-4 cursor-pointer ${
+                  !isEditing && selectedObjectiveIndex === index ? "bg-blue-100" : ""
+                }`}
+                onClick={() => {
+                  if (!isEditing && onSelectObjective) onSelectObjective(index);
+                }}
+              >
+                {isEditing && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleMoveObjective(index, "up")}
+                      disabled={index === 0}
+                      className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      onClick={() => handleMoveObjective(index, "down")}
+                      disabled={index === objectives.length - 1}
+                      className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      ↓
+                    </button>
+                    <button
+                      onClick={() => handleDeleteObjective(index)}
+                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      🗑️
+                    </button>
                   </div>
-                </li>
-              ))}
-              {/* Customizable entry */}
-              <li className="p-2 border border-gray-300 rounded flex justify-between items-center hover:bg-gray-100">
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    placeholder="Strategy Name"
-                    value={newStrategy.nimi}
-                    onChange={(e) => setNewStrategy({ ...newStrategy, nimi: e.target.value })}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
+                )}
+                <div className="flex-grow grid grid-cols-4 gap-4">
+                  {isEditing ? (
+                    <>
+                      <input
+                        type="text"
+                        value={objective.type}
+                        onChange={(e) =>
+                          handleObjectiveChange(index, e.target.value, "type")
+                        }
+                        className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
+                      />
+                      <input
+                        type="text"
+                        value={objective.nimi}
+                        onChange={(e) =>
+                          handleObjectiveChange(index, e.target.value, "nimi")
+                        }
+                        className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
+                      />
+                      <input
+                        type="text"
+                        value={objective.mittari}
+                        onChange={(e) =>
+                          handleObjectiveChange(index, e.target.value, "mittari")
+                        }
+                        className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
+                      />
+                      <select
+                        value={objective.seuranta}
+                        onChange={(e) =>
+                          handleObjectiveChange(index, e.target.value, "seuranta")
+                        }
+                        className="w-full p-1 border"
+                      >
+                        <option value="">Valitse</option>
+                        <option value="Punainen">🔴 Punainen</option>
+                        <option value="Keltainen">🟡 Keltainen</option>
+                        <option value="Vihreä">🟢 Vihreä</option>
+                      </select>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-lg">{objective.type}</p>
+                      <p className="text-lg">{objective.nimi}</p>
+                      <p className="text-lg">{objective.mittari}</p>
+                      <p className="text-lg">
+                        {objective.seuranta === "Punainen" && "🔴 Punainen"}
+                        {objective.seuranta === "Keltainen" && "🟡 Keltainen"}
+                        {objective.seuranta === "Vihreä" && "🟢 Vihreä"}
+                      </p>
+                    </>
+                  )}
                 </div>
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    placeholder="Metric"
-                    value={newStrategy.mittari}
-                    onChange={(e) => setNewStrategy({ ...newStrategy, mittari: e.target.value })}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
-                </div>
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    placeholder="Tracking"
-                    value={newStrategy.seuranta}
-                    onChange={(e) => setNewStrategy({ ...newStrategy, seuranta: e.target.value })}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
-                </div>
-                <button
-                  onClick={handleAddStrategy}
-                  className="ml-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                >
-                  Add
-                </button>
-              </li>
-            </ul>
-          ) : (
-            <p className="text-gray-600 mt-4">No key strategies found.</p>
+              </div>
+            ))
+        ) : (
+          <p className="text-gray-500">Ei tiimin tavoitteita.</p>
+        )}
+      </div>
+
+      {isEditing && (
+        <div className="flex gap-4 mt-4">
+          <button
+            onClick={handleOpenCompanyObjectiveSelector}
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            Lisää yrityksen tavoite
+          </button>
+          <button
+            onClick={handleAddTeamObjective}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Lisää tiimin tavoite
+          </button>
+          {showCompanyObjectiveSelector && (
+            <div className="flex items-center gap-2">
+              <select
+                value={selectedCompanyObjective?.nimi || ""}
+                onChange={e => {
+                  const obj = companyObjectives.find(o => o.nimi === e.target.value);
+                  setSelectedCompanyObjective(obj || null);
+                }}
+                className="border rounded p-2"
+              >
+                <option value="">Valitse yrityksen tavoite</option>
+                {companyObjectives.map((obj, idx) => (
+                  <option key={idx} value={obj.nimi}>
+                    {obj.nimi} ({obj.mittari})
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={handleAddSelectedCompanyObjective}
+                disabled={!selectedCompanyObjective}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Lisää tiimin tavoitteisiin
+              </button>
+              <button
+                onClick={() => setShowCompanyObjectiveSelector(false)}
+                className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+              >
+                Peruuta
+              </button>
+            </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

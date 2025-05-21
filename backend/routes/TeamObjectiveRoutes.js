@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const TeamObjectives = require("../models/TeamObjectiveModel"); // Import the MyObjectives model
 const router = express.Router();
 
@@ -6,91 +7,100 @@ const router = express.Router();
 router.post("/create", async (req, res) => {
   try {
     const {
-      user,
-      date,
-      team,
-      objectives,
-      tasks,
-      hindrances,
+      owner,
+      name,
+      type,
+      mission,
+      members,
+      teamObjectives,
     } = req.body;
 
-    // Create a new TeamObjective document
-    const newTeamObjective = new TeamObjectives({
-      user,
-      date,
-      team,
-      objectives,
-      tasks,
-      hindrances,
+    // Create a new team document
+    const newTeam = new TeamObjectives({
+      owner,
+      name,
+      type,
+      mission,
+      members,
+      teamObjectives,
     });
 
-    // Save the document to the database
-    const savedTeamObjective = await newTeamObjective.save();
-    res.status(201).json(savedTeamObjective); // Respond with the created document
+    // Save the team document to the database
+    const savedTeam = await newTeam.save();
+    res.status(201).json(savedTeam);
   } catch (error) {
-    res.status(500).json({ message: "Failed to create team objective", error });
+    console.error("Error creating team objective:", error);
+    res.status(500).json({ error: "Failed to create team objective" });
   }
 });
 
-const mongoose = require("mongoose");
-
-router.post("/check", async (req, res) => {
-  console.log("Checking team objective...", JSON.stringify(req.body));
+// PUT route to update a team objective or create if not exists (upsert)
+router.put("/:id", async (req, res) => {
   try {
-    const { teamId, objectiveId, user } = req.body;
+    const { id } = req.params;
+    const updateData = req.body;
 
-    // Validate input
-    if (!teamId || !objectiveId || !user) {
-      return res.status(400).json({ message: "Team ID, Objective ID, and User are required." });
-    }
+    const updatedTeamObjective = await TeamObjectives.findOneAndUpdate(
+      { _id: id },
+      updateData,
+      { new: true, upsert: true } // upsert: true creates if not exists
+    );
 
-    // Validate Team ID format
-    if (!mongoose.Types.ObjectId.isValid(teamId)) {
-      return res.status(400).json({ message: "Invalid Team ID format." });
-    }
-    const teamObjectId = new mongoose.Types.ObjectId(teamId);
-
-    // Find existing team objective
-    let teamObjective = await TeamObjectives.findOne({ team: teamObjectId, "objectives._id": objectiveId })
-      .populate("team"); // Populate the team field
-
-    if (!teamObjective) {
-      console.log("No matching team objective found. Creating a new one...");
-      teamObjective = new TeamObjectives({
-        user,
-        team: teamObjectId,
-        objectives: [
-          {
-            _id: objectiveId,
-            nimi: "Default Name",
-            mittari: "Default Metric",
-            seuranta: "Default Tracking",
-          },
-        ],
-        tasks: [],
-        hindrances: [],
-        date: new Date(),
-      });
-      console.log("Saving team objective:", teamObjective);
-      await teamObjective.save();
-      return res.status(201).json({ message: "Team objective created.", teamObjective });
-    }
-
-    // Return the found team objective
-    res.status(200).json({ message: "Team objective found.", teamObjective });
+    res.status(200).json(updatedTeamObjective);
   } catch (error) {
-    console.error("Error in /check route:", error.message, error.stack);
-    res.status(500).json({ message: "Failed to check or create team objective.", error });
+    console.error("Error updating or creating team objective:", error);
+    res.status(500).json({ message: "Failed to update or create team objective", error });
+  }
+});
+
+router.put("/objective/:objectiveId", async (req, res) => {
+  try {
+    const { objectiveId } = req.params;
+    const updateData = req.body;
+
+    // Find the team containing the objective
+    const team = await TeamObjectives.findOne({ "teamObjectives._id": objectiveId });
+    if (!team) return res.status(404).json({ message: "Team not found" });
+
+    // Find the objective and update its fields
+    const objective = team.teamObjectives.id(objectiveId);
+    if (!objective) return res.status(404).json({ message: "Objective not found" });
+
+    Object.assign(objective, updateData);
+
+    await team.save();
+    res.status(200).json(objective);
+  } catch (error) {
+    console.error("Error updating team objective:", error);
+    res.status(500).json({ message: "Failed to update team objective", error });
   }
 });
 // GET route to fetch all team objectives
 router.get("/all", async (req, res) => {
   try {
-    const teamObjectives = await TeamObjectives.find().populate("team"); // Populate the team field with referenced data
+    const teamObjectives = await TeamObjectives.find(); // Fetch all documents in the collection
     res.status(200).json(teamObjectives); // Respond with all team objectives
   } catch (error) {
     console.error("Error fetching team objectives:", error);
     res.status(500).json({ message: "Failed to fetch team objectives", error });
+  }
+});
+
+// GET route to fetch team objectives by user
+router.get("/user/:user", async (req, res) => {
+  try {
+    const { user } = req.params;
+
+    // Find all team objectives where the user is the owner or a member
+    const teamObjectives = await TeamObjectives.find({
+      $or: [{ owner: user }, { members: user }],
+    });
+
+    // Respond with the matching team objectives
+    res.status(200).json(teamObjectives);
+  } catch (error) {
+    console.error("Error fetching team objectives for user:", error);
+    res.status(500).json({ message: "Failed to fetch team objectives for user", error });
   }
 });
 

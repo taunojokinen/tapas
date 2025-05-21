@@ -1,6 +1,6 @@
 import React from "react";
-import TekstikenttaOsio from "../components/tavoitteet/TekstikenttaOsio";
-import AvainstrategiaRivit from "../components/tavoitteet/AvainstrategiaRivit";
+import TekstikenttaOsio from "../components/companyObjectives/TekstikenttaOsio";
+import AvainstrategiaRivit from "../components/companyObjectives/AvainstrategiaRivit";
 import { useCompanyObjectives } from "../hooks/useCompanyObjectives";
 
 const CompanyObjectives: React.FC = () => {
