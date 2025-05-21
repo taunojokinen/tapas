@@ -33,11 +33,11 @@ const MyTeamObjectives: React.FC = () => {
         </h1>
       </div>
     <MyTeams selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />
+
 <TeamObjectives
   selectedTeam={selectedTeam}
   setSelectedTeam={async (updatedTeam) => {
     setSelectedTeam(updatedTeam);
-    // Persist the whole objectives array to backend
     if (updatedTeam && typeof updatedTeam === "object" && "_id" in updatedTeam && "teamObjectives" in updatedTeam) {
       await putTeamObjectivesArray(updatedTeam._id, updatedTeam.teamObjectives);
     }
@@ -45,25 +45,46 @@ const MyTeamObjectives: React.FC = () => {
   selectedObjectiveIndex={selectedObjectiveIndex}
   onSelectObjective={setSelectedObjectiveIndex}
 />
-<TeamTasks
-  tasks={selectedObjective?.tasks ?? []}
-  onTasksChange={async (updatedTasks) => {
-    if (!selectedTeam || selectedObjectiveIndex === null) return;
-    // Update the tasks for the selected objective
-    const updatedObjectives = selectedTeam.teamObjectives.map((obj, idx) =>
-      idx === selectedObjectiveIndex ? { ...obj, tasks: updatedTasks } : obj
-    );
-    setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
 
-    // Persist only the updated objective to backend
-    const updatedObjective = updatedObjectives[selectedObjectiveIndex];
-    await putTeamObjectiveData(updatedObjective._id, updatedObjective);
-  }}
-/>
-    <TeamCurrentState
-      hindrances={selectedObjective?.hindrances ?? []}
-      promoters={selectedObjective?.promoters ?? []}
+{selectedObjectiveIndex !== null && selectedObjectiveIndex !== undefined && selectedTeam && (
+  <>
+    <TeamTasks
+      tasks={selectedTeam.teamObjectives[selectedObjectiveIndex]?.tasks ?? []}
+      onTasksChange={async (updatedTasks) => {
+        if (!selectedTeam || selectedObjectiveIndex === null) return;
+        const updatedObjectives = selectedTeam.teamObjectives.map((obj, idx) =>
+          idx === selectedObjectiveIndex ? { ...obj, tasks: updatedTasks } : obj
+        );
+        setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
+        const updatedObjective = updatedObjectives[selectedObjectiveIndex];
+        await putTeamObjectiveData(updatedObjective._id, updatedObjective);
+      }}
     />
+    <TeamCurrentState
+      hindrances={selectedTeam.teamObjectives[selectedObjectiveIndex]?.hindrances ?? []}
+      promoters={selectedTeam.teamObjectives[selectedObjectiveIndex]?.promoters ?? []}
+      onChangeHindrances={async (updatedHindrances) => {
+        if (!selectedTeam || selectedObjectiveIndex === null) return;
+        const updatedObjectives = selectedTeam.teamObjectives.map((obj, idx) =>
+          idx === selectedObjectiveIndex ? { ...obj, hindrances: updatedHindrances } : obj
+        );
+        setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
+        const updatedObjective = updatedObjectives[selectedObjectiveIndex];
+        await putTeamObjectiveData(updatedObjective._id, updatedObjective);
+      }}
+      onChangePromoters={async (updatedPromoters) => {
+        if (!selectedTeam || selectedObjectiveIndex === null) return;
+        const updatedObjectives = selectedTeam.teamObjectives.map((obj, idx) =>
+          idx === selectedObjectiveIndex ? { ...obj, promoters: updatedPromoters } : obj
+        );
+        setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
+        const updatedObjective = updatedObjectives[selectedObjectiveIndex];
+        await putTeamObjectiveData(updatedObjective._id, updatedObjective);
+      }}
+    />
+  </>
+)}
+
   </div>
   );
 };
