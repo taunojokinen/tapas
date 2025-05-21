@@ -28,6 +28,7 @@ export const useCompanyObjectives = () => {
           setAvainstrategiat(
             (viimeisin.avainstrategiat || []).map((s: any) => ({
               tavoite: s.tavoite || "",
+              omistaja: s.omistaja || "",
               toimenpide: s.toimenpide || "",
               seuranta: s.seuranta || "green",
             }))
