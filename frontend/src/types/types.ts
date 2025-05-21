@@ -43,7 +43,7 @@ export interface MyTask {
 }
 
 export interface TeamObjective {
-  _id: string; // MongoDB ID for the objective
+  _id?: string; // MongoDB ID for the objective
   type: string;
   nimi: string;
   mittari: string;

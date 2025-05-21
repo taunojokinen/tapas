@@ -32,10 +32,10 @@ export async function fetchCompanyObjectives(query: string): Promise<TeamObjecti
         obj.avainstrategiat.some((strategia) => strategia.seuranta.toLowerCase().includes(lowerQuery))
       );
     }
-    // Map CompanyObjectives to TeamObjective[]
+    // Map CompanyObjectives to TeamObjective[] (do NOT set _id, let MongoDB generate it)
     const teamObjectives: TeamObjective[] = filtered.flatMap((obj: CompanyObjectives) =>
       obj.avainstrategiat.map((strategia: Strategia) => ({
-        _id: `${obj._id}_${strategia.tavoite}`, // Use strategia._id if available, otherwise generate a fallback
+        // _id is intentionally omitted so MongoDB will generate it when saving as a team objective
         type: "team", // or another appropriate value for your use case
         nimi: strategia.tavoite,
         mittari: strategia.toimenpide,

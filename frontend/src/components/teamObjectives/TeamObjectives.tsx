@@ -53,21 +53,21 @@ const TeamObjectives: React.FC<Props> = ({
   };
 
   // Add a new empty team objective
-  function handleAddTeamObjective(): void {
-    if (!isEditing || !selectedTeam) return;
-    const newObjective: TeamObjective = {
-      _id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2),
-      type: "team",
-      nimi: "",
-      mittari: "",
-      seuranta: "",
-      tasks: [],
-      hindrances: [],
-      promoters: []
-    };
-    const updatedObjectives = [...(selectedTeam.teamObjectives ?? []), newObjective];
-    setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
-  }
+function handleAddTeamObjective(): void {
+  if (!isEditing || !selectedTeam) return;
+  const newObjective: TeamObjective = {
+    // _id is omitted so MongoDB will generate it
+    type: "team",
+    nimi: "Uusi tavoite",
+    mittari: "Mittari",
+    seuranta: "Aloittamatta",
+    tasks: [],
+    hindrances: [],
+    promoters: []
+  };
+  const updatedObjectives = [...(selectedTeam.teamObjectives ?? []), newObjective];
+  setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
+}
 
   // Delete an objective by index
   function handleDeleteObjective(index: number): void {
