@@ -18,7 +18,7 @@ const CompanyObjectives: React.FC = () => {
     viesti,
     tallennaTiedot,
   } = useCompanyObjectives();
-
+  console.log("avainstrategiat: ", avainstrategiat)
   const userRole = localStorage.getItem("role");
   const isAuthorized = userRole === "admin" || userRole === "manager";
 

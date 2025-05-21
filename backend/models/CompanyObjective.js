@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const strategiaSchema = new mongoose.Schema({
   tavoite: String,
+  omistaja: String,
   toimenpide: String,
   seuranta: {
     type: String,

@@ -20,7 +20,7 @@ const AvainstrategiaRivit: React.FC<{
   const lisaaRivi = () => {
     paivita([
       ...strategiat,
-      { tavoite: "", toimenpide: "", seuranta: "green" },
+      { tavoite: "", omistaja: "", toimenpide: "", seuranta: "green" },
     ]);
   };
 
@@ -32,21 +32,28 @@ const AvainstrategiaRivit: React.FC<{
     <div className="mb-6">
       <h2 className="text-lg font-semibold mb-2">Avainstrategiat</h2>
       <div className="grid grid-cols-12 gap-4 font-semibold mb-2">
-        <div className="col-span-5">Tavoite</div>
-        <div className="col-span-5">Toimenpide</div>
+        <div className="col-span-4">Tavoite</div>
+        <div className="col-span-2">Omistaja</div>
+        <div className="col-span-4">Toimenpide</div>
         <div className="col-span-1">Seuranta</div>
         <div className="col-span-1" />
       </div>
       {strategiat.map((s, i) => (
         <div key={i} className="grid grid-cols-12 gap-4 items-center mb-2">
           <input
-            className="col-span-5 p-2 border rounded"
+            className="col-span-4 p-2 border rounded"
             value={s.tavoite}
             onChange={(e) => muuta(i, "tavoite", e.target.value)}
             readOnly={!isAuthorized}
           />
           <input
-            className="col-span-5 p-2 border rounded"
+            className="col-span-2 p-2 border rounded"
+            value={s.omistaja || ""}
+            onChange={(e) => muuta(i, "omistaja", e.target.value)}
+            readOnly={!isAuthorized}
+          />
+          <input
+            className="col-span-4 p-2 border rounded"
             value={s.toimenpide}
             onChange={(e) => muuta(i, "toimenpide", e.target.value)}
             readOnly={!isAuthorized}

@@ -69,6 +69,7 @@ export interface Team {
 
 export interface Strategia {
   tavoite: string;
+  omistaja: string;
   toimenpide: string;
   seuranta: "green" | "yellow" | "red";
 }

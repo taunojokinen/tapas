@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 // POST: lisää uusi
 router.post("/", async (req, res) => {
     const { perustehtava, paamaara, avainstrategiat, nykytila } = req.body;
-    //console.log("Vastaanotettu data:", req.body);
+    console.log("Vastaanotettu data:", req.body);
     try {
       const companyObjective = new CompanyObjective({
         perustehtava,
@@ -48,6 +48,7 @@ router.delete('/:id', async (req, res) => {
 
 // PUT: korvaa koko objektin
 router.put('/:id', async (req, res) => {
+  console.log("Päivitettävä data:", req.body);
   try {
     const { perustehtava, paamaara, avainstrategiat, nykytila } = req.body;
     const updated = await CompanyObjective.findByIdAndUpdate(
