@@ -1,7 +1,6 @@
 import axios from "axios";
 import { MyObjectivesJson } from "../../types/types"; // Adjust the path if necessary
 
-
 // Fetch data from the backend
 export const fetchMyObjectiveData = async (
   username: string

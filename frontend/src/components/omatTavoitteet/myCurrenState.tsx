@@ -47,7 +47,10 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
   };
 
   // Move a hindrance up or down
-  const handleMoveHindrance = async (index: number, direction: "up" | "down") => {
+  const handleMoveHindrance = async (
+    index: number,
+    direction: "up" | "down"
+  ) => {
     const newHindrances = [...hindrances];
     const swapIndex = direction === "up" ? index - 1 : index + 1;
     [newHindrances[index], newHindrances[swapIndex]] = [
@@ -59,7 +62,10 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
   };
 
   // Move a promoter up or down
-  const handleMovePromoter = async (index: number, direction: "up" | "down") => {
+  const handleMovePromoter = async (
+    index: number,
+    direction: "up" | "down"
+  ) => {
     const newPromoters = [...promoters];
     const swapIndex = direction === "up" ? index - 1 : index + 1;
     [newPromoters[index], newPromoters[swapIndex]] = [
@@ -232,6 +238,6 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
       )}
     </div>
   );
-}
+};
 
 export default MyCurrentState;

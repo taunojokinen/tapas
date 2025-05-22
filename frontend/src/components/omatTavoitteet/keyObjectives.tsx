@@ -3,9 +3,9 @@ import { MyObjective } from "../../types/types";
 import { patchMyObjectiveData } from "./myObjectiveFunctions";
 
 interface KeyObjectivesProps {
-  objectives: MyObjective[]; // Array of objectives  
+  objectives: MyObjective[]; // Array of objectives
   setObjectives: React.Dispatch<React.SetStateAction<MyObjective[]>>; // Function to update objectives
-  username: string; 
+  username: string;
 }
 
 const KeyObjectives: React.FC<KeyObjectivesProps> = ({
@@ -58,7 +58,11 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
   };
 
   // Update an objective's text
-  const handleObjectiveChange = (index: number, newValue: string, field: "nimi" | "mittari" | "seuranta") => {
+  const handleObjectiveChange = (
+    index: number,
+    newValue: string,
+    field: "nimi" | "mittari" | "seuranta"
+  ) => {
     const updatedObjectives = objectives.map((objective, i) =>
       i === index
         ? { ...objective, [field]: newValue } // Päivitä vain määritelty kenttä
