@@ -12,24 +12,20 @@ const RenderCurrentValues: React.FC<{
   const navigate = useNavigate(); // Initialize useNavigate
 
   /** 🔄 Haetaan yrityksen arvot tietokannasta */
-  const fetchArvot = React.useCallback(async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/values`
-      );
-
-      // Varmistetaan, että data on taulukko
-      const data = Array.isArray(response.data) ? response.data : [];
-      setValues(data);
-
-      console.log("Arvot:", values); // Log arvot
-      setLoading(false);
-    } catch (err) {
-      setError("Tietojen hakeminen epäonnistui.");
-      console.error("Virhe:", err);
-      setLoading(false);
-    }
-  }, []);
+const fetchArvot = React.useCallback(async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/values`
+    );
+    const data = Array.isArray(response.data) ? response.data : [];
+    setValues(data);
+    setLoading(false);
+  } catch (err) {
+    setError("Tietojen hakeminen epäonnistui.");
+    console.error("Virhe:", err);
+    setLoading(false);
+  }
+}, [setValues]);
   /** ⏳ Haetaan arvot **vain kerran** kun komponentti renderöityy */
   useEffect(() => {
     fetchArvot();
