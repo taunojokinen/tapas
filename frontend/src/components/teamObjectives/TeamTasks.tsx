@@ -15,7 +15,11 @@ const TeamTasks: React.FC<Props> = ({ tasks: initialTasks, onTasksChange }) => {
     setTasks(initialTasks);
   }, [initialTasks]);
 
-  const handleTaskChange = (index: number, value: string, field: keyof MyTask) => {
+  const handleTaskChange = (
+    index: number,
+    value: string,
+    field: keyof MyTask
+  ) => {
     const updatedTasks = tasks.map((task, i) =>
       i === index ? { ...task, [field]: value } : task
     );
@@ -23,12 +27,15 @@ const TeamTasks: React.FC<Props> = ({ tasks: initialTasks, onTasksChange }) => {
     onTasksChange?.(updatedTasks);
   };
 
-const handleMoveTask = (index: number, direction: "up" | "down") => {
-  const newTasks = [...tasks];
-  const swapIndex = direction === "up" ? index - 1 : index + 1;
-  [newTasks[index], newTasks[swapIndex]] = [newTasks[swapIndex], newTasks[index]];
-  setTasks(newTasks);
-};
+  const handleMoveTask = (index: number, direction: "up" | "down") => {
+    const newTasks = [...tasks];
+    const swapIndex = direction === "up" ? index - 1 : index + 1;
+    [newTasks[index], newTasks[swapIndex]] = [
+      newTasks[swapIndex],
+      newTasks[index],
+    ];
+    setTasks(newTasks);
+  };
 
   const handleDeleteTask = (index: number) => {
     const updatedTasks = tasks.filter((_, i) => i !== index);
@@ -36,29 +43,30 @@ const handleMoveTask = (index: number, direction: "up" | "down") => {
     onTasksChange?.(updatedTasks);
   };
 
-const handleAddTask = () => {
-  const newTask: MyTask = {
-    nimi: "Uusi tehtävä",
-    mittari: "Mittari",
-    seuranta: "Aloittamatta"
+  const handleAddTask = () => {
+    const newTask: MyTask = {
+      nimi: "Uusi tehtävä",
+      mittari: "Mittari",
+      seuranta: "Aloittamatta",
+    };
+    const updatedTasks = [...tasks, newTask];
+    setTasks(updatedTasks);
+    onTasksChange?.(updatedTasks);
   };
-  const updatedTasks = [...tasks, newTask];
-  setTasks(updatedTasks);
-  onTasksChange?.(updatedTasks);
-};
 
-const handleSave = () => {
-  // Check for empty required fields in tasks
-  const hasEmptyFields = tasks.some(
-    (task) => !task.nimi.trim() || !task.mittari.trim() || !task.seuranta.trim()
-  );
-  if (hasEmptyFields) {
-    alert("Kaikki tehtäväkentät ovat pakollisia!");
-    return;
-  }
-  setIsEditing(false);
-  onTasksChange?.(tasks);
-};
+  const handleSave = () => {
+    // Check for empty required fields in tasks
+    const hasEmptyFields = tasks.some(
+      (task) =>
+        !task.nimi.trim() || !task.mittari.trim() || !task.seuranta.trim()
+    );
+    if (hasEmptyFields) {
+      alert("Kaikki tehtäväkentät ovat pakollisia!");
+      return;
+    }
+    setIsEditing(false);
+    onTasksChange?.(tasks);
+  };
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex items-center justify-between mb-4">

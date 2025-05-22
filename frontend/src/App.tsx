@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import ChangePassword from "./pages/ChangePassword";
 import CompanyObjectives from "./pages/CompanyObjectives";
 import Arvot from "./pages/Arvot";
 import ChangeValues from "./components/arvot/ChangeValues";
 import MyTeamObjectives from "./pages/MyTeamObjectives";
 import OmatTavoitteet from "./pages/OmatTavoitteet";
-import Tilannekuva from "./pages/Tilannekuva";
-import Ideat from "./pages/Ideat";
-import Aktiviteetit from "./pages/Aktiviteetit";
 import Asetukset from "./pages/Asetukset";
 import Header from "./components/header/Header";
 import Navi from "./components/header/Navi";
@@ -97,9 +94,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/tilannekuva" element={<Tilannekuva />} />
-              <Route path="/ideat" element={<Ideat />} />
-              <Route path="/aktiviteetit" element={<Aktiviteetit />} />
+
               <Route
                 path="/asetukset"
                 element={

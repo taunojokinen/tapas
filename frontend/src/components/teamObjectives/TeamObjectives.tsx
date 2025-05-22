@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Team, TeamObjective } from "../../types/types";
-import { putTeamObjectiveData, fetchCompanyObjectives } from "./TeamObjectiveFunctions";
+import {
+  putTeamObjectiveData,
+  fetchCompanyObjectives,
+} from "./TeamObjectiveFunctions";
 
 interface Props {
   selectedTeam: Team | null;
@@ -13,12 +16,16 @@ const TeamObjectives: React.FC<Props> = ({
   selectedTeam,
   setSelectedTeam,
   onSelectObjective,
-  selectedObjectiveIndex
+  selectedObjectiveIndex,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [showCompanyObjectiveSelector, setShowCompanyObjectiveSelector] = useState(false);
-  const [companyObjectives, setCompanyObjectives] = useState<TeamObjective[]>([]);
-  const [selectedCompanyObjective, setSelectedCompanyObjective] = useState<TeamObjective | null>(null);
+  const [showCompanyObjectiveSelector, setShowCompanyObjectiveSelector] =
+    useState(false);
+  const [companyObjectives, setCompanyObjectives] = useState<TeamObjective[]>(
+    []
+  );
+  const [selectedCompanyObjective, setSelectedCompanyObjective] =
+    useState<TeamObjective | null>(null);
 
   // Fetch company objectives when selector is opened
   const handleOpenCompanyObjectiveSelector = async () => {
@@ -45,34 +52,45 @@ const TeamObjectives: React.FC<Props> = ({
   const handleAddSelectedCompanyObjective = () => {
     if (!selectedCompanyObjective || !selectedTeam) return;
     // Ensure type is set to "company"
-    const companyObjectiveWithType = { ...selectedCompanyObjective, type: "company" };
-    const updatedObjectives = [...(selectedTeam.teamObjectives ?? []), companyObjectiveWithType];
+    const companyObjectiveWithType = {
+      ...selectedCompanyObjective,
+      type: "company",
+    };
+    const updatedObjectives = [
+      ...(selectedTeam.teamObjectives ?? []),
+      companyObjectiveWithType,
+    ];
     saveChanges(updatedObjectives);
     setShowCompanyObjectiveSelector(false);
     setSelectedCompanyObjective(null);
   };
 
   // Add a new empty team objective
-function handleAddTeamObjective(): void {
-  if (!isEditing || !selectedTeam) return;
-  const newObjective: TeamObjective = {
-    // _id is omitted so MongoDB will generate it
-    type: "team",
-    nimi: "Uusi tavoite",
-    mittari: "Mittari",
-    seuranta: "Aloittamatta",
-    tasks: [],
-    hindrances: [],
-    promoters: []
-  };
-  const updatedObjectives = [...(selectedTeam.teamObjectives ?? []), newObjective];
-  setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
-}
+  function handleAddTeamObjective(): void {
+    if (!isEditing || !selectedTeam) return;
+    const newObjective: TeamObjective = {
+      // _id is omitted so MongoDB will generate it
+      type: "team",
+      nimi: "Uusi tavoite",
+      mittari: "Mittari",
+      seuranta: "Aloittamatta",
+      tasks: [],
+      hindrances: [],
+      promoters: [],
+    };
+    const updatedObjectives = [
+      ...(selectedTeam.teamObjectives ?? []),
+      newObjective,
+    ];
+    setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
+  }
 
   // Delete an objective by index
   function handleDeleteObjective(index: number): void {
     if (!isEditing || !selectedTeam) return;
-    const updatedObjectives = (selectedTeam.teamObjectives ?? []).filter((_, i) => i !== index);
+    const updatedObjectives = (selectedTeam.teamObjectives ?? []).filter(
+      (_, i) => i !== index
+    );
     saveChanges(updatedObjectives);
   }
 
@@ -81,19 +99,29 @@ function handleAddTeamObjective(): void {
     if (!isEditing || !selectedTeam) return;
     const objectives = [...(selectedTeam.teamObjectives ?? [])];
     if (direction === "up" && index > 0) {
-      [objectives[index - 1], objectives[index]] = [objectives[index], objectives[index - 1]];
+      [objectives[index - 1], objectives[index]] = [
+        objectives[index],
+        objectives[index - 1],
+      ];
       setSelectedTeam({ ...selectedTeam, teamObjectives: objectives });
     } else if (direction === "down" && index < objectives.length - 1) {
-      [objectives[index + 1], objectives[index]] = [objectives[index], objectives[index + 1]];
+      [objectives[index + 1], objectives[index]] = [
+        objectives[index],
+        objectives[index + 1],
+      ];
       setSelectedTeam({ ...selectedTeam, teamObjectives: objectives });
     }
   }
 
   // Change a field in an objective
-  function handleObjectiveChange(index: number, value: string, field: keyof TeamObjective): void {
+  function handleObjectiveChange(
+    index: number,
+    value: string,
+    field: keyof TeamObjective
+  ): void {
     if (!isEditing || !selectedTeam) return;
-    const updatedObjectives = (selectedTeam.teamObjectives ?? []).map((obj, i) =>
-      i === index ? { ...obj, [field]: value } : obj
+    const updatedObjectives = (selectedTeam.teamObjectives ?? []).map(
+      (obj, i) => (i === index ? { ...obj, [field]: value } : obj)
     );
     setSelectedTeam({ ...selectedTeam, teamObjectives: updatedObjectives });
   }
@@ -106,7 +134,9 @@ function handleAddTeamObjective(): void {
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">Tiimin Tavoitteet</h2>
-        {(!isEditing && selectedObjectiveIndex !== undefined && selectedObjectiveIndex !== null) ? (
+        {!isEditing &&
+        selectedObjectiveIndex !== undefined &&
+        selectedObjectiveIndex !== null ? (
           <button
             onClick={() => {
               if (onSelectObjective) onSelectObjective(null);
@@ -137,30 +167,42 @@ function handleAddTeamObjective(): void {
       <div className="w-full p-2 border border-gray-300 rounded mb-4">
         {objectives.length > 0 ? (
           // If not editing and an objective is selected, show only that one
-          !isEditing && selectedObjectiveIndex !== undefined && selectedObjectiveIndex !== null
-            ? (
-              <div
-                key={selectedObjectiveIndex}
-                className="mb-4 flex items-center gap-4 cursor-pointer"
-              >
-                <div className="flex-grow grid grid-cols-4 gap-4">
-                  <p className="text-lg">{objectives[selectedObjectiveIndex].type}</p>
-                  <p className="text-lg">{objectives[selectedObjectiveIndex].nimi}</p>
-                  <p className="text-lg">{objectives[selectedObjectiveIndex].mittari}</p>
-                  <p className="text-lg">
-                    {objectives[selectedObjectiveIndex].seuranta === "Punainen" && "🔴 Punainen"}
-                    {objectives[selectedObjectiveIndex].seuranta === "Keltainen" && "🟡 Keltainen"}
-                    {objectives[selectedObjectiveIndex].seuranta === "Vihreä" && "🟢 Vihreä"}
-                  </p>
-                </div>
+          !isEditing &&
+          selectedObjectiveIndex !== undefined &&
+          selectedObjectiveIndex !== null ? (
+            <div
+              key={selectedObjectiveIndex}
+              className="mb-4 flex items-center gap-4 cursor-pointer"
+            >
+              <div className="flex-grow grid grid-cols-4 gap-4">
+                <p className="text-lg">
+                  {objectives[selectedObjectiveIndex].type}
+                </p>
+                <p className="text-lg">
+                  {objectives[selectedObjectiveIndex].nimi}
+                </p>
+                <p className="text-lg">
+                  {objectives[selectedObjectiveIndex].mittari}
+                </p>
+                <p className="text-lg">
+                  {objectives[selectedObjectiveIndex].seuranta === "Punainen" &&
+                    "🔴 Punainen"}
+                  {objectives[selectedObjectiveIndex].seuranta ===
+                    "Keltainen" && "🟡 Keltainen"}
+                  {objectives[selectedObjectiveIndex].seuranta === "Vihreä" &&
+                    "🟢 Vihreä"}
+                </p>
               </div>
-            )
+            </div>
+          ) : (
             // Otherwise, show all objectives (editing or nothing selected)
-            : objectives.map((objective, index) => (
+            objectives.map((objective, index) => (
               <div
                 key={index}
                 className={`mb-4 flex items-center gap-4 cursor-pointer ${
-                  !isEditing && selectedObjectiveIndex === index ? "bg-blue-100" : ""
+                  !isEditing && selectedObjectiveIndex === index
+                    ? "bg-blue-100"
+                    : ""
                 }`}
                 onClick={() => {
                   if (!isEditing && onSelectObjective) onSelectObjective(index);
@@ -213,14 +255,22 @@ function handleAddTeamObjective(): void {
                         type="text"
                         value={objective.mittari}
                         onChange={(e) =>
-                          handleObjectiveChange(index, e.target.value, "mittari")
+                          handleObjectiveChange(
+                            index,
+                            e.target.value,
+                            "mittari"
+                          )
                         }
                         className="text-lg border border-gray-300 rounded px-2 py-1 w-full"
                       />
                       <select
                         value={objective.seuranta}
                         onChange={(e) =>
-                          handleObjectiveChange(index, e.target.value, "seuranta")
+                          handleObjectiveChange(
+                            index,
+                            e.target.value,
+                            "seuranta"
+                          )
                         }
                         className="w-full p-1 border"
                       >
@@ -245,6 +295,7 @@ function handleAddTeamObjective(): void {
                 </div>
               </div>
             ))
+          )
         ) : (
           <p className="text-gray-500">Ei tiimin tavoitteita.</p>
         )}
@@ -268,8 +319,10 @@ function handleAddTeamObjective(): void {
             <div className="flex items-center gap-2">
               <select
                 value={selectedCompanyObjective?.nimi || ""}
-                onChange={e => {
-                  const obj = companyObjectives.find(o => o.nimi === e.target.value);
+                onChange={(e) => {
+                  const obj = companyObjectives.find(
+                    (o) => o.nimi === e.target.value
+                  );
                   setSelectedCompanyObjective(obj || null);
                 }}
                 className="border rounded p-2"

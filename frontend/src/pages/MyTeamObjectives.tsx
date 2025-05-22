@@ -3,20 +3,13 @@ import MyTeams from "../components/teamObjectives/myTeams";
 import TeamObjectives from "../components/teamObjectives/TeamObjectives";
 import TeamTasks from "../components/teamObjectives/TeamTasks";
 import TeamCurrentState from "../components/teamObjectives/TeamCurrentState";
-import useAuth from "../hooks/useAuth";
 import { Team } from "../types/types";
 import { putTeamObjectiveData, putTeamObjectivesArray } from "../components/teamObjectives/TeamObjectiveFunctions";
 
 const MyTeamObjectives: React.FC = () => {
-  const { username } = useAuth();
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [selectedObjectiveIndex, setSelectedObjectiveIndex] = useState<number | null>(null);
 
-  // Get the selected objective if available
-  const selectedObjective: Team["teamObjectives"][number] | undefined =
-    selectedTeam && selectedObjectiveIndex !== null
-      ? selectedTeam.teamObjectives[selectedObjectiveIndex]
-      : undefined;
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">

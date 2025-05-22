@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { saveNewTeam, updateTeam, deleteTeam, fetchTeamsForUser  } from "./TeamFunctions"; // Import the fetch function
+import {
+  saveNewTeam,
+  updateTeam,
+  deleteTeam,
+  fetchTeamsForUser,
+} from "./TeamFunctions"; // Import the fetch function
 import useAuth from "../../hooks/useAuth"; // Import the custom hook
 import { Team, TeamObjective } from "../../types/types"; // Adjust the path as needed
 
@@ -13,12 +18,22 @@ export interface MyTeamsProps {
   onTeamSelect?: (team: Team | null) => void; // Optional callback for team selection
 }
 
-const MyTeams: React.FC<MyTeamsProps> = ({ selectedTeam, setSelectedTeam, onTeamSelect }) => {
+const MyTeams: React.FC<MyTeamsProps> = ({
+  selectedTeam,
+  setSelectedTeam,
+  onTeamSelect,
+}) => {
   const { username } = useAuth();
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [newTeam, setNewTeam] = useState<{ name: string; type: string; mission: string; members: string[]; teamObjectives: TeamObjective[] }>({
+  const [newTeam, setNewTeam] = useState<{
+    name: string;
+    type: string;
+    mission: string;
+    members: string[];
+    teamObjectives: TeamObjective[];
+  }>({
     name: "",
     type: "",
     mission: "",
@@ -71,28 +86,40 @@ const MyTeams: React.FC<MyTeamsProps> = ({ selectedTeam, setSelectedTeam, onTeam
     }
   };
 
-const handleShowAllTeams = () => {
-  setSelectedTeam(null); // Reset the selected team locally
-  if (onTeamSelect) {
-    onTeamSelect(null); // Notify parent with null, not a dummy object
-  }
-};
+  const handleShowAllTeams = () => {
+    setSelectedTeam(null); // Reset the selected team locally
+    if (onTeamSelect) {
+      onTeamSelect(null); // Notify parent with null, not a dummy object
+    }
+  };
   const handleCreateNewTeam = () => {
     setShowModal(true);
   };
 
   const handleModalClose = () => {
     setShowModal(false);
-    setNewTeam({ name: "", type: "", mission: "", members: [], teamObjectives: [] });
+    setNewTeam({
+      name: "",
+      type: "",
+      mission: "",
+      members: [],
+      teamObjectives: [],
+    });
   };
 
   const handleSaveNewTeam = async () => {
     try {
       if (selectedTeam) {
         // Update the existing team
-        const updatedTeam = await updateTeam(selectedTeam._id, newTeam, username);
+        const updatedTeam = await updateTeam(
+          selectedTeam._id,
+          newTeam,
+          username
+        );
         setTeams((prev) =>
-          prev.map((team) => (team._id === updatedTeam._id ? updatedTeam : team))
+          prev.map((team) =>
+            team._id === updatedTeam._id ? updatedTeam : team
+          )
         );
         console.log("Team updated:", updatedTeam);
       } else {
@@ -101,7 +128,7 @@ const handleShowAllTeams = () => {
         setTeams((prev) => [...prev, createdTeam]);
         console.log("New team created:", createdTeam);
       }
-  
+
       // Close the modal and reset the form
       handleModalClose();
       setSelectedTeam(null);
@@ -111,10 +138,14 @@ const handleShowAllTeams = () => {
   };
 
   const handleDeleteTeam = async (teamId: string) => {
-    const confirmDelete = window.confirm("Haluatko varmasti poistaa tämän tiimin?");
+    const confirmDelete = window.confirm(
+      "Haluatko varmasti poistaa tämän tiimin?"
+    );
     if (!confirmDelete) {
       setSelectedTeam(null);
-      console.log("Deletion canceled. Returning to 'Näytä kaikki tiimit' state.");
+      console.log(
+        "Deletion canceled. Returning to 'Näytä kaikki tiimit' state."
+      );
       return;
     }
 
@@ -137,14 +168,13 @@ const handleShowAllTeams = () => {
       members: team.members,
       teamObjectives: team.teamObjectives || [], // Ensure teamObjectives is included
     });
-  
+
     // Set the selected team for editing
     setSelectedTeam(team);
-  
+
     // Open the modal for editing
     setShowModal(true);
   };
-
 
   const handleMemberToggle = (userId: string) => {
     setNewTeam((prev) => {
@@ -157,10 +187,11 @@ const handleShowAllTeams = () => {
   };
 
   return (
-
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex items-center justify-between">
-        {!selectedTeam && <h2 className="text-xl font-bold text-gray-800">Tiimit</h2>}
+        {!selectedTeam && (
+          <h2 className="text-xl font-bold text-gray-800">Tiimit</h2>
+        )}
         <div className="flex gap-2">
           {!selectedTeam && (
             <button
@@ -176,7 +207,8 @@ const handleShowAllTeams = () => {
         <div className="mt-4 p-4 border border-gray-300 rounded">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">
-              {selectedTeam.name} - {selectedTeam.mission} - Omistaja: {selectedTeam.owner}
+              {selectedTeam.name} - {selectedTeam.mission} - Omistaja:{" "}
+              {selectedTeam.owner}
             </h3>
             <button
               onClick={handleShowAllTeams}
@@ -199,7 +231,9 @@ const handleShowAllTeams = () => {
                   <div>
                     <h3 className="text-lg font-semibold">{team.name}</h3>
                     <p className="text-sm text-gray-600">Tyyppi: {team.type}</p>
-                    <p className="text-sm text-gray-600">Tehtävä: {team.mission}</p>
+                    <p className="text-sm text-gray-600">
+                      Tehtävä: {team.mission}
+                    </p>
                     <p className="text-sm text-gray-600">
                       Jäsenet: {team.members.join(", ")}
                     </p>
@@ -240,37 +274,53 @@ const handleShowAllTeams = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h3 className="text-lg font-bold mb-4">Luo uusi tiimi</h3>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Nimi</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Nimi
+              </label>
               <input
                 type="text"
                 value={newTeam.name}
-                onChange={(e) => setNewTeam({ ...newTeam, name: e.target.value })}
+                onChange={(e) =>
+                  setNewTeam({ ...newTeam, name: e.target.value })
+                }
                 className="mt-1 block w-full p-2 border border-gray-300 rounded"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Tyyppi</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Tyyppi
+              </label>
               <select
                 value={newTeam.type}
-                onChange={(e) => setNewTeam({ ...newTeam, type: e.target.value })}
+                onChange={(e) =>
+                  setNewTeam({ ...newTeam, type: e.target.value })
+                }
                 className="mt-1 block w-full p-2 border border-gray-300 rounded"
               >
                 <option value="">Valitse tyyppi</option>
                 <option value="projekti">Projekti</option>
-                <option value="Toiminnan kehittäminen">Toiminnan kehittäminen</option>
+                <option value="Toiminnan kehittäminen">
+                  Toiminnan kehittäminen
+                </option>
                 <option value="johtoryhmä">Johtoryhmä</option>
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Tehtävä</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Tehtävä
+              </label>
               <textarea
                 value={newTeam.mission}
-                onChange={(e) => setNewTeam({ ...newTeam, mission: e.target.value })}
+                onChange={(e) =>
+                  setNewTeam({ ...newTeam, mission: e.target.value })
+                }
                 className="mt-1 block w-full p-2 border border-gray-300 rounded"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Jäsenet</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Jäsenet
+              </label>
               <div className="mt-2 space-y-2">
                 {userList.map((user) => (
                   <div key={user._id} className="flex items-center">
