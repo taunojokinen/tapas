@@ -77,7 +77,8 @@ const RenderCurrentValues: React.FC<{
       alert("Arvojen päivittäminen epäonnistui. Yritä uudelleen.");
     }
   };
-
+  if (loading) return <p>Ladataan arvoja...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
   return (
     <div className="relative">
       <div className="mt-6">
