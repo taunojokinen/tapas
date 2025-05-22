@@ -16,6 +16,7 @@ describe("useCompanyObjectives", () => {
           avainstrategiat: [
             {
               tavoite: "Tavoite 1",
+              omistaja: "NN",
               toimenpide: "Toimenpide 1",
               seuranta: "yellow",
             },
@@ -38,6 +39,7 @@ describe("useCompanyObjectives", () => {
     expect(result.current.avainstrategiat).toEqual([
       {
         tavoite: "Tavoite 1",
+        omistaja: "NN",
         toimenpide: "Toimenpide 1",
         seuranta: "yellow",
       },

@@ -58,17 +58,17 @@ const AvainstrategiaRivit: React.FC<{
             onChange={(e) => muuta(i, "toimenpide", e.target.value)}
             readOnly={!isAuthorized}
           />
-          <div
-            className={`w-6 h-6 rounded-full cursor-pointer ${
-              s.seuranta === "green"
-                ? "bg-green-500"
-                : s.seuranta === "yellow"
-                ? "bg-yellow-400"
-                : "bg-red-500"
-            }`}
-            onClick={() => isAuthorized && vaihdaVari(i)}
-            title="Klikkaa vaihtaaksesi väriä"
-          />
+          <select
+            className="col-span-1 p-1 border rounded bg-white"
+            value={s.seuranta}
+            onChange={(e) => muuta(i, "seuranta", e.target.value)}
+            disabled={!isAuthorized}
+          >
+            <option value="green">🟢 Vihreä</option>
+            <option value="yellow">🟡 Keltainen</option>
+            <option value="red">🔴 Punainen</option>
+          </select>
+
           {isAuthorized && (
             <button
               onClick={() => poistaRivi(i)}
