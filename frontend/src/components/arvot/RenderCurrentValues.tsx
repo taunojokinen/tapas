@@ -80,7 +80,6 @@ const RenderCurrentValues: React.FC<{
 
   return (
     <div className="relative">
-
       <div className="mt-6">
         <div className="mt-6">
           <h2 className="text-xl font-bold mb-4">Yrityksen nykyiset arvot</h2>
@@ -113,7 +112,7 @@ const RenderCurrentValues: React.FC<{
                     <strong>{index + 1}</strong>
                   </h1>
                 </div>
-                <div>
+                <div className="flex-1 w-full">
                   <input
                     type="text"
                     value={value.nimi}
