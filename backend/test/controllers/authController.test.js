@@ -2,7 +2,6 @@ const request = require("supertest");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const activeTokens = require("../../utils/activeTokens"); // Oletetaan, että tämä on oikea polku
 
 jest.mock("../../models/Userlist"); // Mockataan Mongoosen malli
 const User = require("../../models/Userlist");
@@ -17,7 +16,7 @@ app.post("/api/auth/logout", logout);
 app.post("/api/auth/changePassword", changePassword);
 
 // Mock bcrypt methods globally
-jest.mock("bcrypt", () => ({
+jest.mock("bcryptjs", () => ({
   compare: jest.fn(),
   hash: jest.fn()
 }));
