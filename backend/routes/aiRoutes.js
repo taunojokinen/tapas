@@ -17,17 +17,20 @@ const client = new OpenAI({
 
 router.post("/generate-proposals", async (req, res) => {
   try {
-
+    const systemContent = req.body.systemContent || "You are a comedian only speaking finnish";
     const prompt = req.body.prompt || "Generate a list of three company values with descriptions. Answer as valid JSON.";
-    const response = await client.responses.create({
-      model: "gpt-4",
-      input: prompt,
+    console.log("OpenAI API Prompt:", prompt);
+    console.log("OpenAI API systemContent:", systemContent);
+
+    const response = await client.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        { role: "system", content: systemContent },
+        { role: "user", content: prompt }
+      ]
     });
 
-    console.log("OpenAI API Response:", response);
-
-    // Extract the generated text from the response
-    let outputText = response.output_text;
+    let outputText = response.choices[0].message.content;
 
     if (!outputText || typeof outputText !== "string") {
       throw new Error("No valid output text received from OpenAI API");
@@ -70,6 +73,25 @@ router.post("/generate-proposals", async (req, res) => {
   }
 });
 
+router.post("/generate-proposals/test", async (req, res) => {
+  try {
+    const prompt = req.body.prompt || "Generate a list of three company values with descriptions. Answer as valid JSON.";
+    console.log("Prompt sent to OpenAI 4o mini API:", prompt);
+    const response = await client.chat.completions.create({
+      model: "gpt-4.1-mini",
+      messages: [
+        { role: "system", content: "You are a helpful assistant." },
+        { role: "user", content: prompt }
+      ]
+    });
 
+    let outputText = response.choices[0].message.content;
+    console.log("OpenAI 4o mini API Response:", outputText);
+
+    // ...rest of your code for sanitizing and parsing outputText...
+  } catch (error) {
+    console.error("Error generating proposals from AI:", error);
+  }
+});
 
 module.exports = router;
