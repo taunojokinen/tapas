@@ -9,9 +9,15 @@ const rolesForAI = [
   "Quality Manager",
 ];
 
-const aiQuestion = `Generate a list of three company values with descriptions. Keep strong focus in your role. Answer in Finnish.`;
-const aiFormat = `Answer strictly as a valid JSON object with the header "arvot" and two keys "nimi" and "kuvaus". 
-Do not include any additional text or formatting.`;
+
+const aiQuestion = `Generate a list of three company values with descriptions. The description shall be 50 words long.` 
+const aiFormat = `Return the result in this format:
+{
+  "arvot": [
+    { "nimi": "Value name", "kuvaus": "Description" },
+    ...
+  ]
+}`;
 const aiPrompt = `${aiQuestion} ${aiFormat}`;
 
 const RenderAIProposals: React.FC<{
@@ -55,9 +61,10 @@ const RenderAIProposals: React.FC<{
   ): AsyncGenerator<Proposal> {
     const response = await axios.post(
       "http://localhost:5000/api/ai/generate-proposals",
-      {
-        prompt: `Have a strict role of "${role}". ${prompt}`,
-      }
+    {
+      systemContent: `Have a role of "${role}". You always answer in finnish.`, // <-- send as systemContent
+      prompt // <-- send as prompt
+    }
     );
 
     console.log("AI response for role:", role, response.data);
