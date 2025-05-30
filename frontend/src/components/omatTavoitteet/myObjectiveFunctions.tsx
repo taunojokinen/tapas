@@ -61,3 +61,32 @@ export const postMyObjectiveData = async (
     return false; // Indicate failure
   }
 };
+
+/**
+ * Fetches the user list and filters titles based on the given username.
+ * @param username The username to filter titles for.
+ * @returns An array of titles belonging to the user, or an empty array if not found.
+ */
+export const fetchUserTitlesByUsername = async (
+  username: string
+): Promise<string[]> => {
+  try {
+    const response = await axios.get("http://localhost:5000/api/userlist");
+    if (response.data && Array.isArray(response.data)) {
+      // Find the user by username and return their titles
+      const user = response.data.find((user: any) => user.username === username);
+      if (user && Array.isArray(user.titles)) {
+        return user.titles;
+      }
+      // If only a single title per user
+      if (user && typeof user.title === "string") {
+        return [user.title];
+      }
+      return [];
+    }
+      return [];
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+      return [];
+    }
+  };
