@@ -6,12 +6,16 @@ interface KeyObjectivesProps {
   objectives: MyObjective[]; // Array of objectives
   setObjectives: React.Dispatch<React.SetStateAction<MyObjective[]>>; // Function to update objectives
   username: string;
+  viewMode: string; // Current view mode
+  setViewMode: (mode: string) => void; // Function to set the view mode
 }
 
 const KeyObjectives: React.FC<KeyObjectivesProps> = ({
   objectives,
   setObjectives,
   username,
+  viewMode, // Current view mode
+  setViewMode, // Function to set the view mode
 }) => {
   const [isEditing, setIsEditing] = useState(false); // Global editing state
 
@@ -74,17 +78,21 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold">Avaintavoitteet</h2>
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className={`px-4 py-2 ${
-            isEditing
-              ? "bg-green-500 hover:bg-green-600"
-              : "bg-blue-500 hover:bg-blue-600"
-          } text-white rounded`}
-        >
-          {isEditing ? "Tallenna" : "Muokkaa"}
-        </button>
+        <h2 className="text-xl font-bold">
+          Avaintavoitteet - mitä tuloksia minun tulee saavuttaa edetäkseni kohti
+          omaa päämäärääni
+        </h2>
+        {!isEditing && viewMode === "show all" && (
+          <button
+            onClick={() => {
+              setIsEditing(true);
+              setViewMode("keyObjectives"); // Set view mode to key objectives
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Muokkaa
+          </button>
+        )}
       </div>
       <div className="w-full p-2 border border-gray-300 rounded mb-4">
         {objectives.length > 0 ? (
@@ -173,7 +181,20 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
             Lisää uusi tavoite
           </button>
           <button
-            onClick={() => setIsEditing(false)}
+            onClick={() => {
+              saveChanges(objectives);
+              setIsEditing(false); // Exit editing mode after saving
+              setViewMode("show all"); // Reset view mode to show all
+            }}
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            Tallenna
+          </button>
+          <button
+            onClick={() => {
+              setIsEditing(false);
+              setViewMode("show all"); // Reset view mode to show all
+            }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Peruuta

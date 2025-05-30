@@ -7,6 +7,7 @@ interface MyCurrentStateProps {
   promoters: string[];
   setPromoters: React.Dispatch<React.SetStateAction<string[]>>;
   username: string;
+  editMode?: boolean; // Optional prop for edit mode
 }
 
 const MyCurrentState: React.FC<MyCurrentStateProps> = ({

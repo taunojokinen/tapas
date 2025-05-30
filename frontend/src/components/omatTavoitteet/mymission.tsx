@@ -5,10 +5,18 @@ import { patchMyObjectiveData } from "./myObjectiveFunctions";
 interface MyMissionProps {
   mission: string; // Lisää mission propseihin
   setMission: React.Dispatch<React.SetStateAction<string>>;
-  username: string; 
+  username: string;
+  viewMode: string; // Current view mode
+  setViewMode: (mode: string) => void;
 }
 
-const MyMission: React.FC<MyMissionProps> = ({ mission, setMission, username }) => {
+const MyMission: React.FC<MyMissionProps> = ({ 
+  mission, 
+  setMission, 
+  username,
+  viewMode,  
+  setViewMode
+}) => {
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -40,10 +48,13 @@ const MyMission: React.FC<MyMissionProps> = ({ mission, setMission, username }) 
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold">Perustehtävä</h2>
-        {!isEditing && (
+        <h2 className="text-xl font-bold">Oma päämäärä - mitä minä haluan saavuttaa työelämässä</h2>
+        {(!isEditing && viewMode === "show all") && (
           <button
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              setIsEditing(true);
+              setViewMode("myMission")
+            }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Muokkaa
@@ -62,13 +73,20 @@ const MyMission: React.FC<MyMissionProps> = ({ mission, setMission, username }) 
             />
             <div className="flex gap-4">
               <button
-                onClick={handleSaveMission}
+                onClick={() => {
+                  handleSaveMission();
+                  setIsEditing(false); // Exit editing mode after saving
+                  setViewMode("show all"); // Reset view mode to show all 
+                }}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
               >
                 Tallenna
               </button>
               <button
-                onClick={() => setIsEditing(false)}
+                onClick={() => {
+                  setIsEditing(false);
+                  setViewMode("show all"); // Reset view mode to show all
+                }}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >
                 Peruuta

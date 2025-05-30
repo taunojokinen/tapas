@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import MyCoach from "../components/omatTavoitteet/myCoach";
-import MyMission from "../components/omatTavoitteet/mymission"; // Adjust the path if necessary
+import MyMission from "../components/omatTavoitteet/myMission"; // Adjust the path if necessary
 import KeyObjectives from "../components/omatTavoitteet/keyObjectives"; // Adjust the path if necessary
 import MyTasks from "../components/omatTavoitteet/myTasks"; // Adjust the path if necessary
 import MyCurrentState from "../components/omatTavoitteet/myCurrenState"; // Adjust the path if necessary
@@ -15,6 +15,7 @@ const OmatTavoitteet = () => {
   const { username } = useAuth(); // Get the username from the custom hook
   const [myObjectiveData, setMyObjectiveData] =
     useState<MyObjectivesJson | null>(null);
+  const [viewMode, setViewMode] = useState<string>("show all");
 
   // Fetch data from the backend on component mount
   useEffect(() => {
@@ -114,36 +115,86 @@ const OmatTavoitteet = () => {
     );
   };
 
+  // Helper to determine which sections to show
+  const showCoach = true;
+  const showMission =
+    viewMode === "show all" ||
+    viewMode === "myMission" ||
+    viewMode === "keyObjectives" ||
+    viewMode === "myTasks" ||
+    viewMode === "myCurrentState";
+  const showObjectives =
+    viewMode === "show all" ||
+    viewMode === "keyObjectives" ||
+    viewMode === "myTasks" ||
+    viewMode === "myCurrentState";
+  const showTasks =
+    viewMode === "show all" ||
+    viewMode === "myTasks" ||
+    viewMode === "myCurrentState";
+  const showCurrentState =
+    viewMode === "show all" || viewMode === "myCurrentState";
 
   return (
     <div>
+      {/* Example selector for demonstration */}
+      <div className="mb-4">
+        <select
+          value={viewMode}
+          onChange={(e) => setViewMode(e.target.value)}
+          className="border rounded p-2"
+        >
+          <option value="show all">Näytä kaikki</option>
+          <option value="myMission">Muokkaa Missiota</option>
+          <option value="keyObjectives">Muokkaa Tavoitteita</option>
+          <option value="myTasks">Muokkaa Tehtäviä</option>
+          <option value="myCurrentState">Muokkaa Nykytilaa</option>
+        </select>
+      </div>
       <div className="flex flex-col space-y-6">
-        <MyCoach
-          user={myObjectiveData.user}
-        />
+        {showCoach && 
+        <MyCoach 
+        user={myObjectiveData.user} 
+        viewMode={viewMode}
+        />}
         <div className="bg-white p-4 rounded-lg shadow">
-          <MyMission
-            mission={myObjectiveData.mission}
-            setMission={updateMission}
-            username={username}
-          />
-          <KeyObjectives
-            objectives={myObjectiveData.objectives}
-            setObjectives={updateObjectives}
-            username={username}
-          />
-          <MyTasks
-            tasks={myObjectiveData.tasks}
-            setTasks={updateTasks}
-            username={username}
-          />
-          <MyCurrentState
-            hindrances={myObjectiveData.hindrances}
-            setHindrances={updateHindrances}
-            promoters={myObjectiveData.promoters}
-            setPromoters={updatePromoters}
-            username={username}
-          />
+          {showMission && (
+            <MyMission
+              mission={myObjectiveData.mission}
+              setMission={updateMission}
+              username={username}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+            />
+          )}
+          {showObjectives && (
+            <KeyObjectives
+              objectives={myObjectiveData.objectives}
+              setObjectives={updateObjectives}
+              username={username}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+            />
+          )}
+          {showTasks && (
+            <MyTasks
+              tasks={myObjectiveData.tasks}
+              setTasks={updateTasks}
+              username={username}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+            />
+          )}
+          {showCurrentState && (
+            <MyCurrentState
+              hindrances={myObjectiveData.hindrances}
+              setHindrances={updateHindrances}
+              promoters={myObjectiveData.promoters}
+              setPromoters={updatePromoters}
+              username={username}
+              editMode={viewMode === "myCurrentState"}
+            />
+          )}
         </div>
       </div>
     </div>

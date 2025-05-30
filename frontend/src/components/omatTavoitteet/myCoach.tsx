@@ -4,6 +4,7 @@ import McVirtanen from "../../pictures/McVirtanen.jpg"; // Adjust the path if ne
 
 interface MyCoachProps {
   user: string;
+  viewMode?: string; // Optional prop for view mode
 }
 
 const MyCoach: React.FC<MyCoachProps> = ({ user }) => {
@@ -32,7 +33,7 @@ const MyCoach: React.FC<MyCoachProps> = ({ user }) => {
           {title} {user} - omat tavoitteet.
         </h2>
       </div>
-      <div className="flex flex-row items-start gap-6 p-4">
+      <div className="flex flex-row items-start gap-6 pt-4 pr-4 pb-0 pl-4">
         <img
           src={McVirtanen}
           alt="McVirtanen"
@@ -43,7 +44,7 @@ const MyCoach: React.FC<MyCoachProps> = ({ user }) => {
             id="introduction"
             name="introduction"
             className="w-full border border-gray-300 rounded p-2"
-            rows={5}
+            style={{ height: "auto", minHeight: "80px" }}
             value={introduction}
             readOnly
           />
