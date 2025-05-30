@@ -16,7 +16,7 @@ const OmatTavoitteet = () => {
   const [myObjectiveData, setMyObjectiveData] =
     useState<MyObjectivesJson | null>(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false); // State for editing title
-  const [newTitle, setNewTitle] = useState(""); // State for the new title
+  const [title, setTitle] = useState(""); // State for the new title
 
   // Fetch data from the backend on component mount
   useEffect(() => {
@@ -116,30 +116,12 @@ const OmatTavoitteet = () => {
     );
   };
 
-  const handleSaveTitle = async () => {
-    if (myObjectiveData) {
-      const updatedData = { ...myObjectiveData, title: newTitle }; // Update the title
-      setMyObjectiveData(updatedData); // Update the local state
-      const success = await patchMyObjectiveData(username, { title: newTitle }); // Save the updated title
-      if (success) {
-        alert("Title successfully updated!");
-        setIsEditingTitle(false); // Exit editing mode
-      } else {
-        alert("Failed to update the title.");
-      }
-    }
-  };
+
   return (
     <div>
       <div className="flex flex-col space-y-6">
         <MyCoach
-          title={myObjectiveData.title}
           user={myObjectiveData.user}
-          isEditingTitle={isEditingTitle}
-          newTitle={newTitle}
-          setNewTitle={setNewTitle}
-          handleSaveTitle={handleSaveTitle}
-          setIsEditingTitle={setIsEditingTitle}
         />
         <div className="bg-white p-4 rounded-lg shadow">
           <MyMission

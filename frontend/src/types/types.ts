@@ -21,7 +21,6 @@ export interface Proposal {
 
 export interface MyObjectivesJson {
   user: string;
-  title: string;
   date: string;
   mission: string;
   objectives: MyObjective[];
