@@ -134,20 +134,7 @@ const OmatTavoitteet = () => {
 
   return (
     <div>
-      {/* Example selector for demonstration */}
-      <div className="mb-4">
-        <select
-          value={viewMode}
-          onChange={(e) => setViewMode(e.target.value)}
-          className="border rounded p-2"
-        >
-          <option value="show all">Näytä kaikki</option>
-          <option value="myMission">Muokkaa Missiota</option>
-          <option value="keyObjectives">Muokkaa Tavoitteita</option>
-          <option value="myTasks">Muokkaa Tehtäviä</option>
-          <option value="myCurrentState">Muokkaa Nykytilaa</option>
-        </select>
-      </div>
+
       <div className="flex flex-col space-y-6">
         {showCoach && (
           <MyCoach user={myObjectiveData.user} viewMode={viewMode} />
