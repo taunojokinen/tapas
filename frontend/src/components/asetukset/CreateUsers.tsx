@@ -175,6 +175,7 @@ return (
                 <th className="border border-gray-300 px-4 py-2">username</th>
                 <th className="border border-gray-300 px-4 py-2">firstname</th>
                 <th className="border border-gray-300 px-4 py-2">lastname</th>
+                <th className="border border-gray-300 px-4 py-2">title</th>
                 <th className="border border-gray-300 px-4 py-2">supervisor</th>
                 <th className="border border-gray-300 px-4 py-2">role</th>
               </tr>
@@ -185,6 +186,7 @@ return (
                   <td className="border border-gray-300 px-4 py-2">{user.username}</td>
                   <td className="border border-gray-300 px-4 py-2">{user.firstName}</td>
                   <td className="border border-gray-300 px-4 py-2">{user.lastName}</td>
+                  <td className="border border-gray-300 px-4 py-2">{user.title}</td>
                   <td className="border border-gray-300 px-4 py-2">{user.supervisor}</td>
                   <td className="border border-gray-300 px-4 py-2">{user.role}</td>
                 </tr>

@@ -13,7 +13,6 @@ const userlistRoutes = require("./routes/userlist"); // Tuo käyttäjälistareit
 const valuesRoutes = require("./routes/values"); // Tuo arvotietojen reitit
 const aiRoutes = require("./routes/aiRoutes"); // Import the AI routes
 const authRoutes = require("./routes/authRoutes"); // Tuo autentikaatioreitit
-const userRoutes = require("./routes/userRoutes"); // Tuo käyttäjäreitit
 const strategiatRoutes = require("./routes/strategiat"); // Tuo strategiareitit
 const valueProposalRoutes = require("./routes/valueProposalRoutes"); // Tuo valueProposalRoutes
 const myObjectiveRoutes = require("./routes/myObjectiveRoutes"); // Tuo myObjectiveRoutes
@@ -72,7 +71,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/auth', authRoutes); // Authentication routes
-app.use('/api/users', userRoutes); // User-related routes
+
 
 // Example route
 app.post('/api/auth/login', (req, res) => {
