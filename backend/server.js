@@ -73,10 +73,6 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes); // Authentication routes
 
 
-// Example route
-app.post('/api/auth/login', (req, res) => {
-  res.json({ message: 'Login successful' });
-});
 
 // Start the server
 app.listen(5000, '0.0.0.0', () => {
