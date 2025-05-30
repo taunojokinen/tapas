@@ -191,22 +191,12 @@ const MyTasks: React.FC<MyTasksProps> = ({
           </button>
           <button
             onClick={() => {
-              handleTaskChange(tasks);
-              setIsEditing(false); // Exit editing mode after saving
-              setViewMode("show all"); // Reset view mode to show all
-            }}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          >
-            Tallenna
-          </button>
-          <button
-            onClick={() => {
               setIsEditing(false);
               setViewMode("show all"); // Reset view mode to show all
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
-            Peruuta
+            Valmis
           </button>
         </div>
       )}

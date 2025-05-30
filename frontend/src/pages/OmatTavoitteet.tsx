@@ -6,10 +6,7 @@ import MyTasks from "../components/omatTavoitteet/myTasks"; // Adjust the path i
 import MyCurrentState from "../components/omatTavoitteet/myCurrenState"; // Adjust the path if necessary
 import useAuth from "../hooks/useAuth"; // Import the custom hook
 import { MyObjective, MyTask, MyObjectivesJson } from "../types/types";
-import {
-  fetchMyObjectiveData,
-  patchMyObjectiveData,
-} from "../components/omatTavoitteet/myObjectiveFunctions";
+import { fetchMyObjectiveData } from "../components/omatTavoitteet/myObjectiveFunctions";
 
 const OmatTavoitteet = () => {
   const { username } = useAuth(); // Get the username from the custom hook
@@ -152,11 +149,9 @@ const OmatTavoitteet = () => {
         </select>
       </div>
       <div className="flex flex-col space-y-6">
-        {showCoach && 
-        <MyCoach 
-        user={myObjectiveData.user} 
-        viewMode={viewMode}
-        />}
+        {showCoach && (
+          <MyCoach user={myObjectiveData.user} viewMode={viewMode} />
+        )}
         <div className="bg-white p-4 rounded-lg shadow">
           {showMission && (
             <MyMission
@@ -192,7 +187,8 @@ const OmatTavoitteet = () => {
               promoters={myObjectiveData.promoters}
               setPromoters={updatePromoters}
               username={username}
-              editMode={viewMode === "myCurrentState"}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
             />
           )}
         </div>

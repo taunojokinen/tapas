@@ -7,7 +7,8 @@ interface MyCurrentStateProps {
   promoters: string[];
   setPromoters: React.Dispatch<React.SetStateAction<string[]>>;
   username: string;
-  editMode?: boolean; // Optional prop for edit mode
+  viewMode: string; // Current view mode
+  setViewMode: (mode: string) => void; // Function to set the view mode
 }
 
 const MyCurrentState: React.FC<MyCurrentStateProps> = ({
@@ -16,6 +17,8 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
   promoters,
   setPromoters,
   username,
+  viewMode, // Current view mode
+  setViewMode, // Function to set the view mode
 }) => {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -99,16 +102,17 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">Nykytila</h2>
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className={`px-4 py-2 ${
-            isEditing
-              ? "bg-green-500 hover:bg-green-600"
-              : "bg-blue-500 hover:bg-blue-600"
-          } text-white rounded`}
-        >
-          {isEditing ? "Tallenna" : "Muokkaa"}
-        </button>
+        {!isEditing && viewMode === "show all" && (
+          <button
+            onClick={() => {
+              setIsEditing(true);
+              setViewMode("myCurrentState"); // Set view mode to key objectives
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Muokkaa
+          </button>
+        )}
       </div>
       <div className="grid grid-cols-2 gap-4">
         {/* Hindrances Section */}
@@ -230,10 +234,13 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
       {isEditing && (
         <div className="flex gap-4 mt-4">
           <button
-            onClick={() => setIsEditing(false)}
+            onClick={() => {
+              setIsEditing(false);
+              setViewMode("show all"); // Reset view mode to show all
+            }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
-            Peruuta
+            Valmis
           </button>
         </div>
       )}
