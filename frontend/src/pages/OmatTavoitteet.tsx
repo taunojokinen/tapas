@@ -15,8 +15,6 @@ const OmatTavoitteet = () => {
   const { username } = useAuth(); // Get the username from the custom hook
   const [myObjectiveData, setMyObjectiveData] =
     useState<MyObjectivesJson | null>(null);
-  const [isEditingTitle, setIsEditingTitle] = useState(false); // State for editing title
-  const [title, setTitle] = useState(""); // State for the new title
 
   // Fetch data from the backend on component mount
   useEffect(() => {
