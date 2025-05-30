@@ -1,11 +1,11 @@
-﻿username;password;firstName;lastName;supervisor;role
-Mirja;test;Mirja;Pirinen;No supervisor;admin
-Pasi;test;Pasi;Jokinen;No supervisor;director
-Tauno;test;Tauno;Jokinen;Pasi;admin
-Jouni;test;Jouni;Jokinen;Tauno;supervisor
-Kaisa;test;Kaisa;Pirinen;Tauno;employer
-Mika;test;Mika;Kangas;Tauno;employer
-Petri;test;Petri;Jokinen;Pasi;supervisor
-Suvi;test;Suvi;Jokinen;Petri;employer
-Tuija;test;Tuija;Leinonen;Petri;employer
-Tero;test;Tero;Leinonen;Petri;employer
+﻿username;password;firstName;lastName;title;supervisor;role
+Mirja;test;Mirja;Pirinen;HR-manager;No supervisor;admin
+Pasi;test;Pasi;Jokinen;CEO;No supervisor;admin
+Tauno;test;Tauno;Jokinen;Senior SW-developer;Pasi;admin
+Jouni;test;Jouni;Jokinen;Game Engine Team Leader;Tauno;director
+Kaisa;test;Kaisa;Pirinen;Game Graphics Developer;Tauno;supervisor
+Mika;test;Mika;Kangas;SW-developer;Tauno;employer
+Petri;test;Petri;Jokinen;SW-trainee;Pasi;supervisor
+Suvi;test;Suvi;Jokinen;Comppany layer;Petri;employer
+Tuija;test;Tuija;Leinonen;SW-developer;Petri;employer
+Tero;test;Tero;Leinonen;System architect;Petri;employer
