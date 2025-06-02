@@ -40,14 +40,10 @@ const MyCoach: React.FC<MyCoachProps> = ({ user }) => {
           className="w-32 h-32 object-cover rounded shadow"
         />
         <div className="flex-1">
-          <textarea
-            id="introduction"
-            name="introduction"
-            className="w-full border border-gray-300 rounded p-2"
-            style={{ height: "auto", minHeight: "80px" }}
-            value={introduction}
-            readOnly
-          />
+          <p>
+     {introduction}
+           
+          </p>
         </div>
       </div>
     </div>
