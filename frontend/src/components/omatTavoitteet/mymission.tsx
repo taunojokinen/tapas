@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { patchMyObjectiveData } from "./myObjectiveFunctions";
+import { ViewMode } from "../../types/enums";
 
 
 interface MyMissionProps {
   mission: string; // Lisää mission propseihin
   setMission: React.Dispatch<React.SetStateAction<string>>;
   username: string;
-  viewMode: string; // Current view mode
-  setViewMode: (mode: string) => void;
+  viewMode: ViewMode; // Current view mode
+  setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
 }
 
 const MyMission: React.FC<MyMissionProps> = ({ 
@@ -49,11 +50,11 @@ const MyMission: React.FC<MyMissionProps> = ({
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">Oma päämäärä - mitä minä haluan saavuttaa työelämässä</h2>
-        {(!isEditing && viewMode === "show all") && (
+        {(!isEditing && viewMode === ViewMode.ShowAll) && (
           <button
             onClick={() => {
               setIsEditing(true);
-              setViewMode("myMission")
+              setViewMode(ViewMode.MyMission)
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
@@ -76,7 +77,7 @@ const MyMission: React.FC<MyMissionProps> = ({
                 onClick={() => {
                   handleSaveMission();
                   setIsEditing(false); // Exit editing mode after saving
-                  setViewMode("show all"); // Reset view mode to show all 
+                  setViewMode(ViewMode.ShowAll); // Reset view mode to show all 
                 }}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
               >
@@ -85,7 +86,7 @@ const MyMission: React.FC<MyMissionProps> = ({
               <button
                 onClick={() => {
                   setIsEditing(false);
-                  setViewMode("show all"); // Reset view mode to show all
+                  setViewMode(ViewMode.ShowAll); // Reset view mode to show all
                 }}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >

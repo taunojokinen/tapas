@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { MyTask } from "../../types/types";
 import { patchMyObjectiveData } from "./myObjectiveFunctions";
+import { ViewMode } from "../../types/enums";
 
 interface MyTasksProps {
   tasks: MyTask[]; // Array of tasks
   setTasks: React.Dispatch<React.SetStateAction<MyTask[]>>; // Function to update tasks
   username: string;
-  viewMode: string; // Current view mode
-  setViewMode: (mode: string) => void; // Function to set the view mode
+  viewMode: ViewMode; // Current view mode
+  setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>; // Function to set the view mode
 }
 
 const MyTasks: React.FC<MyTasksProps> = ({
@@ -86,11 +87,11 @@ const MyTasks: React.FC<MyTasksProps> = ({
           Omat Tehtävät - mitä minun tulee tehdä nyt, jotta saavutan
           avaintavoitteeni
         </h2>
-        {!isEditing && viewMode === "show all" && (
+        {!isEditing && viewMode === ViewMode.ShowAll && (
           <button
             onClick={() => {
               setIsEditing(true);
-              setViewMode("myTasks"); // Set view mode to key objectives
+              setViewMode(ViewMode.MyTasks); // Set view mode to key objectives
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
@@ -192,7 +193,7 @@ const MyTasks: React.FC<MyTasksProps> = ({
           <button
             onClick={() => {
               setIsEditing(false);
-              setViewMode("show all"); // Reset view mode to show all
+              setViewMode(ViewMode.ShowAll); // Reset view mode to show all
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >

@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { fetchUserTitlesByUsername } from "./myObjectiveFunctions";
-import McVirtanen from "../../pictures/McVirtanen.jpg"; // Adjust the path if needed
+import McVirtanen from "../../pictures/McVirtanen.jpg";
+import { getCoachTexts } from "./myCoachText";
+import { ViewMode } from "../../types/enums";
+import MyCoachAiAnswer from "./myCoachFunctions";
 
 interface MyCoachProps {
   user: string;
-  viewMode?: string; // Optional prop for view mode
+  viewMode?: ViewMode;
+  setMission: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const MyCoach: React.FC<MyCoachProps> = ({ user }) => {
+const MyCoach: React.FC<MyCoachProps> = ({ user, viewMode, setMission }) => {
   const [title, setTitle] = useState<string>(""); // State for the title
-
-  const introduction = `Moi! Olen Micco McVirtanen – uravalmentaja, HR-asiantuntija ja työelämän energiapakkaus. Autan ihmisiä löytämään suunnan uralleen rennolla, rehellisellä ja ratkaisukeskeisellä otteella – ilman turhaa korporaatiohöpinää. Tunnen sekä työnantajien että työntekijöiden haasteet, ja löydän keinot, joilla unelmat ja realiteetit voivat kohdata. Kanssani voit puhua urapulmista, palkkaneuvotteluista tai vaikka siitä, miten kestää kollega, joka suihkii liikaa hajuvettä. Olen kuin urasi GPS ilman ärsyttäviä uudelleenreittejä. Luon luottamuksellisen ilmapiirin, jossa voit olla oma itsesi. Jos kaipaat sparrausta, suunnan selkeyttämistä tai vain hyvän keskustelun – jutellaan! Lupaan, että saat ainakin yhden tarinan mukaasi.`;
 
   const fetchAndSetTitle = async () => {
     if (user) {
@@ -39,11 +41,14 @@ const MyCoach: React.FC<MyCoachProps> = ({ user }) => {
           alt="McVirtanen"
           className="w-32 h-32 object-cover rounded shadow"
         />
+        <p>{getCoachTexts(user)[viewMode ?? ViewMode.ShowAll]}</p>
+      </div>
+      <div className="flex items-center justify-between p-4 shadow mb-0 ml-4">
         <div className="flex-1">
-          <p>
-     {introduction}
-           
-          </p>
+          {/* Show coachTexts for other modes, or AI answer for MyMission */}
+          {viewMode === ViewMode.MyMission ? (
+            <MyCoachAiAnswer viewMode={viewMode} title={title} setMission={setMission} />
+          ) : null}
         </div>
       </div>
     </div>

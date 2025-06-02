@@ -7,12 +7,13 @@ import MyCurrentState from "../components/omatTavoitteet/myCurrenState"; // Adju
 import useAuth from "../hooks/useAuth"; // Import the custom hook
 import { MyObjective, MyTask, MyObjectivesJson } from "../types/types";
 import { fetchMyObjectiveData } from "../components/omatTavoitteet/myObjectiveFunctions";
+import { ViewMode } from "../types/enums";
 
 const OmatTavoitteet = () => {
   const { username } = useAuth(); // Get the username from the custom hook
   const [myObjectiveData, setMyObjectiveData] =
     useState<MyObjectivesJson | null>(null);
-  const [viewMode, setViewMode] = useState<string>("show all");
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ShowAll);
 
   // Fetch data from the backend on component mount
   useEffect(() => {
@@ -115,29 +116,29 @@ const OmatTavoitteet = () => {
   // Helper to determine which sections to show
   const showCoach = true;
   const showMission =
-    viewMode === "show all" ||
-    viewMode === "myMission" ||
-    viewMode === "keyObjectives" ||
-    viewMode === "myTasks" ||
-    viewMode === "myCurrentState";
+    viewMode === ViewMode.ShowAll ||
+    viewMode === ViewMode.MyMission ||
+    viewMode === ViewMode.KeyObjectives ||
+    viewMode === ViewMode.MyTasks ||
+    viewMode === ViewMode.MyCurrentState;
   const showObjectives =
-    viewMode === "show all" ||
-    viewMode === "keyObjectives" ||
-    viewMode === "myTasks" ||
-    viewMode === "myCurrentState";
+    viewMode === ViewMode.ShowAll ||
+    viewMode === ViewMode.KeyObjectives ||
+    viewMode === ViewMode.MyTasks ||
+    viewMode === ViewMode.MyCurrentState;
   const showTasks =
-    viewMode === "show all" ||
-    viewMode === "myTasks" ||
-    viewMode === "myCurrentState";
+    viewMode === ViewMode.ShowAll ||
+    viewMode === ViewMode.MyTasks ||
+    viewMode === ViewMode.MyCurrentState;
   const showCurrentState =
-    viewMode === "show all" || viewMode === "myCurrentState";
+    viewMode === ViewMode.ShowAll || viewMode === ViewMode.MyCurrentState;
 
   return (
     <div>
 
       <div className="flex flex-col space-y-6">
         {showCoach && (
-          <MyCoach user={myObjectiveData.user} viewMode={viewMode} />
+          <MyCoach user={myObjectiveData.user} viewMode={viewMode} setMission={updateMission}/>
         )}
         <div className="bg-white p-4 rounded-lg shadow">
           {showMission && (

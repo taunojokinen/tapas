@@ -104,40 +104,48 @@ router.get("/all", async (req, res) => {
   });
 
   router.get("/", async (req, res) => {
-    try {
-      const { user } = req.query; // Get the user from query parameters
-  
-      if (!user) {
-        return res.status(400).json({ error: "User query parameter is required" });
-      }
-  
-      // Find the document matching the user
-      let objectives = await MyObjectives.findOne({ user });
-  
-      // If no objectives are found for the user, fetch the default user's data
-      if (!objectives) {
-        const defaultObjectives = await MyObjectives.findOne({ user: "defaultuser" });
-  
-        if (!defaultObjectives) {
-          return res.status(404).json({ error: "No default objectives found to create a new user" });
-        }
-  
-        // Create a new document for the user using the default user's values
-        objectives = new MyObjectives({
-          ...defaultObjectives.toObject(),
-          user, // Replace the "user" field with the original query parameter
-          _id: undefined, // Remove the `_id` field to allow MongoDB to generate a new one
-        });
-  
-        await objectives.save(); // Save the new document to the database
-      }
-  
-      res.status(200).json(objectives);
-    } catch (error) {
-      console.error("Error retrieving or creating MyObjectives:", error);
-      res.status(500).json({ error: "Failed to retrieve or create MyObjectives" });
+  try {
+    const { user } = req.query;
+    if (!user) {
+      return res.status(400).json({ error: "User query parameter is required" });
     }
-  });
+
+    let objectives = await MyObjectives.findOne({ user });
+
+    if (!objectives) {
+      let defaultObjectives = await MyObjectives.findOne({ user: "defaultuser" });
+
+      // If no defaultuser in DB, use hard-coded fallback
+      if (!defaultObjectives) {
+        defaultObjectives = {
+          title: "Default Title",
+          mission: "Default Mission",
+          objectives: [],
+          tasks: [],
+          hindrances: [],
+          promoters: [],
+          date: new Date(), 
+          // add other fields as needed
+        };
+      } else {
+        defaultObjectives = defaultObjectives.toObject();
+      }
+
+      objectives = new MyObjectives({
+        ...defaultObjectives,
+        user,
+        _id: undefined,
+      });
+
+      await objectives.save();
+    }
+
+    res.status(200).json(objectives);
+  } catch (error) {
+    console.error("Error retrieving or creating MyObjectives:", error);
+    res.status(500).json({ error: "Failed to retrieve or create MyObjectives" });
+  }
+});
 
 
   

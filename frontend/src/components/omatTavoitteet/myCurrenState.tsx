@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { patchMyObjectiveData } from "./myObjectiveFunctions";
+import { ViewMode } from "../../types/enums";
 
 interface MyCurrentStateProps {
   hindrances: string[];
@@ -7,8 +8,8 @@ interface MyCurrentStateProps {
   promoters: string[];
   setPromoters: React.Dispatch<React.SetStateAction<string[]>>;
   username: string;
-  viewMode: string; // Current view mode
-  setViewMode: (mode: string) => void; // Function to set the view mode
+  viewMode: ViewMode; // Current view mode
+  setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
 }
 
 const MyCurrentState: React.FC<MyCurrentStateProps> = ({
@@ -102,11 +103,11 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
     <div className="bg-white p-4 rounded-lg shadow mb-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">Nykytila</h2>
-        {!isEditing && viewMode === "show all" && (
+        {!isEditing && viewMode === ViewMode.ShowAll && (
           <button
             onClick={() => {
               setIsEditing(true);
-              setViewMode("myCurrentState"); // Set view mode to key objectives
+              setViewMode(ViewMode.MyCurrentState); // Set view mode to key objectives
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
@@ -236,7 +237,7 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
           <button
             onClick={() => {
               setIsEditing(false);
-              setViewMode("show all"); // Reset view mode to show all
+              setViewMode(ViewMode.ShowAll); // Reset view mode to show all
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >

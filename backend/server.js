@@ -11,7 +11,6 @@ const teamRoutes = require("./routes/teamRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const userlistRoutes = require("./routes/userlist"); // Tuo käyttäjälistareitit
 const valuesRoutes = require("./routes/values"); // Tuo arvotietojen reitit
-const aiRoutes = require("./routes/aiRoutes"); // Import the AI routes
 const authRoutes = require("./routes/authRoutes"); // Tuo autentikaatioreitit
 const strategiatRoutes = require("./routes/strategiat"); // Tuo strategiareitit
 const valueProposalRoutes = require("./routes/valueProposalRoutes"); // Tuo valueProposalRoutes
@@ -19,6 +18,10 @@ const myObjectiveRoutes = require("./routes/myObjectiveRoutes"); // Tuo myObject
 const saveSelections = require("./routes/saveSelections");
 const TeamObjectiveRoutes = require("./routes/TeamObjectiveRoutes"); // Tuo TeamObjectiveRoutes
 const companyObjectivesRoute = require('./routes/companyObjectives');
+
+//AI-routes
+const aiRoutes = require("./routes/aiRoutes"); // Import the AI routes arvoehdotuksia varten
+const myCoachAiRoutes = require("./routes/myCoachAiRoutes"); // Tuo myCoachAiRoutes
 
 const app = express();
 
@@ -62,6 +65,11 @@ app.use("/api/myobjectives", myObjectiveRoutes); // myObjectiveRoutes käyttöö
 app.use("/api/teams", teamRoutes); // tiimireitit käyttöön
 app.use("/api/teamobjectives", TeamObjectiveRoutes); // TeamObjectiveRoutes käyttöön
 app.use('/api/companyObjectives', companyObjectivesRoute);
+
+//AI-routes
+app.use("/api/ai", aiRoutes); // AI-reitit käyttöön
+app.use("/api/mycoachai", myCoachAiRoutes);
+
 
 // Login endpoint
 // Routes
