@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ViewMode } from "../../types/enums";
+import McVirtanen from "../../pictures/McVirtanen.jpg";
 
 interface MyCoachAiAnswerProps {
   viewMode: ViewMode;
@@ -27,6 +28,23 @@ function extractJsonArray(
   return null;
 }
 
+// Ask your AI to generate a DALL-E prompt for each description
+async function getDallePromptFromAI(
+  otsikko: string,
+  kuvaus: string
+): Promise<string> {
+  const res = await fetch("http://localhost:5000/api/mycoachai/ask", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      question: `Luo DALL-E:lle englanninkielinen kuvauskuvaus seuraavasta uratavoitteesta ja kuvauksesta, jotta 
+      tekoäly osaa piirtää inspiroivan kuvan Kari Suomalaisen tyyliin. Otsikko: "${otsikko}". Kuvaus: "${kuvaus}".`,
+    }),
+  });
+  const data = await res.json();
+  return data.answer;
+}
+
 const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
   viewMode,
   title,
@@ -34,6 +52,11 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
   mission,
 }) => {
   const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [parsed, setParsed] = useState<
+    { otsikko: string; kuvaus: string }[] | null
+  >(null);
+  const [dallePrompts, setDallePrompts] = useState<(string | null)[]>([]);
+  const [dalleImages, setDalleImages] = useState<(string | null)[]>([]);
   const requested = useRef(false);
 
   useEffect(() => {
@@ -68,11 +91,63 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
       setAiResponse(null);
       requested.current = false;
     }
-  }, [viewMode, title]);
+  }, [viewMode, title, mission]);
+
+  useEffect(() => {
+    if (aiResponse) {
+      const parsedResult = extractJsonArray(aiResponse);
+      console.log("Parsed proposals:", parsedResult); // Should be an array of 4
+      setParsed(extractJsonArray(aiResponse));
+    } else {
+      setParsed(null);
+    }
+  }, [aiResponse]);
+
+  // Fetch DALL-E prompts for each parsed item
+useEffect(() => {
+  if (parsed) {
+    Promise.all(
+      parsed.map((item, idx) => {
+        console.log(`Requesting DALL-E prompt for item ${idx}:`, item);
+        return getDallePromptFromAI(item.otsikko, item.kuvaus).catch((err) => {
+          console.error("DALL-E prompt fetch failed for:", item, err);
+          return null;
+        });
+      })
+    ).then((prompts) => {
+      console.log("All DALL-E prompts:", prompts);
+      setDallePrompts(prompts);
+    });
+  } else {
+    setDallePrompts([]);
+  }
+}, [parsed]);
+
+  useEffect(() => {
+    if (dallePrompts.length > 0) {
+      Promise.all(
+        dallePrompts.map((prompt) =>
+          prompt
+            ? fetch("http://localhost:5000/api/mycoachai/picture", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt }),
+              })
+                .then((res) => res.json())
+                .then((data) => data.imageUrl || null)
+                .catch(() => null)
+            : Promise.resolve(null)
+        )
+      ).then((images) => {
+      console.log("All DALL-E images:", images);
+      setDalleImages(images);
+      });
+    } else {
+      setDalleImages([]);
+    }
+  }, [dallePrompts]);
 
   if (viewMode !== ViewMode.MyMission) return null;
-
-  const parsed = aiResponse ? extractJsonArray(aiResponse) : null;
 
   return (
     <div>
@@ -80,9 +155,18 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
         <div>
           {parsed.map((item, idx) => (
             <div key={idx} className="flex flex-row items-start mb-4 gap-3">
+              <img
+                src={dalleImages[idx] || McVirtanen}
+                alt="Coach"
+                className="w-20 h-20 object-cover rounded-full mt-1"
+                style={{ flexShrink: 0 }}
+              />
               <div>
                 <div className="font-semibold">{item.otsikko}</div>
                 <div>{item.kuvaus}</div>
+                {/* <div style={{ fontStyle: "italic", color: "#888" }}>
+                  {dallePrompts[idx] || "Haetaan DALL-E promptia..."}
+                </div> */}
               </div>
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"

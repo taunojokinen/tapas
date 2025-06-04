@@ -1,42 +1,38 @@
 import React, { useState } from "react";
 import { patchMyObjectiveData } from "./myObjectiveFunctions";
+import type { MyMission } from "../../types/types";
 import { ViewMode } from "../../types/enums";
-
+// ...existing code...
 
 interface MyMissionProps {
-  mission: string; // Lisää mission propseihin
-  setMission: React.Dispatch<React.SetStateAction<string>>;
+  mission: MyMission; // Change from string to MyMission
+  setMission: React.Dispatch<React.SetStateAction<MyMission>>;
   username: string;
-  viewMode: ViewMode; // Current view mode
+  viewMode: ViewMode;
   setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
 }
 
-const MyMission: React.FC<MyMissionProps> = ({ 
-  mission, 
-  setMission, 
+const MyMission: React.FC<MyMissionProps> = ({
+  mission,
+  setMission,
   username,
-  viewMode,  
+  viewMode,
   setViewMode
 }) => {
-
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleMissionChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setMission(event.target.value);
+  // Update handlers for each field
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setMission(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSaveMission = async () => {
     try {
-
-  
-      // Call the backend to save the updated mission
       const success = await patchMyObjectiveData(username, { mission });
-  
       if (success) {
-        alert("Perustehtävä tallennettu: " + mission);
-        setIsEditing(false); // Exit editing mode after saving
+        alert("Perustehtävä tallennettu: " + mission.otsikko);
+        setIsEditing(false);
       } else {
         alert("Tallennus epäonnistui. Yritä uudelleen.");
       }
@@ -63,12 +59,29 @@ const MyMission: React.FC<MyMissionProps> = ({
         )}
       </div>
       <div className="flex flex-col gap-4">
-        {/* Mission Content */}
         {isEditing ? (
           <div className="flex-grow">
+            <input
+              type="text"
+              name="img"
+              value={mission.img}
+              onChange={handleChange}
+              placeholder="Kuvan URL"
+              className="w-full p-2 border border-gray-300 rounded mb-2"
+            />
+            <input
+              type="text"
+              name="otsikko"
+              value={mission.otsikko}
+              onChange={handleChange}
+              placeholder="Otsikko"
+              className="w-full p-2 border border-gray-300 rounded mb-2"
+            />
             <textarea
-              value={mission}
-              onChange={handleMissionChange}
+              name="kuvaus"
+              value={mission.kuvaus}
+              onChange={handleChange}
+              placeholder="Kuvaus"
               className="w-full p-2 border border-gray-300 rounded mb-4"
               rows={4}
             />
@@ -76,8 +89,8 @@ const MyMission: React.FC<MyMissionProps> = ({
               <button
                 onClick={() => {
                   handleSaveMission();
-                  setIsEditing(false); // Exit editing mode after saving
-                  setViewMode(ViewMode.ShowAll); // Reset view mode to show all 
+                  setIsEditing(false);
+                  setViewMode(ViewMode.ShowAll);
                 }}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
               >
@@ -86,7 +99,7 @@ const MyMission: React.FC<MyMissionProps> = ({
               <button
                 onClick={() => {
                   setIsEditing(false);
-                  setViewMode(ViewMode.ShowAll); // Reset view mode to show all
+                  setViewMode(ViewMode.ShowAll);
                 }}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >
@@ -95,9 +108,11 @@ const MyMission: React.FC<MyMissionProps> = ({
             </div>
           </div>
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded mb-4">
-            {mission}
-          </p>
+          <div className="w-full p-2 border border-gray-300 rounded mb-4">
+            {mission.img && <img src={mission.img} alt="Mission" className="mb-2 max-h-32" />}
+            <h3 className="font-bold">{mission.otsikko}</h3>
+            <p>{mission.kuvaus}</p>
+          </div>
         )}
       </div>
     </div>

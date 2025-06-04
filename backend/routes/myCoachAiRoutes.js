@@ -15,7 +15,7 @@ const client = new OpenAI({
 router.post("/ask", async (req, res) => {
   try {
     const { question } = req.body;
-    console.log("Received question:", question);
+    //console.log("Received question:", question);
     if (!question) {
       return res.status(400).json({ error: "Question is required." });
     }
@@ -29,12 +29,12 @@ router.post("/ask", async (req, res) => {
         },
         { role: "user", content: question },
       ],
-      max_tokens: 1500,
+      max_tokens: 3000,
     });
 
     const answer =
       completion.choices[0]?.message?.content || "No answer generated.";
-    console.log("OpenAI response:", answer);
+      console.log("OpenAI response /ask:", answer);
     res.json({ answer });
   } catch (error) {
     console.error("OpenAI error:", error);
@@ -63,10 +63,8 @@ router.post("/picture", async (req, res) => {
       return res.status(500).json({ error: "No image generated." });
     }
 
-    // Convert base64 to Buffer and send as image/jpeg
-    const imgBuffer = Buffer.from(b64, "base64");
-    res.set("Content-Type", "image/jpeg");
-    res.send(imgBuffer);
+    // Return as data URL in JSON
+    res.json({ imageUrl: `data:image/jpeg;base64,${b64}` });
   } catch (error) {
     console.error("OpenAI image error:", error);
     res.status(500).json({ error: "Failed to generate image." });
