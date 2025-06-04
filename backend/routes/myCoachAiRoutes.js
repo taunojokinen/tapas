@@ -42,4 +42,35 @@ router.post("/ask", async (req, res) => {
   }
 });
 
+router.post("/picture", async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ error: "Prompt is required." });
+    }
+
+    // Generate image with OpenAI (DALL·E 3, response_format: 'b64_json')
+    const imageResponse = await client.images.generate({
+      model: "dall-e-3",
+      prompt,
+      n: 1,
+      size: "1024x1024",
+      response_format: "b64_json",
+    });
+
+    const b64 = imageResponse.data[0]?.b64_json;
+    if (!b64) {
+      return res.status(500).json({ error: "No image generated." });
+    }
+
+    // Convert base64 to Buffer and send as image/jpeg
+    const imgBuffer = Buffer.from(b64, "base64");
+    res.set("Content-Type", "image/jpeg");
+    res.send(imgBuffer);
+  } catch (error) {
+    console.error("OpenAI image error:", error);
+    res.status(500).json({ error: "Failed to generate image." });
+  }
+});
+
 module.exports = router;

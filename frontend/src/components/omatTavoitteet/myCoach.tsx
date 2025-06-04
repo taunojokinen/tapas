@@ -9,9 +9,10 @@ interface MyCoachProps {
   user: string;
   viewMode?: ViewMode;
   setMission: React.Dispatch<React.SetStateAction<string>>;
+  mission?: string; // Optional mission prop to pass to MyCoachAiAnswer
 }
 
-const MyCoach: React.FC<MyCoachProps> = ({ user, viewMode, setMission }) => {
+const MyCoach: React.FC<MyCoachProps> = ({ user, viewMode, setMission, mission }) => {
   const [title, setTitle] = useState<string>(""); // State for the title
 
   const fetchAndSetTitle = async () => {
@@ -47,7 +48,7 @@ const MyCoach: React.FC<MyCoachProps> = ({ user, viewMode, setMission }) => {
         <div className="flex-1">
           {/* Show coachTexts for other modes, or AI answer for MyMission */}
           {viewMode === ViewMode.MyMission ? (
-            <MyCoachAiAnswer viewMode={viewMode} title={title} setMission={setMission} />
+            <MyCoachAiAnswer viewMode={viewMode} title={title} mission={mission ?? ""} setMission={setMission} />
           ) : null}
         </div>
       </div>

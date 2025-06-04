@@ -138,7 +138,7 @@ const OmatTavoitteet = () => {
 
       <div className="flex flex-col space-y-6">
         {showCoach && (
-          <MyCoach user={myObjectiveData.user} viewMode={viewMode} setMission={updateMission}/>
+          <MyCoach user={myObjectiveData.user} viewMode={viewMode} mission={myObjectiveData.mission} setMission={updateMission}/>
         )}
         <div className="bg-white p-4 rounded-lg shadow">
           {showMission && (
