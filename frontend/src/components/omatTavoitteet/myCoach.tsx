@@ -4,12 +4,13 @@ import McVirtanen from "../../pictures/McVirtanen.jpg";
 import { getCoachTexts } from "./myCoachText";
 import { ViewMode } from "../../types/enums";
 import MyCoachAiAnswer from "./myCoachFunctions";
+import { MyMissionType } from "../../types/types";
 
 interface MyCoachProps {
   user: string;
   viewMode?: ViewMode;
-  setMission: React.Dispatch<React.SetStateAction<string>>;
-  mission?: string; // Optional mission prop to pass to MyCoachAiAnswer
+  mission: MyMissionType; // <-- should be MyMission, not string
+  setMission: React.Dispatch<React.SetStateAction<MyMissionType>>;
 }
 
 const MyCoach: React.FC<MyCoachProps> = ({ user, viewMode, setMission, mission }) => {

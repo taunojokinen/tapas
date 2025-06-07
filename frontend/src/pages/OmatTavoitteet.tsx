@@ -5,7 +5,7 @@ import KeyObjectives from "../components/omatTavoitteet/keyObjectives";
 import MyTasks from "../components/omatTavoitteet/myTasks";
 import MyCurrentState from "../components/omatTavoitteet/myCurrenState";
 import useAuth from "../hooks/useAuth";
-import type { MyMission as MyMissionType, MyObjective, MyTask, MyObjectivesJson } from "../types/types";
+import { MyMissionType, MyObjective, MyTask, MyObjectivesJson } from "../types/types";
 import { fetchMyObjectiveData } from "../components/omatTavoitteet/myObjectiveFunctions";
 import { ViewMode } from "../types/enums";
 
@@ -136,7 +136,7 @@ const OmatTavoitteet = () => {
       <div className="flex flex-col space-y-6">
         {showCoach && (
           <MyCoach
-            username={myObjectiveData.user}
+            user={myObjectiveData.user}
             viewMode={viewMode}
             mission={myObjectiveData.mission}
             setMission={updateMission}

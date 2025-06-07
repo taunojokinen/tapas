@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ViewMode } from "../../types/enums";
 import McVirtanen from "../../pictures/McVirtanen.jpg";
+import { MyMissionType } from "../../types/types";
 
 interface MyCoachAiAnswerProps {
   viewMode: ViewMode;
   title: string;
-  mission: string;
-  setMission: (mission: string) => void;
+  mission: MyMissionType;
+  setMission: (mission: MyMissionType) => void;
 }
 
 function extractJsonArray(
@@ -69,7 +70,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
       {"otsikko":"kaksi sanaa", "kuvaus":"100 sanaa"},{"otsikko":"kaksi sanaa", "kuvaus":"100 sanaa"}]`;
 
       // Add mission if longer than 20 characters
-      if (mission && mission.length > 20) {
+      if (mission?.kuvaus && mission.kuvaus.length > 20) {
         aiQuestion += ` Nykyinen tavoitteeni: "${mission}".`;
       }
 
@@ -168,12 +169,18 @@ useEffect(() => {
                   {dallePrompts[idx] || "Haetaan DALL-E promptia..."}
                 </div> */}
               </div>
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
-                onClick={() => setMission(`${item.otsikko} - ${item.kuvaus}`)}
-              >
-                Valitse
-              </button>
+<button
+  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
+  onClick={() =>
+    setMission({
+      otsikko: item.otsikko,
+      kuvaus: item.kuvaus,
+      img: dalleImages[idx] || McVirtanen // add the required img property
+    })
+  }
+>
+  Valitse
+</button>
             </div>
           ))}
         </div>

@@ -19,7 +19,7 @@ export interface Proposal {
 
 // interfaces for MyObjectives
 
-export interface MyMission {
+export interface MyMissionType {
   img: string;      // URL or path to the image
   otsikko: string;  // Title of the mission
   kuvaus: string;   // Description of the mission
@@ -28,7 +28,7 @@ export interface MyMission {
 export interface MyObjectivesJson {
   user: string;
   date: string;
-  mission: MyMission;
+  mission: MyMissionType;
   objectives: MyObjective[];
   tasks: MyTask[];
   hindrances: string[];

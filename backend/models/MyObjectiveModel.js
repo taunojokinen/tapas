@@ -13,13 +13,22 @@ const taskSchema = new mongoose.Schema({
   seuranta: { type: String, required: true },
 });
 
+const missionSchema = new mongoose.Schema(
+  {
+    img: { type: String, required: false },
+    otsikko: { type: String, required: true },
+    kuvaus: { type: String, required: true },
+  },
+  { _id: false }
+);
+
 // Define the main schema for MyObjectivesJson
 const myObjectivesSchema = new mongoose.Schema(
   {
     user: { type: String, required: true },
     title: { type: String, required: true },
     date: { type: String, required: true },
-    mission: { type: String, required: true },
+    mission: { type: missionSchema, required: true },
     objectives: [objectiveSchema], // Array of objectives
     tasks: [taskSchema], // Array of tasks
     hindrances: [{ type: String }], // Array of strings
