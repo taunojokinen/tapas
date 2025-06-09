@@ -1,42 +1,36 @@
 import React, { useState } from "react";
 import { patchMyObjectiveData } from "./myObjectiveFunctions";
+import type { MyMissionType } from "../../types/types";
 import { ViewMode } from "../../types/enums";
 
-
 interface MyMissionProps {
-  mission: string; // Lisää mission propseihin
-  setMission: React.Dispatch<React.SetStateAction<string>>;
+  mission: MyMissionType;
+  setMission: React.Dispatch<React.SetStateAction<MyMissionType>>;
   username: string;
-  viewMode: ViewMode; // Current view mode
+  viewMode: ViewMode;
   setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
 }
 
-const MyMission: React.FC<MyMissionProps> = ({ 
-  mission, 
-  setMission, 
+const MyMission: React.FC<MyMissionProps> = ({
+  mission,
+  setMission,
   username,
-  viewMode,  
+  viewMode,
   setViewMode
 }) => {
-
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleMissionChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setMission(event.target.value);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setMission(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSaveMission = async () => {
     try {
-
-  
-      // Call the backend to save the updated mission
       const success = await patchMyObjectiveData(username, { mission });
-  
       if (success) {
-        alert("Perustehtävä tallennettu: " + mission);
-        setIsEditing(false); // Exit editing mode after saving
+        alert("Perustehtävä tallennettu: " + mission.otsikko);
+        setIsEditing(false);
       } else {
         alert("Tallennus epäonnistui. Yritä uudelleen.");
       }
@@ -46,29 +40,49 @@ const MyMission: React.FC<MyMissionProps> = ({
     }
   };
 
-  return (
-    <div className="bg-white p-4 rounded-lg shadow mb-4">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold">Oma päämäärä - mitä minä haluan saavuttaa työelämässä</h2>
-        {(!isEditing && viewMode === ViewMode.ShowAll) && (
-          <button
-            onClick={() => {
-              setIsEditing(true);
-              setViewMode(ViewMode.MyMission)
-            }}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Muokkaa
-          </button>
-        )}
-      </div>
-      <div className="flex flex-col gap-4">
-        {/* Mission Content */}
-        {isEditing ? (
-          <div className="flex-grow">
+ return (
+  <div className="bg-white p-4 rounded-lg shadow mb-4">
+    <div className="flex items-center justify-between mb-4">
+      <h2 className="text-xl font-bold">Oma päämäärä - mitä minä haluan saavuttaa työelämässä</h2>
+      {(!isEditing && viewMode === ViewMode.ShowAll) && (
+        <button
+          onClick={() => {
+            setIsEditing(true);
+            setViewMode(ViewMode.MyMission);
+          }}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Muokkaa
+        </button>
+      )}
+    </div>
+    <div className="flex flex-col gap-4">
+      {isEditing ? (
+        <div className="flex flex-row gap-4">
+          <div className="flex-shrink-0 w-32">
+
+            {mission.img && (
+              <img
+                src={mission.img}
+                alt="Mission preview"
+                className="max-h-32 max-w-32 object-cover rounded"
+              />
+            )}
+          </div>
+          <div className="flex flex-col flex-grow">
+            <input
+              type="text"
+              name="otsikko"
+              value={mission.otsikko}
+              onChange={handleChange}
+              placeholder="Otsikko"
+              className="w-full p-2 border border-gray-300 rounded mb-2"
+            />
             <textarea
-              value={mission}
-              onChange={handleMissionChange}
+              name="kuvaus"
+              value={mission.kuvaus}
+              onChange={handleChange}
+              placeholder="Kuvaus"
               className="w-full p-2 border border-gray-300 rounded mb-4"
               rows={4}
             />
@@ -76,8 +90,8 @@ const MyMission: React.FC<MyMissionProps> = ({
               <button
                 onClick={() => {
                   handleSaveMission();
-                  setIsEditing(false); // Exit editing mode after saving
-                  setViewMode(ViewMode.ShowAll); // Reset view mode to show all 
+                  setIsEditing(false);
+                  setViewMode(ViewMode.ShowAll);
                 }}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
               >
@@ -86,7 +100,7 @@ const MyMission: React.FC<MyMissionProps> = ({
               <button
                 onClick={() => {
                   setIsEditing(false);
-                  setViewMode(ViewMode.ShowAll); // Reset view mode to show all
+                  setViewMode(ViewMode.ShowAll);
                 }}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               >
@@ -94,14 +108,28 @@ const MyMission: React.FC<MyMissionProps> = ({
               </button>
             </div>
           </div>
-        ) : (
-          <p className="w-full p-2 border border-gray-300 rounded mb-4">
-            {mission}
-          </p>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="w-full p-2 border border-gray-300 rounded mb-4">
+          <div className="flex flex-row items-start gap-4">
+            {mission.img ? (
+              <img src={mission.img} alt="Mission" className="mb-2 max-h-32 max-w-32 object-cover rounded" />
+            ) : (
+              <div className="mb-2 max-h-32 max-w-32 flex items-center justify-center bg-gray-100 text-gray-400 rounded"
+                style={{ height: 128, width: 128 }}>
+                Haetaan kuvaa...
+              </div>
+            )}
+            <div className="flex flex-col justify-center">
+              <h3 className="font-bold text-lg mb-2">{mission.otsikko}</h3>
+              <p>{mission.kuvaus}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
 };
 
 export default MyMission;
