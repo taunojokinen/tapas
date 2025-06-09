@@ -8,13 +8,16 @@ import useAuth from "../hooks/useAuth"; // Import the custom hook
 import { MyObjective, MyTask, MyObjectivesJson } from "../types/types";
 import { fetchMyObjectiveData } from "../components/omatTavoitteet/myObjectiveFunctions";
 import { ViewMode } from "../types/enums";
+import StrategiesForMe from "../components/omatTavoitteet/strategiesForMe";
+import { AiTavoite } from "../components/omatTavoitteet/MyCoachAiAnswer"; // Adjust the path if necessary
 
 const OmatTavoitteet = () => {
   const { username } = useAuth(); // Get the username from the custom hook
   const [myObjectiveData, setMyObjectiveData] =
     useState<MyObjectivesJson | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ShowAll);
-
+  const [valitutEhdotukset, setValitutEhdotukset] = useState<AiTavoite[]>([]);
+  
   // Fetch data from the backend on component mount
   useEffect(() => {
     const fetchData = async () => {
@@ -135,10 +138,13 @@ const OmatTavoitteet = () => {
 
   return (
     <div>
-
       <div className="flex flex-col space-y-6">
         {showCoach && (
-          <MyCoach user={myObjectiveData.user} viewMode={viewMode} setMission={updateMission}/>
+          <MyCoach
+            user={myObjectiveData.user}
+            viewMode={viewMode}
+            setMission={updateMission}
+          />
         )}
         <div className="bg-white p-4 rounded-lg shadow">
           {showMission && (
@@ -150,6 +156,9 @@ const OmatTavoitteet = () => {
               setViewMode={setViewMode}
             />
           )}
+
+          <StrategiesForMe setValitutEhdotukset={setValitutEhdotukset}/>
+
           {showObjectives && (
             <KeyObjectives
               objectives={myObjectiveData.objectives}
@@ -157,8 +166,10 @@ const OmatTavoitteet = () => {
               username={username}
               viewMode={viewMode}
               setViewMode={setViewMode}
+              valitutEhdotukset={valitutEhdotukset} 
             />
           )}
+
           {showTasks && (
             <MyTasks
               tasks={myObjectiveData.tasks}

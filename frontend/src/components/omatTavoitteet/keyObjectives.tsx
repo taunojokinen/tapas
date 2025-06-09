@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MyObjective } from "../../types/types";
 import { patchMyObjectiveData } from "./myObjectiveFunctions";
 import { ViewMode } from "../../types/enums";
+import { AiTavoite } from "./MyCoachAiAnswer"; // Adjust the import path as necessary
 
 interface KeyObjectivesProps {
   objectives: MyObjective[]; // Array of objectives
@@ -9,6 +10,7 @@ interface KeyObjectivesProps {
   username: string;
   viewMode: ViewMode; // Current view mode
   setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
+  valitutEhdotukset: AiTavoite[];
 }
 
 const KeyObjectives: React.FC<KeyObjectivesProps> = ({
@@ -17,8 +19,15 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
   username,
   viewMode, // Current view mode
   setViewMode, // Function to set the view mode
+  valitutEhdotukset,
 }) => {
   const [isEditing, setIsEditing] = useState(false); // Global editing state
+
+  useEffect(() => {
+    if (valitutEhdotukset.length > 0) {
+      console.log("Käyttäjän valitsemat AI-ehdotukset:", valitutEhdotukset);
+    }
+  }, [valitutEhdotukset]);
 
   // Helper function to save changes
   const saveChanges = async (updatedObjectives: MyObjective[]) => {
@@ -95,6 +104,35 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
           </button>
         )}
       </div>
+
+      {valitutEhdotukset.length > 0 && (
+        <div className="mb-6">
+          <h3 className="font-semibold text-lg mb-2">AI-ehdotukset:</h3>
+          <ul className="list-disc list-inside space-y-2">
+            {valitutEhdotukset.map((ehdotus, i) => (
+              <li key={i}>
+                <strong>{ehdotus.tavoite}</strong>: {ehdotus.mittari}
+                {isEditing && (
+                  <button
+                    className="ml-4 px-2 py-1 bg-green-500 text-white rounded"
+                    onClick={() => {
+                      const uusiTavoite: MyObjective = {
+                        nimi: ehdotus.tavoite,
+                        mittari: ehdotus.mittari,
+                        seuranta: "",
+                      };
+                      saveChanges([...objectives, uusiTavoite]);
+                    }}
+                  >
+                    Lisää tavoitteisiin
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="w-full p-2 border border-gray-300 rounded mb-4">
         {objectives.length > 0 ? (
           objectives.map((objective, index) => (

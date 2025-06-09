@@ -19,6 +19,23 @@ router.get("/owner/:owner", async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+// Hae kaikki tiimit, joissa olen joko owner tai member
+router.get("/user/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const teams = await Team.find({
+            $or: [
+                { owner: userId },
+                { members: userId }
+            ]
+        });
+
+        res.status(200).json(teams);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 // Lisää uusi tiimi
 router.post("/", async (req, res) => {
