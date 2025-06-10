@@ -25,20 +25,30 @@ export const patchMyObjectiveData = async (
   updateData: Partial<MyObjectivesJson>
 ): Promise<boolean> => {
   try {
-    // alert("Data being sent to the server: " + JSON.stringify(updateData));
-    // Make a PATCH request to update the given user's data
+    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+    // Ensure every objective has a non-empty seuranta field
+    if (
+      updateData.objectives &&
+      Array.isArray(updateData.objectives) &&
+      updateData.objectives.some(obj => !obj.seuranta)
+    ) {
+      console.error("All objectives must have a non-empty seuranta field.");
+      return false;
+    }
+
     const response = await axios.patch(
-      `http://localhost:5000/api/myobjectives/${username}`,
+      `${API_BASE_URL}/api/myobjectives/${username}`,
       updateData
     );
     if (response.status === 200) {
       console.log("MyObjectiveData successfully updated:", response.data);
-      return true; // Indicate success
+      return true;
     }
-    return false; // Indicate failure if status is not 200
+    return false;
   } catch (error) {
     console.error("Error patching MyObjectiveData:", error);
-    return false; // Indicate failure
+    return false;
   }
 };
 

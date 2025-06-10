@@ -28,23 +28,36 @@ const StrategiesForMe: React.FC<StrategiesForMeProps> = ({
 
   const userId = localStorage.getItem("username");
 
-  useEffect(() => {
-    if (!userId) return;
+ useEffect(() => {
+  if (!userId) return;
 
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(`/api/teamobjectives/user/${userId}`);
-        setTeamObjectives(res.data);
-      } catch (err) {
-        setError("Virhe haettaessa tiimejä ja tavoitteita");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Log the full request URL
+axios.interceptors.request.use(request => {
+  // If the URL is relative, combine with window.location.origin for logging
+  const fullUrl = request.url?.startsWith("http")
+    ? request.url
+    : `${window.location.origin}${request.url}`;
+  console.log("Axios request URL:", fullUrl);
+  return request;
+});
 
-    fetchData();
-  }, [userId]);
+  const fetchData = async () => {
+    try {
+      const API_BASE_URL = process.env.REACT_APP_API_URL;
+      const res = await axios.get(`${API_BASE_URL}/api/teamobjectives/user/${userId}`);
+      console.log("Fetched team objectives:", res);
+
+      setTeamObjectives(res.data);
+    } catch (err) {
+      setError("Virhe haettaessa tiimejä ja tavoitteita");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [userId]);
 
   if (loading) return <p>Ladataan...</p>;
   if (error) return <p>{error}</p>;
