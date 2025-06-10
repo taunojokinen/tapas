@@ -57,8 +57,9 @@ export const postMyObjectiveData = async (
   data: MyObjectivesJson
 ): Promise<boolean> => {
   try {
+    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
     const response = await axios.post(
-      "http://localhost:5000/api/myobjectives",
+      `${API_BASE_URL}/api/myobjectives`,
       data
     );
     if (response.status === 200) {

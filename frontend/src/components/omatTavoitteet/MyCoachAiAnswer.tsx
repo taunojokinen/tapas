@@ -67,7 +67,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
 
       const fetchAiResponse = async () => {
         try {
-          const res = await fetch("http://localhost:5000/api/mycoachai/ask", {
+          const res = await fetch(`${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"}/api/mycoachai/ask`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ question: aiQuestion }),
@@ -101,6 +101,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
 
   return (
     <div>
+      <p> MyCoachAnswer</p>
       {parsed ? (
         <div>
           {parsed?.map((item, idx) => {
@@ -110,6 +111,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
 
             return (
               <div key={idx} className="flex items-start gap-3 mb-4">
+                <p> MyCoachAnswer</p>
                 <input
                   type="checkbox"
                   checked={isChecked}

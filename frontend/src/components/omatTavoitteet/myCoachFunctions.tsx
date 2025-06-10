@@ -75,7 +75,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
 
       const fetchAiResponse = async () => {
         try {
-          const res = await fetch("http://localhost:5000/api/mycoachai/ask", {
+          const res = await fetch(`${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"}/api/mycoachai/ask`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ question: aiQuestion }),
@@ -129,7 +129,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
       Promise.all(
         dallePrompts.map((prompt) =>
           prompt
-            ? fetch("http://localhost:5000/api/mycoachai/picture", {
+            ? fetch(`${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"}/api/mycoachai/picture`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ prompt }),
@@ -149,10 +149,11 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
     }
   }, [dallePrompts]);
 
-  if (viewMode !== ViewMode.MyMission) return null;
+  if (viewMode !== ViewMode.MyMissionWithAi ) return null;
 
   return (
     <div>
+      <h2 className="text-xl font-semibold mb-4">MyCoach AI Vastaus</h2>
       {imageLoadingState !== ImageLoadingState.LoadingDone ? (
         <div className="mb-4 text-gray-600">
           {imageLoadingState === ImageLoadingState.LoadingDescriptions && "Haetaan tekoälykuvauksen vaihtoehtoja..."}
@@ -164,7 +165,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
           {parsed.map((item, idx) => (
             <div key={idx} className="flex flex-row items-start mb-4 gap-3">
               <img
-                src={dalleImages[idx] || McVirtanen}
+                src={dalleImages[idx] || mission.img || McVirtanen}
                 alt="Coach"
                 className="w-20 h-20 object-cover rounded-full mt-1"
                 style={{ flexShrink: 0 }}
@@ -179,7 +180,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
                   setMission({
                     otsikko: item.otsikko,
                     kuvaus: item.kuvaus,
-                    img: dalleImages[idx] || McVirtanen,
+                    img: dalleImages[idx] || mission.img||McVirtanen,
                   })
                 }
               >

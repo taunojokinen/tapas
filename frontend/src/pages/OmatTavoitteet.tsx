@@ -5,20 +5,40 @@ import KeyObjectives from "../components/omatTavoitteet/keyObjectives";
 import MyTasks from "../components/omatTavoitteet/myTasks";
 import MyCurrentState from "../components/omatTavoitteet/myCurrenState";
 import useAuth from "../hooks/useAuth";
-import { MyMissionType, MyObjective, MyTask, MyObjectivesJson } from "../types/types";
+import {
+  MyMissionType,
+  MyObjective,
+  MyTask,
+  MyObjectivesJson,
+} from "../types/types";
 import { fetchMyObjectiveData } from "../components/omatTavoitteet/myObjectiveFunctions";
+import { fetchUserTitlesByUsername } from "../components/omatTavoitteet/myObjectiveFunctions";
 import { ViewMode } from "../types/enums";
 import StrategiesForMe from "../components/omatTavoitteet/strategiesForMe";
 import { AiTavoite } from "../components/omatTavoitteet/MyCoachAiAnswer"; // Adjust the path if necessary
 
 const OmatTavoitteet = () => {
   const { username } = useAuth();
+  const [title, setTitle] = useState<string>("");
   const [myObjectiveData, setMyObjectiveData] =
     useState<MyObjectivesJson | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.ShowAll);
-
   const [valitutEhdotukset, setValitutEhdotukset] = useState<AiTavoite[]>([]);
-  
+
+  const fetchAndSetTitle = async () => {
+    if (username) {
+      const titles = await fetchUserTitlesByUsername(username);
+      if (titles && titles.length > 0) {
+        setTitle(titles[0]); // Set the first title found
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchAndSetTitle();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
+
   // Fetch data from the backend on component mount
   useEffect(() => {
     const fetchData = async () => {
@@ -118,35 +138,28 @@ const OmatTavoitteet = () => {
 
   // Helper to determine which sections to show
   const showCoach = true;
-  const showMission =
-    viewMode === ViewMode.ShowAll ||
-    viewMode === ViewMode.MyMission ||
-    viewMode === ViewMode.KeyObjectives ||
-    viewMode === ViewMode.MyTasks ||
-    viewMode === ViewMode.MyCurrentState;
+const showMission =
+  viewMode === ViewMode.ShowAll ||
+  viewMode === ViewMode.MyMission ||
+  viewMode === ViewMode.MyMissionWithAi;
   const showObjectives =
-    viewMode === ViewMode.ShowAll ||
-    viewMode === ViewMode.KeyObjectives ||
-    viewMode === ViewMode.MyTasks ||
-    viewMode === ViewMode.MyCurrentState;
+    viewMode === ViewMode.ShowAll || viewMode === ViewMode.KeyObjectives;
   const showTasks =
-    viewMode === ViewMode.ShowAll ||
-    viewMode === ViewMode.MyTasks ||
-    viewMode === ViewMode.MyCurrentState;
+    viewMode === ViewMode.ShowAll || viewMode === ViewMode.MyTasks;
   const showCurrentState =
     viewMode === ViewMode.ShowAll || viewMode === ViewMode.MyCurrentState;
 
   return (
     <div>
+      <div className="flex items-center justify-between p-4 shadow mb-0 ml-4">
+        <h2 className="text-xl font-bold text-gray-800">
+          {title} {username} - omat tavoitteet.
+        </h2>
+      </div>
+
       <div className="flex flex-col space-y-6">
         {showCoach && (
-          <MyCoach
-            user={myObjectiveData.user}
-            viewMode={viewMode}
-            mission={myObjectiveData.mission}
-
-            setMission={updateMission}
-          />
+          <MyCoach user={myObjectiveData.user} viewMode={viewMode} />
         )}
         <div className="bg-white p-4 rounded-lg shadow">
           {showMission && (
@@ -154,12 +167,13 @@ const OmatTavoitteet = () => {
               mission={myObjectiveData.mission}
               setMission={updateMission}
               username={username}
+              title={title}
               viewMode={viewMode}
               setViewMode={setViewMode}
             />
           )}
 
-          <StrategiesForMe setValitutEhdotukset={setValitutEhdotukset}/>
+          <StrategiesForMe setValitutEhdotukset={setValitutEhdotukset} />
 
           {showObjectives && (
             <KeyObjectives
@@ -168,7 +182,7 @@ const OmatTavoitteet = () => {
               username={username}
               viewMode={viewMode}
               setViewMode={setViewMode}
-              valitutEhdotukset={valitutEhdotukset} 
+              valitutEhdotukset={valitutEhdotukset}
             />
           )}
 
