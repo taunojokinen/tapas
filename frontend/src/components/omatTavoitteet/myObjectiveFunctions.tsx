@@ -1,6 +1,8 @@
 import axios from "axios";
 import { MyObjectivesJson } from "../../types/types"; // Adjust the path if necessary
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 // Fetch data from the backend
 export const fetchMyObjectiveData = async (
   username: string
@@ -8,7 +10,7 @@ export const fetchMyObjectiveData = async (
   try {
     // Make a GET request with the username as a query parameter
     const response = await axios.get(
-      `http://localhost:5000/api/myobjectives?user=${username}`
+      `${API_BASE_URL}/api/myobjectives?user=${username}`
     );
     if (response.data) {
       return response.data; // Return the fetched data
@@ -25,9 +27,6 @@ export const patchMyObjectiveData = async (
   updateData: Partial<MyObjectivesJson>
 ): Promise<boolean> => {
   try {
-    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-
-    // Ensure every objective has a non-empty seuranta field
     if (
       updateData.objectives &&
       Array.isArray(updateData.objectives) &&
@@ -57,7 +56,6 @@ export const postMyObjectiveData = async (
   data: MyObjectivesJson
 ): Promise<boolean> => {
   try {
-    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
     const response = await axios.post(
       `${API_BASE_URL}/api/myobjectives`,
       data
@@ -82,7 +80,7 @@ export const fetchUserTitlesByUsername = async (
   username: string
 ): Promise<string[]> => {
   try {
-    const response = await axios.get("http://localhost:5000/api/userlist");
+    const response = await axios.get(`${API_BASE_URL}/api/userlist`);
     if (response.data && Array.isArray(response.data)) {
       // Find the user by username and return their titles
       const user = response.data.find((user: any) => user.username === username);

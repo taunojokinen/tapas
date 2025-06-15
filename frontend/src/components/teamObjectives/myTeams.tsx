@@ -8,6 +8,8 @@ import {
 import useAuth from "../../hooks/useAuth"; // Import the custom hook
 import { Team, TeamObjective } from "../../types/types"; // Adjust the path as needed
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 export interface User {
   _id: string; // MongoDB ID for the user
   username: string; // Username of the user
@@ -58,7 +60,7 @@ const MyTeams: React.FC<MyTeamsProps> = ({
 
     const fetchUserList = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/userlist");
+        const response = await fetch(`${API_BASE_URL}/api/userlist`);
         const users: User[] = await response.json();
         setUserList(users);
       } catch (error) {

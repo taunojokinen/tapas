@@ -3,6 +3,8 @@ import { ViewMode, ImageLoadingState } from "../../types/enums";
 import McVirtanen from "../../pictures/McVirtanen.jpg";
 import { MyMissionType } from "../../types/types";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 interface MyCoachAiAnswerProps {
   viewMode: ViewMode;
   title: string;
@@ -31,7 +33,7 @@ async function getDallePromptFromAI(
   otsikko: string,
   kuvaus: string
 ): Promise<string> {
-  const res = await fetch("http://localhost:5000/api/mycoachai/ask", {
+  const res = await fetch(`${API_BASE_URL}/api/mycoachai/ask`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -78,9 +80,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
       const fetchAiResponse = async () => {
         try {
           const res = await fetch(
-            `${
-              process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"
-            }/api/mycoachai/ask`,
+            `${API_BASE_URL}/api/mycoachai/ask`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -139,9 +139,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
         dallePrompts.map((prompt) =>
           prompt
             ? fetch(
-                `${
-                  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"
-                }/api/mycoachai/picture`,
+                `${API_BASE_URL}/api/mycoachai/picture`,
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },

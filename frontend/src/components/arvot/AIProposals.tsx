@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Values, Proposal } from "../../types/types";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 const rolesForAI = [
   "Chief Financial Officer",
   "Director of Marketing",
@@ -38,7 +40,7 @@ const RenderAIProposals: React.FC<{
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:5000/api/valueproposals"
+          `${API_BASE_URL}/api/valueproposals`
         );
         if (response.data && Array.isArray(response.data)) {
           setValueProposal(response.data); // Assuming the API returns an array of proposals
@@ -59,8 +61,8 @@ const RenderAIProposals: React.FC<{
     role: string,
     prompt: string
   ): AsyncGenerator<Proposal> {
-    const response = await axios.post(
-      "http://localhost:5000/api/ai/generate-proposals",
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+    const response = await axios.post(`${API_BASE_URL}/api/ai/generate-proposals`,
     {
       systemContent: `Have a role of "${role}". You always answer in finnish.`, // <-- send as systemContent
       prompt // <-- send as prompt
@@ -203,12 +205,12 @@ const RenderAIProposals: React.FC<{
       console.log("Päivitetyt arvot:", valueProposalUpdate);
 
       // First, delete the existing proposals
-      await axios.delete("http://localhost:5000/api/valueproposals");
+      await axios.delete(`${API_BASE_URL}/api/valueproposals`); // Assuming this endpoint deletes all existing proposals
       console.log("Existing proposals deleted successfully.");
 
       // Then, post the updated proposals
       await axios.post(
-        "http://localhost:5000/api/valueproposals",
+        `${API_BASE_URL}/api/valueproposals`,
         valueProposalUpdate
       ); // Send as an array
       console.log("Updated proposals saved successfully.");

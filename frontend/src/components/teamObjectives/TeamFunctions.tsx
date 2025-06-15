@@ -1,11 +1,13 @@
 import axios from "axios";
 import { Team } from "../../types/types";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 // Function to fetch teams for a specific user
 export const fetchTeamsForUser = async (username: string) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/teamobjectives/user/${username}`
+      `${API_BASE_URL}/api/teamobjectives/user/${username}`
     );
     if (!response.ok) {
       throw new Error(`Failed to fetch teams: ${response.statusText}`);
@@ -24,7 +26,7 @@ export const saveNewTeam = async (
 ) => {
   try {
     const response = await axios.post(
-      "http://localhost:5000/api/teamobjectives/create",
+      `${API_BASE_URL}/api/teamobjectives/create`,
       {
         ...newTeam,
         owner, // Add the owner to the request body
@@ -43,7 +45,7 @@ export const updateTeam = async (
 ) => {
   try {
     const response = await axios.put(
-      `http://localhost:5000/api/teamobjectives/${teamId}`,
+      `${API_BASE_URL}/api/teamobjectives/${teamId}`,
       {
         ...updatedTeam,
         owner, // Include the owner in the request body
@@ -59,7 +61,7 @@ export const updateTeam = async (
 export const deleteTeam = async (teamId: string) => {
   try {
     const response = await axios.delete(
-      `http://localhost:5000/api/teams/${teamId}`
+      `${API_BASE_URL}/api/teams/${teamId}`
     );
     console.log("Team deleted:", teamId);
     return response.data; // Return the response from the server

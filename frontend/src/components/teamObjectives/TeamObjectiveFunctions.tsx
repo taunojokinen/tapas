@@ -1,9 +1,11 @@
 import { TeamObjective, CompanyObjectives, Strategia } from "../../types/types";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
 export async function FetchKeyStrategies() {
   try {
     console.log("Fetching key strategies...");
-    const response = await fetch("http://localhost:5000/api/strategiat");
+    const response = await fetch(`${API_BASE_URL}/api/strategiat`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -21,7 +23,7 @@ export async function fetchCompanyObjectives(
   query: string
 ): Promise<TeamObjective[] | null> {
   try {
-    const response = await fetch("http://localhost:5000/api/companyobjectives");
+    const response = await fetch(`${API_BASE_URL}/api/companyobjectives`);
     if (!response.ok) throw new Error("Failed to fetch company objectives");
     const objectives: CompanyObjectives[] = await response.json();
     const objectivesList: CompanyObjectives[] = Array.isArray(objectives)
@@ -69,7 +71,7 @@ export async function putTeamObjectiveData(
 ): Promise<void> {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/teamobjectives/objective/${teamObjectiveId}`,
+      `${API_BASE_URL}/api/teamobjectives/objective/${teamObjectiveId}`,
       {
         method: "PUT",
         headers: {
@@ -98,7 +100,7 @@ export async function putTeamObjectivesArray(
 ): Promise<void> {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/teamobjectives/${teamId}`,
+      `${API_BASE_URL}/api/teamobjectives/${teamId}`,
       {
         method: "PUT",
         headers: {
