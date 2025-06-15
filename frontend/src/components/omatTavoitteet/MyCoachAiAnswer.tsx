@@ -20,14 +20,16 @@ export interface AiTavoite {
 
 interface MyCoachAiAnswerProps {
   valitutStrategiat: string[];
-  valitutTavoitteet: string[];
+  valitutTavoitteetNimet: string[];
   onValitutMuuttuu?: (valitut: AiTavoite[]) => void;
+  onAiAnswerReady?: () => void;
 }
 
 const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
   valitutStrategiat,
-  valitutTavoitteet,
+  valitutTavoitteetNimet,
   onValitutMuuttuu,
+  onAiAnswerReady,
 }) => {
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [title, setTitle] = useState<string>("");
@@ -54,7 +56,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
       const aiQuestion = `Olen ${title}. Tee minulle kolme eri ehdotusta tavoitteikseni seuraavalle vuodelle valitsemiini
       valitutStrategiat ja valitutTavoitteet parametreihin perustuen. 
       Strategiat: ${valitutStrategiat.join(", ")}
-      Tiimitavoitteet: ${valitutTavoitteet.join(", ")}
+      Tiimitavoitteet: ${valitutTavoitteetNimet.join(", ")}
       Vastaa pelkällä JSON-listalla muodossa:
 
 [
@@ -65,23 +67,32 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
 
 Älä kirjoita muuta kuin puhdas JSON.`;
 
-      const fetchAiResponse = async () => {
-        try {
-          const res = await fetch(`${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"}/api/mycoachai/ask`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question: aiQuestion }),
-          });
-          const data = await res.json();
-          setAiResponse(data.answer);
-        } catch (error) {
-          setAiResponse("Virhe haettaessa tekoälyvastausta.");
-        }
-      };
+const fetchAiResponse = async () => {
+  try {
+    const url = `${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"}/api/mycoachai/ask`;
+    const body = { question: aiQuestion };
+    console.log("Requesting AI answer:", { url, body });
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+    console.log("AI response data:", data);
+
+    setAiResponse(data.answer);
+    if (onAiAnswerReady) onAiAnswerReady();
+  } catch (error) {
+    console.error("Error fetching AI answer:", error);
+    setAiResponse("Virhe haettaessa tekoälyvastausta.");
+  }
+};
 
       fetchAiResponse();
     }
-  }, [title, valitutStrategiat, valitutTavoitteet]);
+  }, [title, valitutStrategiat, valitutTavoitteetNimet, onAiAnswerReady]);
 
   const parsed = aiResponse ? extractJsonArray(aiResponse) : null;
 
