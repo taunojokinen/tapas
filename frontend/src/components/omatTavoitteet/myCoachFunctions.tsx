@@ -50,7 +50,9 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
   mission,
 }) => {
   const [aiMessage, setAiMessage] = useState("Haetaan tekoälyvastausta...");
-  const [imageLoadingState, setImageLoadingState] = useState<ImageLoadingState>(ImageLoadingState.LoadingDone);
+  const [imageLoadingState, setImageLoadingState] = useState<ImageLoadingState>(
+    ImageLoadingState.LoadingDone
+  );
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [parsed, setParsed] = useState<
     { otsikko: string; kuvaus: string }[] | null
@@ -75,11 +77,16 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
 
       const fetchAiResponse = async () => {
         try {
-          const res = await fetch(`${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"}/api/mycoachai/ask`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question: aiQuestion }),
-          });
+          const res = await fetch(
+            `${
+              process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"
+            }/api/mycoachai/ask`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ question: aiQuestion }),
+            }
+          );
           const data = await res.json();
           setAiResponse(data.answer);
         } catch (error) {
@@ -112,7 +119,9 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
       setImageLoadingState(ImageLoadingState.PlanningImage);
       Promise.all(
         parsed.map((item, idx) => {
-          return getDallePromptFromAI(item.otsikko, item.kuvaus).catch(() => null);
+          return getDallePromptFromAI(item.otsikko, item.kuvaus).catch(
+            () => null
+          );
         })
       ).then((prompts) => {
         setDallePrompts(prompts);
@@ -129,11 +138,16 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
       Promise.all(
         dallePrompts.map((prompt) =>
           prompt
-            ? fetch(`${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"}/api/mycoachai/picture`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt }),
-              })
+            ? fetch(
+                `${
+                  process.env.REACT_APP_API_BASE_URL || "http://localhost:5000"
+                }/api/mycoachai/picture`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ prompt }),
+                }
+              )
                 .then((res) => res.json())
                 .then((data) => data.imageUrl || null)
                 .catch(() => null)
@@ -149,16 +163,18 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
     }
   }, [dallePrompts]);
 
-  if (viewMode !== ViewMode.MyMissionWithAi ) return null;
+  if (viewMode !== ViewMode.MyMissionWithAi) return null;
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">MyCoach AI Vastaus</h2>
       {imageLoadingState !== ImageLoadingState.LoadingDone ? (
         <div className="mb-4 text-gray-600">
-          {imageLoadingState === ImageLoadingState.LoadingDescriptions && "Haetaan tekoälykuvauksen vaihtoehtoja..."}
-          {imageLoadingState === ImageLoadingState.PlanningImage && "Suunnitellaan kuvaa..."}
-          {imageLoadingState === ImageLoadingState.DrawingImage && "Piirretään kuvaa..."}
+          {imageLoadingState === ImageLoadingState.LoadingDescriptions &&
+            "Haetaan tekoälykuvauksen vaihtoehtoja..."}
+          {imageLoadingState === ImageLoadingState.PlanningImage &&
+            "Suunnitellaan kuvaa..."}
+          {imageLoadingState === ImageLoadingState.DrawingImage &&
+            "Piirretään kuvaa..."}
         </div>
       ) : parsed ? (
         <div>
@@ -180,7 +196,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
                   setMission({
                     otsikko: item.otsikko,
                     kuvaus: item.kuvaus,
-                    img: dalleImages[idx] || mission.img||McVirtanen,
+                    img: dalleImages[idx] || mission.img || McVirtanen,
                   })
                 }
               >
@@ -190,9 +206,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
           ))}
         </div>
       ) : (
-        <pre style={{ whiteSpace: "pre-wrap" }}>
-          {aiMessage}
-        </pre>
+        <pre style={{ whiteSpace: "pre-wrap" }}>{aiMessage}</pre>
       )}
     </div>
   );

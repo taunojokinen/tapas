@@ -3,7 +3,7 @@ import { patchMyObjectiveData } from "./myObjectiveFunctions";
 import type { MyMissionType } from "../../types/types";
 import { ViewMode } from "../../types/enums";
 import MyCoachAiAnswer from "./myCoachFunctions";
-import TestPage from "./testPage";
+
 
 interface MyMissionProps {
   mission: MyMissionType;
