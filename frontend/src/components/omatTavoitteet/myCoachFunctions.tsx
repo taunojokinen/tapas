@@ -64,7 +64,7 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
   const requested = useRef(false);
 
   useEffect(() => {
-    if (viewMode === ViewMode.MyMission && title && !requested.current) {
+    if (viewMode === ViewMode.MyMissionWithAi && title && !requested.current) {
       requested.current = true;
       setImageLoadingState(ImageLoadingState.LoadingDescriptions);
       let aiQuestion = `Olen ${title}. Tee minulle neljä erilaista kuvausta urapäämääristäni viiden vuoden aikajänteellä. 
