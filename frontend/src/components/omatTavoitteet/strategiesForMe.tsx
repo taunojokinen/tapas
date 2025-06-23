@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useCompanyObjectives } from "../../hooks/useCompanyObjectives";
-import MyCoachAiAnswer from "./MyCoachAiAnswer";
-import { AiTavoite } from "./MyCoachAiAnswer";
+import MyObjectivesAiAnswer from "./myObjectivesAiAnswer";
+import { AiTavoite } from "./myObjectivesAiAnswer";
+import { ViewMode } from "../../types/enums";
 
-import type { Team, TeamObjective } from "../../types/types";
+import type { Team } from "../../types/types";
 
 interface StrategiesForMeProps {
   setValitutEhdotukset: (ehdotukset: AiTavoite[]) => void;
+  viewMode?: ViewMode; // Optional prop to control view mode
+  setViewMode?: (mode: ViewMode) => void; // Optional prop to set view mode
 }
 
 const StrategiesForMe: React.FC<StrategiesForMeProps> = ({
   setValitutEhdotukset,
+  viewMode = ViewMode.ShowAll, // Default to ShowAll if not provided
+  setViewMode = () => {}, // Default no-op function if not provided
 }) => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,8 +24,11 @@ const StrategiesForMe: React.FC<StrategiesForMeProps> = ({
   const { avainstrategiat } = useCompanyObjectives();
   const [valitutStrategiat, setValitutStrategiat] = useState<string[]>([]);
   const [valitutTavoitteet, setValitutTavoitteet] = useState<string[]>([]);
-  const [valitutTavoitteetNimet, setValitutTavoitteetNimet] = useState<string[]>([]);
+  const [valitutTavoitteetNimet, setValitutTavoitteetNimet] = useState<
+    string[]
+  >([]);
   const [naytaAi, setNaytaAi] = useState(false);
+  const [message, setMessage] = useState("");
 
   const userId = localStorage.getItem("username");
 
@@ -83,118 +91,120 @@ const StrategiesForMe: React.FC<StrategiesForMeProps> = ({
       .filter(Boolean); // removes undefined
   };
 
+
+
   return (
     <div className="w-full py-6">
       {/* Added row for Micco McVirtanen suggestion */}
       <div className="flex items-center justify-between mb-6">
         <span className="text-xl font-bold">
-          Haluatko ehdotuksia Micco McVirtaselta
+
+          {viewMode === ViewMode.KeyObjectives
+            ? "Haluatko ehdotuksia Micco McVirtaselta"
+            : viewMode === ViewMode.KeyObjectivesWithAi
+            ? "Valitse avainstrategiat ja tiimit"
+            : viewMode === ViewMode.KeyObjectivesSelect
+            ? "Valitse tiimit ja tavoitteet"
+            :""}
         </span>
         <button
-          onClick={() => setNaytaAi(true)}
+          onClick={() => {
+            if (viewMode === ViewMode.KeyObjectives) {
+              setViewMode(ViewMode.KeyObjectivesWithAi);
+            } else if (viewMode === ViewMode.KeyObjectivesWithAi) {
+              setViewMode(ViewMode.KeyObjectivesSelect);
+            }
+          }}
+
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          hae
+          {viewMode === ViewMode.KeyObjectives ? "Haluan" : "Hae ehdotuklsia"}
         </button>
       </div>
-      <div className="grid grid-cols-[30%_60%_auto] gap-6 items-start">
-        {/* Avainstrategiat */}
-        <div className="bg-white p-6 shadow rounded">
-          <h2 className="text-xl font-bold mb-4">Yrityksen Avainstrategiat</h2>
-          {avainstrategiat.map((s, i) => (
-            <div key={i} className="flex items-center justify-between mb-2">
-              <span>{s.tavoite}</span>
-              <input
-                type="checkbox"
-                checked={valitutStrategiat.includes(s.tavoite)}
-                onChange={() => toggleStrategia(s.tavoite)}
-              />
-            </div>
-          ))}
-        </div>
+      {viewMode === ViewMode.KeyObjectivesWithAi && (
+        <div className="grid grid-cols-[30%_60%_auto] gap-6 items-start">
+          {/* Avainstrategiat */}
+          <div className="bg-white p-6 shadow rounded">
+            <h2 className="text-xl font-bold mb-4">
+              Yrityksen Avainstrategiat
+            </h2>
+            {avainstrategiat.map((s, i) => (
+              <div key={i} className="flex items-center justify-between mb-2">
+                <span>{s.tavoite}</span>
+                <input
+                  type="checkbox"
+                  checked={valitutStrategiat.includes(s.tavoite)}
+                  onChange={() => toggleStrategia(s.tavoite)}
+                />
+              </div>
+            ))}
+          </div>
 
-        {/* Tiimit ja tavoitteet */}
-        <div className="bg-white p-6 shadow rounded">
-          <h2 className="text-xl font-bold mb-4">Tiimit ja tavoitteet</h2>
+          {/* Tiimit ja tavoitteet */}
+          <div className="bg-white p-6 shadow rounded">
+            <h2 className="text-xl font-bold mb-4">Tiimit ja tavoitteet</h2>
 
-          {teams.length === 0 ? (
-            <p>Et kuulu yhteenkään tiimiin.</p>
-          ) : (
-            teams.map((team) => (
-              <div
-                key={team._id}
-                className="mb-4 p-4 bg-gray-50 border rounded"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex flex-col min-w-[200px]">
-                    <span className="font-semibold">{team.name}</span>
-                    <span className="text-sm text-gray-500">
-                      ({team.owner === userId ? "Omistaja" : "Jäsen"})
-                    </span>
-                    {/* List team objectives */}
-                    {team.teamObjectives && team.teamObjectives.length > 0 ? (
-                      <ul className="mt-2 list-disc list-inside">
-                        {team.teamObjectives.map((objective) =>
-                          objective._id ? (
-                            <li
-                              key={objective._id}
-                              className="ml-2 flex items-center justify-between"
-                            >
-                              <span className="font-medium">
-                                {objective.nimi}
-                              </span>
-                              <input
-                                type="checkbox"
-                                checked={valitutTavoitteet.includes(
-                                  objective._id!
-                                )}
-                                onChange={() => toggleMission(objective._id!)}
-                                className="ml-4"
-                              />
-                            </li>
-                          ) : null
-                        )}
-                      </ul>
-                    ) : (
-                      <span className="text-xs text-gray-400">
-                        Ei tavoitteita
+            {teams.length === 0 ? (
+              <p>Et kuulu yhteenkään tiimiin.</p>
+            ) : (
+              teams.map((team) => (
+                <div
+                  key={team._id}
+                  className="mb-4 p-4 bg-gray-50 border rounded"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex flex-col min-w-[200px]">
+                      <span className="font-semibold">{team.name}</span>
+                      <span className="text-sm text-gray-500">
+                        ({team.owner === userId ? "Omistaja" : "Jäsen"})
                       </span>
-                    )}
+                      {/* List team objectives */}
+                      {team.teamObjectives && team.teamObjectives.length > 0 ? (
+                        <ul className="mt-2 list-disc list-inside">
+                          {team.teamObjectives.map((objective) =>
+                            objective._id ? (
+                              <li
+                                key={objective._id}
+                                className="ml-2 flex items-center justify-between"
+                              >
+                                <span className="font-medium">
+                                  {objective.nimi}
+                                </span>
+                                <input
+                                  type="checkbox"
+                                  checked={valitutTavoitteet.includes(
+                                    objective._id!
+                                  )}
+                                  onChange={() => toggleMission(objective._id!)}
+                                  className="ml-4"
+                                />
+                              </li>
+                            ) : null
+                          )}
+                        </ul>
+                      ) : (
+                        <span className="text-xs text-gray-400">
+                          Ei tavoitteita
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
+              ))
+            )}
+          </div>
 
-        {/* Button oikeassa reunassa samalla rivillä */}
-        <div className="self-start">
-          <button
-            onClick={() => {
-              const allObjectives = teams.flatMap(
-                (team) => team.teamObjectives
-              );
-              const selectedNames = valitutTavoitteet
-                .map((id) => allObjectives.find((obj) => obj._id === id)?.nimi)
-                .filter(Boolean) as string[];
-              setValitutTavoitteetNimet(selectedNames);
-              setNaytaAi(true);
-            }}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
-          >
-            Käytä valittuja strategioita omien tavoite-ehdotusten luomiseen
-          </button>
         </div>
-      </div>
+      )}
 
       {/* AI-vastaus alla */}
-      {true && (
+      {viewMode === ViewMode.KeyObjectivesSelect  && (
         <div className="mt-6">
-          <MyCoachAiAnswer
+          <MyObjectivesAiAnswer
             valitutStrategiat={valitutStrategiat}
             valitutTavoitteetNimet={valitutTavoitteetNimet}
             onValitutMuuttuu={setValitutEhdotukset}
-            onAiAnswerReady={() => setNaytaAi(false)}
+            onAiAnswerReady={() => setViewMode(ViewMode.KeyObjectivesSelect)}
           />
         </div>
       )}

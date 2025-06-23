@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MyObjective } from "../../types/types";
 import { patchMyObjectiveData } from "./myObjectiveFunctions";
 import { ViewMode } from "../../types/enums";
-import { AiTavoite } from "./MyCoachAiAnswer"; // Adjust the import path as necessary
+import { AiTavoite } from "./myObjectivesAiAnswer"; // Adjust the import path as necessary
 
 interface KeyObjectivesProps {
   objectives: MyObjective[]; // Array of objectives
@@ -11,6 +11,7 @@ interface KeyObjectivesProps {
   viewMode: ViewMode; // Current view mode
   setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
   valitutEhdotukset: AiTavoite[];
+  setValitutEhdotukset: React.Dispatch<React.SetStateAction<AiTavoite[]>>;
 }
 
 const KeyObjectives: React.FC<KeyObjectivesProps> = ({
@@ -20,6 +21,7 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
   viewMode, // Current view mode
   setViewMode, // Function to set the view mode
   valitutEhdotukset,
+  setValitutEhdotukset, // Function to set selected AI suggestions
 }) => {
   const [isEditing, setIsEditing] = useState(false); // Global editing state
 
@@ -119,7 +121,7 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
                       const uusiTavoite: MyObjective = {
                         nimi: ehdotus.tavoite,
                         mittari: ehdotus.mittari,
-                        seuranta: "",
+                        seuranta: "punainen",
                       };
                       saveChanges([...objectives, uusiTavoite]);
                     }}
@@ -222,7 +224,8 @@ const KeyObjectives: React.FC<KeyObjectivesProps> = ({
           <button
             onClick={() => {
               setIsEditing(false);
-              setViewMode(ViewMode.ShowAll); // Reset view mode to show all
+              setViewMode(ViewMode.ShowAll); 
+              setValitutEhdotukset([])// Reset view mode to show all
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >

@@ -15,7 +15,7 @@ import { fetchMyObjectiveData } from "../components/omatTavoitteet/myObjectiveFu
 import { fetchUserTitlesByUsername } from "../components/omatTavoitteet/myObjectiveFunctions";
 import { ViewMode } from "../types/enums";
 import StrategiesForMe from "../components/omatTavoitteet/strategiesForMe";
-import { AiTavoite } from "../components/omatTavoitteet/MyCoachAiAnswer"; // Adjust the path if necessary
+import { AiTavoite } from "../components/omatTavoitteet/myObjectivesAiAnswer"; // Adjust the path if necessary
 
 const OmatTavoitteet = () => {
   const { username } = useAuth();
@@ -138,12 +138,19 @@ const OmatTavoitteet = () => {
 
   // Helper to determine which sections to show
   const showCoach = true;
-const showMission =
-  viewMode === ViewMode.ShowAll ||
-  viewMode === ViewMode.MyMission ||
-  viewMode === ViewMode.MyMissionWithAi;
+  const showMission =
+    viewMode === ViewMode.ShowAll ||
+    viewMode === ViewMode.MyMission ||
+    viewMode === ViewMode.MyMissionWithAi;
+  const showKeyObjectivesAi =
+    viewMode === ViewMode.KeyObjectives ||
+    viewMode === ViewMode.KeyObjectivesWithAi ||
+    viewMode === ViewMode.KeyObjectivesSelect;
   const showObjectives =
-    viewMode === ViewMode.ShowAll || viewMode === ViewMode.KeyObjectives;
+    viewMode === ViewMode.ShowAll ||
+    viewMode === ViewMode.KeyObjectives ||
+    viewMode === ViewMode.KeyObjectivesWithAi ||
+    viewMode === ViewMode.KeyObjectivesSelect;
   const showTasks =
     viewMode === ViewMode.ShowAll || viewMode === ViewMode.MyTasks;
   const showCurrentState =
@@ -173,7 +180,13 @@ const showMission =
             />
           )}
 
-          <StrategiesForMe setValitutEhdotukset={setValitutEhdotukset} />
+          {showKeyObjectivesAi && (
+            <StrategiesForMe
+              setValitutEhdotukset={setValitutEhdotukset}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+            />
+          )}
 
           {showObjectives && (
             <KeyObjectives
@@ -183,6 +196,7 @@ const showMission =
               viewMode={viewMode}
               setViewMode={setViewMode}
               valitutEhdotukset={valitutEhdotukset}
+              setValitutEhdotukset={setValitutEhdotukset}
             />
           )}
 

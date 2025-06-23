@@ -3,8 +3,10 @@ export enum ViewMode {
   MyMission = 1,
   MyMissionWithAi = 2, // For AI-assisted mission creation
   KeyObjectives = 3,
-  MyTasks = 4,
-  MyCurrentState = 5,
+  KeyObjectivesWithAi = 4,
+  KeyObjectivesSelect = 5, // For AI-assisted key objectives creation
+  MyTasks = 6,
+  MyCurrentState = 7,
 }
 
 export enum ImageLoadingState {

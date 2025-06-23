@@ -18,14 +18,14 @@ export interface AiTavoite {
   mittari: string;
 }
 
-interface MyCoachAiAnswerProps {
+interface MyObjectivesAiAnswerProps {
   valitutStrategiat: string[];
   valitutTavoitteetNimet: string[];
   onValitutMuuttuu?: (valitut: AiTavoite[]) => void;
   onAiAnswerReady?: () => void;
 }
 
-const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
+const MyObjectivesAiAnswer: React.FC<MyObjectivesAiAnswerProps> = ({
   valitutStrategiat,
   valitutTavoitteetNimet,
   onValitutMuuttuu,
@@ -148,4 +148,4 @@ const fetchAiResponse = async () => {
   );
 };
 
-export default MyCoachAiAnswer;
+export default MyObjectivesAiAnswer;
