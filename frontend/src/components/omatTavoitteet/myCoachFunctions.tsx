@@ -69,7 +69,8 @@ const MyCoachAiAnswer: React.FC<MyCoachAiAnswerProps> = ({
       setImageLoadingState(ImageLoadingState.LoadingDescriptions);
       let aiQuestion = `Olen ${title}. Tee minulle neljä erilaista kuvausta urapäämääristäni viiden vuoden aikajänteellä. 
       Ensimmäisen kuvauksen tulisi painottaa työtä ihmisten kanssa esimeistehtävissä. Neljännen tulisi painottaa asiantuntijaosaamista. 
-      toinen ja kolmas olisivat näiden välillä. Keksi kuvauksille nokkelat kahden sanan otsikot. 
+      toinen ja kolmas olisivat näiden välillä. Keksi kuvauksille nokkelat kahden sanan otsikot. Aloita vastaukset kuvaaamalla perustehtävä 
+      henkilölle, jonka tehtävänimike on ${title}. Käytä vastauksen aikamuitona presensiä.
       Vastaa Json muodossa [{"otsikko":"kaksi sanaa", "kuvaus":"100 sanaa"},{"otsikko":"kaksi sanaa", "kuvaus":"100 sanaa"},
       {"otsikko":"kaksi sanaa", "kuvaus":"100 sanaa"},{"otsikko":"kaksi sanaa", "kuvaus":"100 sanaa"}]`;
 

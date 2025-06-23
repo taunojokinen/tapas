@@ -28,7 +28,17 @@ kavereillekin. Se on kumma, kuinka frendit ja tuttavat pukkaa sua eteenpäin.`,
  Tärkeintä on, että uskallat pysähtyä miettimään, mitä oikeasti haluat työelämältä. Muista: pienikin askel kohti
   omaa päämäärää on jo iso juttu! Minä, Micco, kuljen rinnallasi ja autan sinua löytämään suunnan, joka tuntuu 
   omalta. Rohkeasti eteenpäin – sinussa on enemmän potentiaalia kuin arvaatkaan!`,
+  
+  `Hei ${user}! Jokaisella meistä on unelmia ja tavoitteita – joskus ne ovat selkeitä, joskus vähän sumuisempia.
+ Tärkeintä on, että uskallat pysähtyä miettimään, mitä oikeasti haluat työelämältä. Muista: pienikin askel kohti
+  omaa päämäärää on jo iso juttu! Minä, Micco, kuljen rinnallasi ja autan sinua löytämään suunnan, joka tuntuu 
+  omalta. Rohkeasti eteenpäin – sinussa on enemmän potentiaalia kuin arvaatkaan!`,
 
+  `Hei ${user}! Jokaisella meistä on unelmia ja tavoitteita – joskus ne ovat selkeitä, joskus vähän sumuisempia.
+ Tärkeintä on, että uskallat pysähtyä miettimään, mitä oikeasti haluat työelämältä. Muista: pienikin askel kohti
+  omaa päämäärää on jo iso juttu! Minä, Micco, kuljen rinnallasi ja autan sinua löytämään suunnan, joka tuntuu 
+  omalta. Rohkeasti eteenpäin – sinussa on enemmän potentiaalia kuin arvaatkaan!`,
+  
 `Hei ${user}! Tavoitteiden saavuttaminen ei tapahdu yhdessä yössä, vaan pienin, konkreettisin askelin.
  Jokainen tehtävä, jonka asetat itsellesi, vie sinua lähemmäs omaa päämäärääsi – vaikka matka välillä tuntuisi 
  pitkältä tai mutkaiselta. Muista, että jokainen ruksattu tehtävälistan kohta on voitto, ja välillä on hyvä 

@@ -116,67 +116,10 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
         )}
       </div>
       <div className="grid grid-cols-2 gap-4">
-        {/* Hindrances Section */}
-        <div>
-          <h3 className="text-lg font-semibold mb-2">
-            Mikä estää tavoitteiden saavuttamista
-          </h3>
-          {hindrances.map((hindrance, index) => (
-            <div key={index} className="flex items-center gap-2 mb-2">
-              {isEditing ? (
-                <>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleMoveHindrance(index, "up")}
-                      disabled={index === 0}
-                      className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                      ↑
-                    </button>
-                    <button
-                      onClick={() => handleMoveHindrance(index, "down")}
-                      disabled={index === hindrances.length - 1}
-                      className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                      ↓
-                    </button>
-                    <button
-                      onClick={() => handleDeleteHindrance(index)}
-                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                  <textarea
-                    className="w-full p-2 border border-gray-300 rounded"
-                    rows={2}
-                    value={hindrance}
-                    onChange={(e) =>
-                      handleHindranceChange(index, e.target.value)
-                    }
-                    placeholder="Kirjoita tähän..."
-                  ></textarea>
-                </>
-              ) : (
-                <p className="w-full p-2 border border-gray-300 rounded">
-                  {hindrance || "Ei sisältöä"}
-                </p>
-              )}
-            </div>
-          ))}
-          {isEditing && (
-            <button
-              onClick={handleAddHindrance}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              Lisää uusi
-            </button>
-          )}
-        </div>
         {/* Promoters Section */}
         <div>
           <h3 className="text-lg font-semibold mb-2">
-            Mikä edistää tavoitteiden saavuttamista
+            Missä olen onnistunut
           </h3>
           {promoters.map((promoter, index) => (
             <div key={index} className="flex items-center gap-2 mb-2">
@@ -230,6 +173,64 @@ const MyCurrentState: React.FC<MyCurrentStateProps> = ({
             </button>
           )}
         </div>
+        {/* Hindrances Section */}
+        <div>
+          <h3 className="text-lg font-semibold mb-2">
+            Mitä voisi vielä parantaa
+          </h3>
+          {hindrances.map((hindrance, index) => (
+            <div key={index} className="flex items-center gap-2 mb-2">
+              {isEditing ? (
+                <>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleMoveHindrance(index, "up")}
+                      disabled={index === 0}
+                      className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      onClick={() => handleMoveHindrance(index, "down")}
+                      disabled={index === hindrances.length - 1}
+                      className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      ↓
+                    </button>
+                    <button
+                      onClick={() => handleDeleteHindrance(index)}
+                      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                  <textarea
+                    className="w-full p-2 border border-gray-300 rounded"
+                    rows={2}
+                    value={hindrance}
+                    onChange={(e) =>
+                      handleHindranceChange(index, e.target.value)
+                    }
+                    placeholder="Kirjoita tähän..."
+                  ></textarea>
+                </>
+              ) : (
+                <p className="w-full p-2 border border-gray-300 rounded">
+                  {hindrance || "Ei sisältöä"}
+                </p>
+              )}
+            </div>
+          ))}
+          {isEditing && (
+            <button
+              onClick={handleAddHindrance}
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Lisää uusi
+            </button>
+          )}
+        </div>
+        
       </div>
       {/* Edit/Save and Cancel Buttons */}
       {isEditing && (
