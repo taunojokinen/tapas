@@ -1,7 +1,7 @@
 import axios from "axios";
 import { MyObjectivesJson } from "../../types/types"; // Adjust the path if necessary
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 // Fetch data from the backend
 export const fetchMyObjectiveData = async (

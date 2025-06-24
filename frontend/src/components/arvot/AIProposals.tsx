@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Values, Proposal } from "../../types/types";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 const rolesForAI = [
   "Chief Financial Officer",
@@ -61,7 +61,7 @@ const RenderAIProposals: React.FC<{
     role: string,
     prompt: string
   ): AsyncGenerator<Proposal> {
-    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
     const response = await axios.post(`${API_BASE_URL}/api/ai/generate-proposals`,
     {
       systemContent: `Have a role of "${role}". You always answer in finnish.`, // <-- send as systemContent

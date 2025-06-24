@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Team } from "../../types/types";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 // Function to fetch teams for a specific user
 export const fetchTeamsForUser = async (username: string) => {

@@ -8,7 +8,7 @@ import {
 import useAuth from "../../hooks/useAuth"; // Import the custom hook
 import { Team, TeamObjective } from "../../types/types"; // Adjust the path as needed
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export interface User {
   _id: string; // MongoDB ID for the user

@@ -3,7 +3,7 @@ import { ViewMode, ImageLoadingState } from "../../types/enums";
 import McVirtanen from "../../pictures/McVirtanen.jpg";
 import { MyMissionType } from "../../types/types";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 interface MyCoachAiAnswerProps {
   viewMode: ViewMode;
