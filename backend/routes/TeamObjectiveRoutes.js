@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const TeamObjectives = require("../models/TeamObjectiveModel"); // Import the MyObjectives model
-const { CgSlack } = require("react-icons/cg");
 const router = express.Router();
 
 // POST route to create a new team objective
