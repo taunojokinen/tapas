@@ -11,11 +11,13 @@ const RenderCurrentValues: React.FC<{
   const [error, setError] = useState<string | null>(null); // Virhetilanne
   const navigate = useNavigate(); // Initialize useNavigate
 
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
+
   /** 🔄 Haetaan yrityksen arvot tietokannasta */
 const fetchArvot = React.useCallback(async () => {
   try {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/values`
+      `${apiUrl}/api/values`
     );
     const data = Array.isArray(response.data) ? response.data : [];
     setValues(data);
@@ -65,7 +67,7 @@ const fetchArvot = React.useCallback(async () => {
       // Send updated values to the backend
       const jsonData = { values };
       console.log("Päivitetyt arvot:", jsonData); // Log the updated values
-      await axios.put(`${process.env.REACT_APP_API_URL}/api/values`, jsonData);
+      await axios.put(`${apiUrl}/api/values`, jsonData);
 
       alert("Arvot päivitettiin onnistuneesti!");
     } catch (err) {

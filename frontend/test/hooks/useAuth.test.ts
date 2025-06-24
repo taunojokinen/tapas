@@ -1,6 +1,7 @@
-import { renderHook } from "@testing-library/react-hooks"; // Updated to import act from 'react'
+//import { renderHook } from "@testing-library/react-hooks"; // Updated to import act from 'react'
 import useAuth from "../../src/hooks/useAuth"; // Adjust the import path as necessary
 import { act } from "react";
+import { renderHook } from "@testing-library/react";
 
 // Mock localStorage
 const mockLocalStorage = {
@@ -8,6 +9,8 @@ const mockLocalStorage = {
   setItem: jest.fn(),
   removeItem: jest.fn(),
 };
+
+const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
 Object.defineProperty(global, "localStorage", { value: mockLocalStorage });
 
@@ -70,7 +73,7 @@ describe("useAuth", () => {
 
     // Check if fetch was called with correct parameters
     expect(fetch).toHaveBeenCalledWith(
-      `${process.env.REACT_APP_API_URL}/api/auth/logout`,
+      `${apiUrl}/api/auth/logout`,
       expect.objectContaining({
         method: "POST",
         headers: {

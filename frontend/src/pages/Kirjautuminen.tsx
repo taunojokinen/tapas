@@ -7,6 +7,7 @@ const Kirjautuminen: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [token, setToken] = useState(""); // Token to track login state
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -36,7 +37,7 @@ const Kirjautuminen: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/auth/login`,
+        `${apiUrl}/api/auth/login`,
         {
           method: "POST",
           headers: {
@@ -64,7 +65,7 @@ const Kirjautuminen: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/auth/logout`,
+        `${apiUrl}/api/auth/logout`,
         {
           method: "POST",
           headers: {

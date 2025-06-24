@@ -7,12 +7,13 @@ const RegisterForm = () => {
   const [password, setPassword] = useState<string>("");
   const [role, setRole] = useState<string>("user"); // Oletuksena käyttäjä
   const [message, setMessage] = useState<string>("");
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
+      const response = await axios.post(`${apiUrl}/api/auth/register`, {
         name,
         email,
         password,

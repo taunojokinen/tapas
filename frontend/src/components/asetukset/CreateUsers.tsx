@@ -7,6 +7,7 @@ const CreateUsers: React.FC = () => {
     const [showJson, setShowJson] = useState<boolean>(true); // Toggle to show JSON or success message
     const [showFetchedList, setShowFetchedList] = useState<boolean>(true); // Toggle fetched list visibility
     const [message, setMessage] = useState<string>("");
+    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
@@ -47,7 +48,7 @@ const CreateUsers: React.FC = () => {
         const uniqueData = removeDuplicates(jsonData);
         deleteUserList(); // Clear the user list before saving new data
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/userlist`, uniqueData, {
+            const response = await axios.post(`${apiUrl}/api/userlist`, uniqueData, {
 
                 headers: {
                     "Content-Type": "application/json",
@@ -71,7 +72,7 @@ const CreateUsers: React.FC = () => {
 
 const fetchUserList = async () => {
     try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/userlist`);
+        const response = await axios.get(`${apiUrl}/api/userlist`);
         const fetchedData = response.data;
 
         if (!fetchedData || fetchedData.length === 0) {
@@ -91,7 +92,7 @@ const fetchUserList = async () => {
 
 const deleteUserList = async () => {
     try {
-      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/api/userlist`);
+      const response = await axios.delete(`${apiUrl}/api/userlist`);
       if (response.status === 200) {
         setMessage("User list deleted successfully!");
         console.log("User list deleted successfully!");

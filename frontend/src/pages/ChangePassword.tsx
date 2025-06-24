@@ -6,6 +6,7 @@ const ChangePassword: React.FC = () => {
     const [newPassword, setNewPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -14,7 +15,7 @@ const ChangePassword: React.FC = () => {
 
         try {
             const token = localStorage.getItem('token'); // Retrieve token from localStorage or state
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/change-password`, {
+            const response = await fetch(`${apiUrl}/api/auth/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

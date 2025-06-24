@@ -13,12 +13,13 @@ const Arvot: React.FC = () => {
   const [values, setValues] = useState<Values[]>([]); // Kaikki arvot tietokannasta
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
   /** 🔄 Haetaan yrityksen arvot tietokannasta */
   const fetchArvot = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/values`
+        `${apiUrl}/api/values`
       );
 
       // Varmistetaan, että data on taulukko

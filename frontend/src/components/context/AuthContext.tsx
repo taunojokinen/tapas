@@ -16,12 +16,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [username, setUsername] = useState(localStorage.getItem("username") || "");
   const [role, setRole] = useState(localStorage.getItem("role") || "");
   const [error, setError] = useState("");
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
   const handleLogin = async (username: string, password: string) => {
     setError("");
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -48,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError("");
 
     try {
-      await fetch(`${process.env.REACT_APP_API_URL}/api/auth/logout`, {
+      await fetch(`${apiUrl}/api/auth/logout`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
